@@ -81,7 +81,6 @@ module top #(
         .a0(a0)
     );
 
-
     assign a0 = 32'd5;
 
 endmodule
