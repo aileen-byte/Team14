@@ -1,5 +1,5 @@
 module reg_file #(
-    DATA_WIDTH = 32
+    DATA_WIDTH = 32,
     parameter REG_COUNT  = 32
 ) (
     input   logic                   clk, //provides clock signal
@@ -18,11 +18,11 @@ module reg_file #(
 
     always_ff @(posedge clk) begin
         if (WE3) begin
-            regs[AD3] <= WD3;     // Write to rd (except x0)
+            regs[AD3] <= WD3;  
         end
     end
 
-    assign RD1 = regs[AD1];   // x0 always returns 0
+    assign RD1 = regs[AD1]; 
     assign RD2 = regs[AD2];
 
     assign a0 = regs[10];
