@@ -5,7 +5,7 @@ module ALU #(
     input   logic [DATA_WIDTH-1:0]  ALUop2,
     input   logic [2:0]             ALUctrl,
     output  logic [DATA_WIDTH-1:0]  ALUout,
-    output  logic                       EQ
+    output  logic                       Zero
 );
 
     always_comb begin
@@ -15,16 +15,17 @@ module ALU #(
     
         case (ALUctrl)
             3'b000: ALUout = ALUop1 + ALUop2;   // ADD
-            3'b001: ALUout = ALUop1 - ALUop2;   // SUB
+            3'b001: begin
+                ALUout = ALUop1 - ALUop2;
+                if (ALUout == 0)
+                    Zero = 1;
+                else
+                    Zero = 0;   // SUB
+            end
             3'b010: ALUout = ALUop1 & ALUop2;   // AND
             3'b011: ALUout = ALUop1 | ALUop2;   // OR
             3'b100: ALUout = ALUop1 ^ ALUop2;   // XOR
             default: ALUout = 32'h00000000;     // default
         endcase
-
-        if (ALUop1 == ALUop2)
-            EQ = 1
-        else 
-            EQ = 0
     end
 endmodule

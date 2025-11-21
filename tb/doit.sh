@@ -4,7 +4,7 @@
 # Usage: ./doit.sh <file1.cpp> <file2.cpp>
 
 # Constants
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
 RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
 GREEN=$(tput setaf 2)
@@ -38,21 +38,27 @@ for file in "${files[@]}"; do
         name="top"
     fi
 
-    # Automatically detect latest GoogleTest installation under Homebrew
-    GTEST_BASE=$(brew --prefix googletest 2>/dev/null)
-    if [ -z "$GTEST_BASE" ]; then
-        echo "${RED}Error: GoogleTest not found via Homebrew.${RESET}"
+    # Detect system-installed GoogleTest
+    if [ -f /usr/include/gtest/gtest.h ]; then
+        GTEST_INCLUDE="/usr/include"
+        # Libraries might be in /usr/lib or /usr/lib/x86_64-linux-gnu
+        if [ -f /usr/lib/libgtest.a ]; then
+            GTEST_LIB="/usr/lib"
+        elif [ -f /usr/lib/x86_64-linux-gnu/libgtest.a ]; then
+            GTEST_LIB="/usr/lib/x86_64-linux-gnu"
+        else
+            echo "${RED}Error: GoogleTest libraries not found. Make sure you built libgtest.a and libgtest_main.a${RESET}"
+            exit 1
+        fi
+    else
+        echo "${RED}Error: GoogleTest headers not found.${RESET}"
         exit 1
     fi
-    
-    # Construct include and lib paths dynamically
-    GTEST_INCLUDE="$GTEST_BASE/include"
-    GTEST_LIB="$GTEST_BASE/lib"
 
     # Translate Verilog -> C++ including testbench
     verilator   -Wall --trace \
                 -cc ${RTL_FOLDER}/${name}.sv \
-                --exe ${file} \
+                --exe ${TEST_FOLDER}/${name}_tb.cpp \
                 -y ${RTL_FOLDER} \
                 --prefix "Vdut" \
                 -o Vdut \
@@ -77,9 +83,7 @@ done
 # Exit as a pass or fail (for CI purposes)
 if [ $fails -eq 0 ]; then
     echo "${GREEN}Success! All ${passes} test(s) passed!"
-    exit 0
 else
     total=$((passes + fails))
     echo "${RED}Failure! Only ${passes} test(s) passed out of ${total}."
-    exit 1
 fi
