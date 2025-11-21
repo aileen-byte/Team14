@@ -9,7 +9,7 @@ module top #(
 assign a0 = 32'd5;
 
 // INSTRUCTION BLOCK WIRES 
-logic PCsrc;
+logic [1:0] PCSrc;
 logic [DATA_WIDTH-1:0] inc_pc; 
 logic [DATA_WIDTH-1:0] branch_pc; 
 logic [DATA_WIDTH-1:0] next_pc; 
@@ -20,8 +20,8 @@ logic [DATA_WIDTH-1:0] instr;
 logic RegWrite;
 logic [2:0] ALUctrl; //3-bit ALU control 
 logic ALUsrc;
-logic [1:0] ImmSrc; //2-bit Immediate Selector
-logic ResultSrc;
+logic [2:0] ImmSrc; //3-bit Immediate Selector
+logic [1:0] ResultSrc;
 logic MemWrite;
 logic Zero;
 
@@ -40,6 +40,8 @@ logic [DATA_WIDTH-1:0] ALUout;
 logic [2:0]  ALUctrl;
 
 logic [31:0] ImmOp; 
+
+logic [DATA_WIDTH-1:0] jalrPC;
 
 // pc register
 pc_reg #(DATA_WIDTH) PCREG (
@@ -66,7 +68,7 @@ branch_adder #(DATA_WIDTH) BRADD (
 mux #(DATA_WIDTH) PCMUX (
     .in0(inc_pc),
     .in1(branch_pc), 
-    .sel(PCsrc),
+    .sel(PCSrc),
     .out(next_pc)
 );
 
@@ -82,7 +84,7 @@ control_unit CU(
     .funct3(instr[14:12]),
     .funct7b5(instr[30]),
     .Zero(Zero)
-    .PCsrc(PCsrc),
+    .PCSrc(PCSrc),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
@@ -123,5 +125,10 @@ ALU myALU (
     .ALUout(ALUout),
     .Zero(Zero)
 );
+
+jalr_mask jalr(
+    .ALUPC(),
+    .jalrPC(jalrPC)
+)
 
 endmodule
