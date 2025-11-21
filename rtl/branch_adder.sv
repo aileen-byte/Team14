@@ -1,9 +1,9 @@
-module brach_adder #(
-    parameter WIDTH = 32; 
+module branch_adder #(
+    parameter DATA_WIDTH = 32 
 )(
-    input logic [WIDTH-1:0]                pc, 
-    input logic [WIDTH-1:0]             ImmOP,
-    output logic [WIDTH-1:0]         branch_pc
+    input logic [DATA_WIDTH-1:0]                pc, 
+    input logic [DATA_WIDTH-1:0]             ImmOp,
+    output logic [DATA_WIDTH-1:0]         branch_pc
 ); 
 
 assign branch_pc = pc + ImmOp;
