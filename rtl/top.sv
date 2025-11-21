@@ -9,7 +9,7 @@ module top #(
 assign a0 = 32'd5;
 
 // INSTRUCTION BLOCK WIRES 
-logic PCsrc;
+logic [1:0] PCSrc;
 logic [DATA_WIDTH-1:0] inc_pc; 
 logic [DATA_WIDTH-1:0] branch_pc; 
 logic [DATA_WIDTH-1:0] next_pc; 
@@ -20,8 +20,8 @@ logic [DATA_WIDTH-1:0] instr;
 logic RegWrite;
 logic [2:0] ALUctrl; //3-bit ALU control 
 logic ALUsrc;
-logic [1:0] ImmSrc; //2-bit Immediate Selector
-logic ResultSrc;
+logic [2:0] ImmSrc; //3-bit Immediate Selector
+logic [1:0] ResultSrc;
 logic MemWrite;
 logic Zero;
 
@@ -48,6 +48,8 @@ logic [2:0]  ALUctrl;
 
 logic [31:0] ImmOp; 
 
+logic [DATA_WIDTH-1:0] jalrPC;
+
 // pc register
 pc_reg #(DATA_WIDTH) PCREG (
     .clk(clk), 
@@ -70,21 +72,13 @@ branch_adder #(DATA_WIDTH) BRADD (
 ); 
 
 // pc mux
-mux #(DATA_WIDTH) PCMUX (
+mux4 #(DATA_WIDTH) PCMUX (
     .in0(inc_pc),
-    .in1(branch_pc), 
-    .sel(PCsrc),
+    .in1(branch_pc),
+    .in2(jalrPC),
+    .in3(32'b0), 
+    .sel(PCSrc),
     .out(next_pc)
-);
-
-// 4bit Mux
-mux4 #(DATA_WIDTH) RESULT_MUX (
-    .in0(ALUout),
-    .in1(ReadData),
-    .in2(inc_pc),
-    .in3(ImmOp), 
-    .sel(ResultSrc2bit),
-    .out(WD3)
 );
 
 // Instruction Memory
@@ -99,7 +93,7 @@ control_unit CU(
     .funct3(instr[14:12]),
     .funct7b5(instr[30]),
     .Zero(Zero)
-    .PCsrc(PCsrc),
+    .PCSrc(PCSrc),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
@@ -126,7 +120,7 @@ reg_file #(
     .AD2(instr[24:20]),
     .AD3(instr[11:7]),
     .WE3(RegWrite),
-    .WD3(WD3), // from Result MUX
+    .WD3(WD3),
     .RD1(RD1),
     .RD2(RD2),
     .a0(a0)
@@ -149,6 +143,21 @@ ALU myALU (
     .ALUctrl(ALUctrl),
     .ALUout(ALUout),
     .Zero(Zero)
+);
+
+jalr_mask jalr(
+    .ALUPC(),
+    .jalrPC(jalrPC)
+)
+
+// 4bit Mux
+mux4 #(DATA_WIDTH) RESULT_MUX (
+    .in0(ALUout),
+    .in1(ReadData),
+    .in2(inc_pc),
+    .in3(ImmOp), 
+    .sel(ResultSrc),
+    .out(WD3)
 );
 
 endmodule
