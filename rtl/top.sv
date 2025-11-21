@@ -34,6 +34,13 @@ logic [DATA_WIDTH-1:0] WD3;  // write data
 logic [DATA_WIDTH-1:0] RD1;  // read data 1
 logic [DATA_WIDTH-1:0] RD2;  // read data 2
 
+// DATA MEMORY WIRES
+logic [DATA_WIDTH-1:0] ReadData; // output from data memory
+logic [DATA_WIDTH-1:0] WriteData; // input to data memory (from register file)
+logic [DATA_WIDTH-1:0] MemAddress; // address to memory (usually ALU result)
+logic MemWE; // write enable
+
+
 //ALU WIRES
 logic [DATA_WIDTH-1:0] ALUop1, ALUop2;
 logic [DATA_WIDTH-1:0] ALUout;
@@ -123,6 +130,16 @@ reg_file #(
     .RD1(RD1),
     .RD2(RD2),
     .a0(a0)
+);
+
+data_mem #(
+    .DATA_WIDTH(DATA_WIDTH)
+) DM (
+    .clk(clk),
+    .ALUResult(ALUout),    // memory address
+    .WriteData(RD2),       // data to write
+    .WE(MemWrite),         // from control unit
+    .RD(ReadData)          // output data
 );
 
 //alu
