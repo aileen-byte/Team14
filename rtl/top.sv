@@ -72,21 +72,13 @@ branch_adder #(DATA_WIDTH) BRADD (
 ); 
 
 // pc mux
-mux #(DATA_WIDTH) PCMUX (
+mux4 #(DATA_WIDTH) PCMUX (
     .in0(inc_pc),
-    .in1(branch_pc), 
+    .in1(branch_pc),
+    .in2(jalrPC),
+    .in3(32'b0), 
     .sel(PCSrc),
     .out(next_pc)
-);
-
-// 4bit Mux
-mux4 #(DATA_WIDTH) RESULT_MUX (
-    .in0(ALUout),
-    .in1(ReadData),
-    .in2(inc_pc),
-    .in3(ImmOp), 
-    .sel(ResultSrc2bit),
-    .out(WD3)
 );
 
 // Instruction Memory
@@ -128,7 +120,7 @@ reg_file #(
     .AD2(instr[24:20]),
     .AD3(instr[11:7]),
     .WE3(RegWrite),
-    .WD3(WD3), // from Result MUX
+    .WD3(WD3),
     .RD1(RD1),
     .RD2(RD2),
     .a0(a0)
@@ -157,5 +149,15 @@ jalr_mask jalr(
     .ALUPC(),
     .jalrPC(jalrPC)
 )
+
+// 4bit Mux
+mux4 #(DATA_WIDTH) RESULT_MUX (
+    .in0(ALUout),
+    .in1(ReadData),
+    .in2(inc_pc),
+    .in3(ImmOp), 
+    .sel(ResultSrc),
+    .out(WD3)
+);
 
 endmodule
