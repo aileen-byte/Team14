@@ -70,6 +70,16 @@ mux #(DATA_WIDTH) PCMUX (
     .out(next_pc)
 );
 
+// 4bit Mux
+mux4 #(DATA_WIDTH) RESULT_MUX (
+    .in0(ALUout),
+    .in1(ReadData),
+    .in2(inc_pc),
+    .in3(ImmOp), 
+    .sel(ResultSrc2bit),
+    .out(WD3)
+);
+
 // Instruction Memory
 instr_mem #(DATA_WIDTH) IMEM(
     .A(pc),
