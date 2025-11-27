@@ -19,34 +19,25 @@ logic [DATA_WIDTH-1:0] instr;
 // CONTROL UNIT WIRES
 logic RegWrite;
 logic [2:0] ALUctrl; //3-bit ALU control 
-logic ALUsrc;
+logic ALUSrc;
 logic [2:0] ImmSrc; //3-bit Immediate Selector
 logic [1:0] ResultSrc;
 logic MemWrite;
 logic Zero;
 
 // REGISTER FILE WIRES
-logic [4:0] AD1;     // rs1
-logic [4:0] AD2;     // rs2
-logic [4:0] AD3;     // rd
-logic WE3;           // write enable
 logic [DATA_WIDTH-1:0] WD3;  // write data
 logic [DATA_WIDTH-1:0] RD1;  // read data 1
 logic [DATA_WIDTH-1:0] RD2;  // read data 2
 
 // DATA MEMORY WIRES
 logic [DATA_WIDTH-1:0] ReadData; // output from data memory
-logic [DATA_WIDTH-1:0] WriteData; // input to data memory (from register file)
-logic [DATA_WIDTH-1:0] MemAddress; // address to memory (usually ALU result)
-logic MemWE; // write enable
-
 
 //ALU WIRES
-logic [DATA_WIDTH-1:0] ALUop1, ALUop2;
+logic [DATA_WIDTH-1:0] ALUop2;
 logic [DATA_WIDTH-1:0] ALUout;
-logic [2:0]  ALUctrl;
 
-logic [31:0] ImmOp; 
+logic [DATA_WIDTH-1:0] ImmOp; 
 
 logic [DATA_WIDTH-1:0] jalrPC;
 
@@ -68,7 +59,7 @@ pc_plus4 #(DATA_WIDTH) ADD4(
 branch_adder #(DATA_WIDTH) BRADD (
     .pc(pc),
     .ImmOp(ImmOp), 
-    .branch_pc(branch_pc), 
+    .branch_pc(branch_pc)
 ); 
 
 // pc mux
@@ -82,7 +73,7 @@ mux4 #(DATA_WIDTH) PCMUX (
 );
 
 // Instruction Memory
-instr_mem #(DATA_WIDTH) IMEM(
+instr_mem #(.DATA_WIDTH(DATA_WIDTH)) IMEM(
     .A(pc),
     .RD(instr)
 );
@@ -92,14 +83,14 @@ control_unit CU(
     .op(instr[6:0]),
     .funct3(instr[14:12]),
     .funct7b5(instr[30]),
-    .Zero(Zero)
+    .Zero(Zero),
     .PCSrc(PCSrc),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
-    .ALUsrc(ALUsrc),
+    .ALUSrc(ALUSrc),
     .ImmSrc(ImmSrc),
-    .RegWrite(RegWrite),
+    .RegWrite(RegWrite)
 );
 
 // Sign_extend 
@@ -107,14 +98,10 @@ sign_extend SE(
     .instr(instr[31:7]),
     .ImmSrc(ImmSrc),
     .ImmOp(ImmOp)
-
 );
 
 // reg file
-reg_file #(
-    .DATA_WIDTH(32),
-    .REG_COUNT(32)
-) RF (
+reg_file #(DATA_WIDTH) RF (
     .clk(clk),
     .AD1(instr[19:15]),
     .AD2(instr[24:20]),
@@ -136,9 +123,16 @@ data_mem #(
     .RD(ReadData)          // output data
 );
 
+mux ALUMUX (
+    .in0(RD2),
+    .in1(ImmOp),
+    .sel(ALUSrc),
+    .out(ALUop2)
+);
+
 //alu
 ALU myALU (
-    .ALUop1(ALUop1),
+    .ALUop1(RD1),
     .ALUop2(ALUop2),
     .ALUctrl(ALUctrl),
     .ALUout(ALUout),
@@ -146,9 +140,9 @@ ALU myALU (
 );
 
 jalr_mask jalr(
-    .ALUPC(),
+    .ALUPC(ALUout),
     .jalrPC(jalrPC)
-)
+);
 
 // 4bit Mux
 mux4 #(DATA_WIDTH) RESULT_MUX (

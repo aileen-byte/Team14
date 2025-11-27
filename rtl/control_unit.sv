@@ -7,9 +7,9 @@ module control_unit(
     output logic [1:0] ResultSrc, // 0: ALUResult, 1: ReadData into register
     output logic MemWrite, // Data Memory write enable
     output logic [2:0] ALUctrl, // ALU operation selection
-    output logic ALUsrc, // 0: register, 1: immediate
+    output logic ALUSrc, // 0: register, 1: immediate
     output logic [2:0] ImmSrc, // immediate type selection
-    output logic RegWrite, // Register File write enable
+    output logic RegWrite // Register File write enable
 );
 
 // ALU operations
@@ -63,7 +63,7 @@ always_comb begin
         // jalr t =pc+4; pc=(x[rs1]+sext(offset))&∼1; x[rd]=t
         7'b1100111: begin // still have to zero out least significant bit
             ResultSrc = PCPlus4; 
-            Memwrite = 0; //no memory write
+            MemWrite = 0; //no memory write
             ALUctrl = ALU_ADD; //x[rs1]+sext(offset) 
             ALUSrc = 1; // second ALU input = imm
             RegWrite = 1; //write back to rd
@@ -119,7 +119,7 @@ always_comb begin
                 ALUctrl = ALU_SUB;
                 // take branch if rs1 == rs2  (Zero == 1)
                 if (Zero == 1'b1)
-                    PCSrc = Immediate
+                    PCSrc = Immediate;
             end
         end
 
