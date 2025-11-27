@@ -1,6 +1,7 @@
 #include "testbench.h"
 #include <cstdlib>
 
+
 #define CYCLES 10000
 
 unsigned int ticks = 0;
@@ -18,7 +19,7 @@ protected:
 TEST_F(CpuTestbench, BaseProgramTest)
 {
     bool success = false;
-    system("./compile.sh asm/program.S");
+    system("source ./compile.sh asm/program.S");
 
     for (int i = 0; i < CYCLES; i++)
     {

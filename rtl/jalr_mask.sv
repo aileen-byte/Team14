@@ -5,6 +5,6 @@ module jalr_mask #(
     output [DATA_WIDTH-1:0] jalrPC
 );
 
-assign jalrPC = {ALUPC[DATA_WIDTH-1:1], 1'b0}
+assign jalrPC = {ALUPC[DATA_WIDTH-1:1], 1'b0};
 
 endmodule

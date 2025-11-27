@@ -12,8 +12,8 @@ module mux4 #(
         case (sel)
             2'b00: out = in0;
             2'b01: out = in1;
-            2'b02: out = in2;
-            2'b03: out = in3;
+            2'b10: out = in2;
+            2'b11: out = in3;
         endcase
     end
 endmodule
