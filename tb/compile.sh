@@ -3,7 +3,7 @@
 # Usage: ./compile.sh <file.s>
 
 # Default vars
-SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 output_file="../rtl/program.hex"
 
 # Handle terminal arguments
