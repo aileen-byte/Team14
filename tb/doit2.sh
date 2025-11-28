@@ -1,11 +1,7 @@
 #!/bin/bash
 
 # This script runs the testbench
-# Usage: ./doit.sh [<file1.cpp> <file2.cpp> ...] [module_name]
-# Examples:
-#   ./doit.sh                                    # run all tests in tests/
-#   ./doit.sh tests/mux_tb.cpp                   # run mux_tb.cpp against rtl/mux.sv
-#   ./doit.sh tests/top_tb_feature.cpp top       # run top_tb_feature.cpp against rtl/top.sv
+# Usage: ./doit.sh <file1.cpp> <file2.cpp>
 
 # Constants
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -18,23 +14,14 @@ RESET=$(tput sgr0)
 # Variables
 passes=0
 fails=0
-module_name=""
 
 # Handle terminal arguments
 if [[ $# -eq 0 ]]; then
     # If no arguments provided, run all tests
     files=(${TEST_FOLDER}/*.cpp)
 else
-    # Parse arguments: last arg might be module_name if it doesn't end with .cpp
-    last_arg="${@: -1}"
-    if [[ "$last_arg" != *.cpp ]]; then
-        # Last argument is module name
-        module_name="$last_arg"
-        files=("${@:1:$#-1}")  # all args except the last one
-    else
-        # All arguments are test files
-        files=("$@")
-    fi
+    # If arguments provided, use them as input files
+    files=("$@")
 fi
 
 # Cleanup
@@ -44,16 +31,11 @@ cd $SCRIPT_DIR
 
 # Iterate through files
 for file in "${files[@]}"; do
-    # Determine module name: use explicit module_name if provided, otherwise extract from filename
-    if [ -n "$module_name" ]; then
-        name="$module_name"
-    else
-        name=$(basename "$file" _tb.cpp | cut -f1 -d\-)
-        
-        # If verify.cpp -> we are testing the top module
-        if [ $name == "verify.cpp" ]; then
-            name="top"
-        fi
+    name=$(basename "$file" _tb.cpp | cut -f1 -d\-)
+    
+    # If verify.cpp -> we are testing the top module
+    if [ $name == "verify.cpp" ]; then
+        name="top"
     fi
 
     # Detect system-installed GoogleTest
@@ -76,7 +58,7 @@ for file in "${files[@]}"; do
     # Translate Verilog -> C++ including testbench
     verilator   -Wall --trace \
                 -cc ${RTL_FOLDER}/${name}.sv \
-                --exe "$file" \
+                --exe ${TEST_FOLDER}/${name}_tb.cpp \
                 -y ${RTL_FOLDER} \
                 --prefix "Vdut" \
                 -o Vdut \

@@ -1,6 +1,4 @@
-top_tb.o: /home/aileen/Documents/Team14/tb/tests/top_tb.cpp \
- /home/aileen/Documents/Team14/tb/tests/testbench.h \
- /home/aileen/Documents/Team14/tb/tests/base_testbench.h Vdut.h \
+f1_tb.o: ../tests/f1_tb.cpp Vdut.h \
  /usr/local/share/verilator/include/verilated.h \
  /usr/local/share/verilator/include/verilatedos.h \
  /usr/local/share/verilator/include/verilated_config.h \
@@ -9,4 +7,5 @@ top_tb.o: /home/aileen/Documents/Team14/tb/tests/top_tb.cpp \
  /usr/local/share/verilator/include/verilated_vcd_c.h \
  /usr/local/share/verilator/include/verilated.h \
  /usr/local/share/verilator/include/verilated_trace.h \
- /usr/local/share/verilator/include/verilated_trace_defs.h
+ /usr/local/share/verilator/include/verilated_trace_defs.h \
+ ../tests/vbuddy.cpp
