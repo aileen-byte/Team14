@@ -166,7 +166,7 @@ module branch_tb;
 
         //BGEU test 1
 
-        funct3_i = 3'b110;
+        funct3_i = 3'b111;
         rs1_val_i = 5;
         rs2_val_i = -3; 
 
@@ -180,7 +180,7 @@ module branch_tb;
 
         //BGEU test 2 
 
-        funct3_i = 3'b110;
+        funct3_i = 3'b111;
         rs1_val_i = -1;
         rs2_val_i = 10;
 
@@ -193,7 +193,7 @@ module branch_tb;
             $display("BGEU test 2 passed!");
         end
 
-        $finish 
+        $finish; 
 
     end
 endmodule
