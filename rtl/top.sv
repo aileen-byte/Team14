@@ -3,12 +3,8 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0,
-    output logic [DATA_WIDTH-1:0] instr,
-     
+    output  logic [DATA_WIDTH-1:0] a0
 );
-
-assign a0 = 32'd5;
 
 // INSTRUCTION BLOCK WIRES 
 logic [1:0] PCSrc;
@@ -16,7 +12,7 @@ logic [DATA_WIDTH-1:0] inc_pc;
 logic [DATA_WIDTH-1:0] branch_pc; 
 logic [DATA_WIDTH-1:0] next_pc; 
 logic [DATA_WIDTH-1:0] pc; 
-//logic [DATA_WIDTH-1:0] instr;
+logic [DATA_WIDTH-1:0] instr;
 
 // CONTROL UNIT WIRES
 logic RegWrite;
