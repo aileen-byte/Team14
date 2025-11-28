@@ -25,9 +25,9 @@ class Vdut___024root final : public VerilatedModule {
     CData/*0:0*/ top__DOT__Zero;
     CData/*0:0*/ __Vclklast__TOP__clk;
     VL_OUT(a0,31,0);
+    VL_OUT(instr,31,0);
     IData/*31:0*/ top__DOT__next_pc;
     IData/*31:0*/ top__DOT__pc;
-    IData/*31:0*/ top__DOT__instr;
     IData/*31:0*/ top__DOT__RD1;
     IData/*31:0*/ top__DOT__RD2;
     IData/*31:0*/ top__DOT__ALUop2;

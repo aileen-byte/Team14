@@ -3,7 +3,9 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0 
+    output  logic [DATA_WIDTH-1:0] a0,
+    output logic [DATA_WIDTH-1:0] instr,
+     
 );
 
 assign a0 = 32'd5;
@@ -14,7 +16,7 @@ logic [DATA_WIDTH-1:0] inc_pc;
 logic [DATA_WIDTH-1:0] branch_pc; 
 logic [DATA_WIDTH-1:0] next_pc; 
 logic [DATA_WIDTH-1:0] pc; 
-logic [DATA_WIDTH-1:0] instr;
+//logic [DATA_WIDTH-1:0] instr;
 
 // CONTROL UNIT WIRES
 logic RegWrite;
