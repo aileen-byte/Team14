@@ -7,13 +7,13 @@ module instr_mem #(
 );
 
 // Declare mem that stores instructions
-logic [DATA_WIDTH-1:0]memory[MEMORY_WIDTH:0];
+logic [7:0]memory[MEMORY_WIDTH:0];
 
 // Load program into memory at start of simulation
 initial begin 
     $readmemh("../rtl/program.hex", memory);
 end 
 
-assign RD = memory[A[DATA_WIDTH-1:2]];
+assign RD = {memory[A+3], memory[A+2], memory[A+1], memory[A+0]};
 
 endmodule

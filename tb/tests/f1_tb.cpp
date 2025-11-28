@@ -1,4 +1,4 @@
-#include "Vtop.h"
+#include "Vdut.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "vbuddy.cpp" 
@@ -6,7 +6,7 @@
 int main(int argc, char **argv, char **env) {
 
     Verilated::commandArgs(argc, argv);
-    Vtop *top = new Vtop;
+    Vdut *top = new Vdut;
 
     Verilated::traceEverOn(true);
     VerilatedVcdC *tfp = new VerilatedVcdC;
