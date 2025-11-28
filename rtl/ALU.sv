@@ -9,7 +9,7 @@ module ALU #(
 );
 
     always_comb begin
-        Zero = 0;
+        Zero = 1;
         case (ALUctrl)
             3'b000: ALUout = ALUop1 + ALUop2;   // ADD
             3'b001: begin
