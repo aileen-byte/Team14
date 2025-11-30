@@ -118,7 +118,7 @@ always_comb begin
             if (funct3 == 3'b001) begin  // BNE
                 ALUctrl = ALU_SUB;
                 // take branch if rs1 == rs2  (Zero == 1)
-                if (Zero == 1'b1)
+                if (Zero == 1'b0)
                     PCSrc = Immediate;
             end
         end

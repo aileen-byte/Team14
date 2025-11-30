@@ -25,15 +25,15 @@ class Vdut___024root final : public VerilatedModule {
     CData/*0:0*/ top__DOT__Zero;
     CData/*0:0*/ __Vclklast__TOP__clk;
     VL_OUT(a0,31,0);
-    VL_OUT(instr,31,0);
     IData/*31:0*/ top__DOT__next_pc;
     IData/*31:0*/ top__DOT__pc;
+    IData/*31:0*/ top__DOT__instr;
     IData/*31:0*/ top__DOT__RD1;
     IData/*31:0*/ top__DOT__RD2;
     IData/*31:0*/ top__DOT__ALUop2;
     IData/*31:0*/ top__DOT__ALUout;
     IData/*31:0*/ top__DOT__ImmOp;
-    VlUnpacked<IData/*31:0*/, 101> top__DOT__IMEM__DOT__memory;
+    VlUnpacked<CData/*7:0*/, 101> top__DOT__IMEM__DOT__memory;
     VlUnpacked<IData/*31:0*/, 32> top__DOT__RF__DOT__regs;
     VlUnpacked<IData/*31:0*/, 2> top__DOT__DM__DOT__mem_array;
     VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;

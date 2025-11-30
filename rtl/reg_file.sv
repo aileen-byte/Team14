@@ -1,7 +1,7 @@
 module reg_file #(
     parameter DATA_WIDTH = 32
 ) (
-    input   logic                   clk, //provides clock signal
+    input   logic                   clk, // provides clock signal
     input   logic [4:0]             AD1, // rs1 19:15 Selects the register whose value will be output on RD1.
     input   logic [4:0]             AD2, // rs2 24:20 Selects the register whose value will be output on RD2
     input   logic [4:0]             AD3, // rd 11:7 Selects the destination register to write to when RegWrite = 1
@@ -10,8 +10,7 @@ module reg_file #(
     
     output  logic [DATA_WIDTH-1:0]  RD1, // read data 1 
     output  logic [DATA_WIDTH-1:0]  RD2, // read data 2 
-    output  logic [DATA_WIDTH-1:0]  a0  //x10 degub output 
-
+    output  logic [DATA_WIDTH-1:0]  a0  // x10 degub output 
 );
     logic [DATA_WIDTH-1:0] regs [31:0]; // 5 bit address line
 
