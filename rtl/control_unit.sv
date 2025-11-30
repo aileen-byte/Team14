@@ -30,13 +30,21 @@ localparam PCPlus4 = 2'b10;
 localparam UpperImmediate = 2'b11;
 
 // PCSrc encodings
-localparam Normal = 2'b00;
-localparam Immediate = 2'b01;
-localparam JALR = 2'b10;
+localparam Normal = 2'b00; //PC+4
+localparam Immediate = 2'b01; //PC+imm (B-type)
+localparam JAL= 2'b10; //PC+imm (J-type)
+localparam JALR = 2'b11; // ALU result (rs1+imm)
 
 always_comb begin
+    //List of default values
     PCSrc = Normal;
     ImmSrc = I_TYPE; 
+    ResultSrc = ALU;
+    MemWrite = 0; 
+    ALUctrl = ALU_ADD;
+    ALUSrc = 0;
+    ImmSrc = I_TYPE; 
+    RegWrite = 0; 
 
     case(op)
         // R-type instructions
@@ -68,7 +76,7 @@ always_comb begin
             ALUSrc = 1; // second ALU input = imm
             RegWrite = 1; //write back to rd
             ImmSrc = I_TYPE;
-            PCSrc = JALR;
+            PCSrc = JALR; //2'b11
         end
         // load (lbu)
         7'b0000011: begin //need f3 if more instructions
@@ -130,7 +138,7 @@ always_comb begin
             RegWrite = 1; //write back to rd
             MemWrite = 0;
             ImmSrc = J_TYPE;
-            PCSrc = Immediate;
+            PCSrc = JAL;
         end
     endcase
 end
