@@ -18,14 +18,14 @@ module HazardUnit (
 
     output logic StallF, 
     output logic StallD, 
-    output logic FlushE, 
+    output logic FlushE
 ); 
 
 logic lwstall; 
 logic branchstall; 
 
 always_comb begin 
-    lwstall = MemtoRegE && ((RsD == RtE) || (RtD == RtE)); 
+    lwstall = MemtoRegE && ((RsD == WriteRegE) || (RtD == WriteRegE)); 
 end 
 
 always_comb begin 
@@ -33,9 +33,9 @@ always_comb begin
 end
 
 always_comb begin
-    stallF = lwstall | branchstall;
-    stallD = lwstall | branchstall;
-    flushE = lwstall | branchstall;
+    StallF = lwstall | branchstall;
+    StallD = lwstall | branchstall;
+    FlushE = lwstall | branchstall;
 end 
 
 endmodule 
