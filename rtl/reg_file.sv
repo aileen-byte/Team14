@@ -12,12 +12,24 @@ module reg_file #(
     output  logic [DATA_WIDTH-1:0]  RD2, // read data 2 
     output  logic [DATA_WIDTH-1:0]  a0  // x10 degub output 
 );
+    // 32x32 bit registers
     logic [DATA_WIDTH-1:0] regs [31:0]; // 5 bit address line
 
+    //Initialise all registers to 0
+    initial begin 
+        integer i;
+        for(i=0; i < 32; i=i+1) begin
+            regs[i] = '0; 
+        end
+    end 
+
+
     always_ff @(posedge clk) begin
-        if (WE3) begin
+        if (WE3 && (AD3 != 5'd0)) begin
             regs[AD3] <= WD3;  
         end
+        // Enforce x0 = 0 every cycle
+        regs[0] <= '0;
     end
 
     assign RD1 = regs[AD1]; 
