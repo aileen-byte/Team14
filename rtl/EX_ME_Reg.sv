@@ -1,4 +1,4 @@
-module ex_me_reg #(
+module EX_ME_Reg #(
     parameter DATA_WIDTH = 32
 )(
     input  logic                clk,
@@ -11,9 +11,17 @@ module ex_me_reg #(
     input logic [DATA_WIDTH-1:0] WriteDataE,
     input logic [4:0]           WriteRegE,
 
+    input  logic [1:0] ResultSrcE,
+    input  logic [DATA_WIDTH-1:0] ExtImmE,
+    input  logic [DATA_WIDTH-1:0] PCPlus4E,
+
+
     output logic                RegWriteM,
     output logic                MemtoRegM,
     output logic                MemWriteM,
+    output logic [1:0] ResultSrcM,
+    output logic [DATA_WIDTH-1:0] ExtImmM,
+    output logic [DATA_WIDTH-1:0] PCPlus4M,
     output logic [DATA_WIDTH-1:0] ALUOutM,
     output logic [DATA_WIDTH-1:0] WriteDataM,
     output logic [4:0]          WriteRegM
@@ -26,6 +34,9 @@ module ex_me_reg #(
             ALUOutM    <= 0;
             WriteDataM <= 0;
             WriteRegM  <= 0;
+            ResultSrcM  <= 0;          
+            ExtImmM     <= 0;
+            PCPlus4M    <= 0;
         end 
         else begin
             RegWriteM  <= RegWriteE;
@@ -34,6 +45,9 @@ module ex_me_reg #(
             ALUOutM    <= ALUOutE;
             WriteDataM <= WriteDataE;
             WriteRegM  <= WriteRegE;
+            ResultSrcM <= ResultSrcE;
+            ExtImmM    <= ExtImmE;
+            PCPlus4M   <= PCPlus4E;
         end
     end
 

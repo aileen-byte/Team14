@@ -1,9 +1,10 @@
-module FE_DE_Reg #(
+module ID_EX_Reg #(
     parameter DATA_WIDTH = 32
 )(
     input   logic                   clk, 
     input   logic                   rst, 
 
+    input   logic                   StallD,
     input   logic                   FlushE, 
 
     input   logic                   RegWriteD,
@@ -60,7 +61,7 @@ always_ff @(posedge clk) begin
         ExtImmE     <= '0; 
         PCPlus4E    <= '0; 
 
-    end else begin 
+    end else if (!StallD) begin 
         RegWriteE   <= RegWriteD;
         ResultSrcE  <= ResultSrcD; 
         MemWriteE   <= MemWriteD; 
