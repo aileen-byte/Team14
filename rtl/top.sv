@@ -7,9 +7,8 @@ module top #(
 );
 
 // INSTRUCTION BLOCK WIRES 
-logic [1:0] PCSrc;
 logic [DATA_WIDTH-1:0] inc_pc; 
-logic [DATA_WIDTH-1:0] branch_pc; 
+// logic [DATA_WIDTH-1:0] branch_pc; 
 logic [DATA_WIDTH-1:0] next_pc; 
 logic [DATA_WIDTH-1:0] pc; 
 logic [DATA_WIDTH-1:0] instr;
@@ -21,7 +20,7 @@ logic ALUSrc;
 logic [2:0] ImmSrc; //3-bit Immediate Selector
 logic [1:0] ResultSrc;
 logic MemWrite;
-logic Zero;
+// logic Zero;
 
 // REGISTER FILE WIRES
 logic [DATA_WIDTH-1:0] WD3;  // write data
@@ -96,6 +95,10 @@ logic [DATA_WIDTH-1:0] PCPlus4W;
 logic Jump;
 logic Branch;
 
+logic [1:0] PCSrcE;
+assign PCSrcE = {JumpE, (BranchE & ZeroE)};
+assign FlushD = (PCSrcE != 2'b00);
+
 
 
 // pc register
@@ -113,19 +116,23 @@ pc_plus4 #(DATA_WIDTH) ADD4(
 ); 
 
 // branch adder 
-branch_adder #(DATA_WIDTH) BRADD (
-    .pc(pc),
-    .ImmOp(ImmOp), 
-    .branch_pc(branch_pc)
-); 
+// branch_adder #(DATA_WIDTH) BRADD (
+   // .pc(pc),
+    // .ImmOp(ImmOp), 
+    // .branch_pc(branch_pc)
+// ); 
+
+logic [DATA_WIDTH-1:0] branch_targetE;
+assign branch_targetE = PCE + ExtImmE;
+
 
 // pc mux
 mux4 #(DATA_WIDTH) PCMUX (
     .in0(inc_pc),
-    .in1(branch_pc),
+    .in1(branch_targetE),
     .in2(jalrPC),
     .in3({DATA_WIDTH{1'b0}}), 
-    .sel(PCSrc),
+    .sel(PCSrcE),
     .out(next_pc)
 );
 
@@ -137,22 +144,25 @@ instr_mem #(.DATA_WIDTH(DATA_WIDTH)) IMEM(
 
 // control unit
 control_unit CU(
-    .op(instr[6:0]),
-    .funct3(instr[14:12]),
-    .funct7b5(instr[30]),
-    .Zero(Zero),
-    .PCSrc(PCSrc),
+    .op(InstrD[6:0]),
+    .funct3(InstrD[14:12]),
+    .funct7b5(InstrD[30]),
+    .Zero(1'b0),
+    .PCSrc(), // not used in pipeline 
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
     .ALUSrc(ALUSrc),
     .ImmSrc(ImmSrc),
-    .RegWrite(RegWrite)
+    .RegWrite(RegWrite),
+    .Branch(Branch),
+    .Jump(Jump)
+
 );
 
 // Sign_extend 
 sign_extend SE(
-    .instr(instr[31:7]),
+    .instr(InstrD[31:7]),
     .ImmSrc(ImmSrc),
     .ImmOp(ImmOp)
 );
@@ -162,7 +172,7 @@ reg_file #(DATA_WIDTH) RF (
     .clk(clk),
     .AD1(InstrD[19:15]),
     .AD2(InstrD[24:20]),
-    .AD3(InstrD[11:7]),
+    .AD3(WriteRegW),
     .WE3(RegWriteW),
     .WD3(WD3),
     .RD1(RD1),
@@ -181,10 +191,10 @@ data_mem #(
 );
 
 mux ALUMUX (
-    .in0(RD2),
-    .in1(ImmOp),
-    .sel(ALUSrc),
-    .out(ALUop2)
+    .in0(RD2E),
+    .in1(ExtImmE),
+    .sel(ALUSrcE),
+    .out(ALUop2E)
 );
 
 //alu
@@ -195,6 +205,7 @@ ALU myALU (
     .ALUout(ALUoutE),
     .Zero(ZeroE)
 );
+
 
 jalr_mask jalr(
     .ALUPC(ALUoutE),
@@ -224,7 +235,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .StallD(StallD),     // from Hazard Unit
     .FlushE(FlushE),     // also from Hazard Unit
 
-    // Control signals
+    // Control signals in D
     .RegWriteD(RegWrite),
     .ResultSrcD(ResultSrc),
     .MemWriteD(MemWrite),
@@ -270,7 +281,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .RegWriteE(RegWriteE),
     .MemtoRegE(ResultSrcE[0]),   // If MemToReg is encoded in ResultSrc
     .MemWriteE(MemWriteE),
-    .ALUOutE(ALUout),
+    .ALUOutE(ALUoutE),
     .WriteDataE(RD2E),
     .WriteRegE(RdE),
     .ResultSrcE(ResultSrcE),
@@ -331,7 +342,7 @@ HazardUnit HZ (
     .RegWriteE(RegWriteE),      // EX regwrite
     .RegWriteM(RegWriteM),      // MEM regwrite
 
-    .BranchD(BranchD),      // branch in Decode
+    .BranchD(Branch),      // branch in Decode
 
     .StallF(StallF),        // ⟵ connect to IF/ID reg
     .StallD(StallD),        // ⟵ connect to ID/EX reg
