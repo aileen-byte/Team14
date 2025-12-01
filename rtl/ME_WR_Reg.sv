@@ -1,4 +1,4 @@
-module ME_WR_reg #(
+module ME_WR_Reg #(
     parameter DATA_WIDTH = 32
 )(
     input  logic                clk,
