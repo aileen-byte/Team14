@@ -1,0 +1,50 @@
+# Built artifacts with (Verilator / GCC)
+
+obj_dir/ 
+*.o 
+*.d 
+*.out 
+*.a 
+*.so 
+*.vpd 
+*.vpi 
+
+
+# Simulation outputs 
+
+*.fst 
+*.vpd 
+*.log 
+*.trace 
+
+#Editor 
+
+.DS_Store 
+.vscode/
+.idea/ 
+*.swp 
+*.swo 
+
+# Cache Files 
+
+__pycache__/ 
+*.pyc 
+
+# CMake, Make, Temp 
+
+build/ 
+cmake-build*/ 
+Makefile.in 
+CMakeFiles/ 
+CMakeCache.txt 
+
+# User-generated temp 
+
+*.tmp 
+*.bak 
+*.old 
+
+# test result dumps 
+
+tb/results/ 
+tb/output/ 
