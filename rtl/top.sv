@@ -148,7 +148,7 @@ control_unit CU(
     .funct3(InstrD[14:12]),
     .funct7b5(InstrD[30]),
     .Zero(1'b0),
-    .PCSrc(), // not used in pipeline 
+    .PCSrc(PCSrc),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
@@ -184,7 +184,7 @@ data_mem #(
     .DATA_WIDTH(DATA_WIDTH)
 ) DM (
     .clk(clk),
-    .ALUResult(ALUoutM),    // memory address
+    .ALUResult(ALUOutM),    // memory address
     .WriteData(WriteDataM),       // data to write
     .WE(MemWriteM),         // from control unit
     .RD(ReadData)          // output data
@@ -301,7 +301,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .PCPlus4M(PCPlus4M)
 );
 
-ME_WR_reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
+ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
     .clk(clk),
     .reset(rst),
 
@@ -352,7 +352,7 @@ HazardUnit HZ (
 
 // 4bit Mux
 mux4 #(DATA_WIDTH) RESULT_MUX (
-    .in0(ALUoutW),
+    .in0(ALUOutW),
     .in1(ReadDataW),
     .in2(PCPlus4W),
     .in3(ExtImmW), 
