@@ -9,7 +9,11 @@ module control_unit(
     output logic [2:0] ALUctrl, // ALU operation selection
     output logic ALUSrc, // 0: register, 1: immediate
     output logic [2:0] ImmSrc, // immediate type selection
-    output logic RegWrite // Register File write enable
+    output logic RegWrite, // Register File write enable
+
+    output logic Branch,
+    output logic Jump
+
 );
 
 // ALU operations
