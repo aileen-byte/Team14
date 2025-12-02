@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Usage: ./compile.sh <file.s>
+# Usage: ./compile.sh <file.s> [linker_script.ld]
+# If a linker script is provided as the second argument it will be used
+# instead of the default `-e 0xBFC00000 -Ttext 0xBFC00000` linking flags.
 
 # Default vars
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
@@ -16,6 +18,14 @@ input_file=$1
 basename=$(basename "$input_file" | sed 's/\.[^.]*$//')
 parent=$(dirname "$input_file")
 file_extension="${input_file##*.}"
+
+# Optional linker script: either provided as second arg or via env var LINKER_SCRIPT
+LD_SCRIPT=""
+if [[ $# -ge 2 && -n "$2" ]]; then
+    LD_SCRIPT="$2"
+elif [[ -n "$LINKER_SCRIPT" ]]; then
+    LD_SCRIPT="$LINKER_SCRIPT"
+fi
 
 # Compile the C code if necessary.
 if [ $file_extension == "c" ]; then
@@ -36,13 +46,22 @@ if [ $file_extension == "c" ]; then
     rm ${input_file}
 fi
 
-riscv64-unknown-elf-ld -melf32lriscv \
+if [[ -n "$LD_SCRIPT" ]]; then
+    # Use the provided linker script (script should set entry and layout)
+    riscv64-unknown-elf-ld -melf32lriscv -T "$LD_SCRIPT" -o "a.out.reloc" "a.out"
+else
+    # Default behavior: set entry point and text base explicitly
+    riscv64-unknown-elf-ld -melf32lriscv \
                         -e 0xBFC00000 \
                         -Ttext 0xBFC00000 \
                         -o "a.out.reloc" "a.out"
+fi
 
 riscv64-unknown-elf-objcopy -O binary \
-                            -j .text "a.out.reloc" "a.bin"
+                            -j .text \
+                            -j .data \
+                            -j .rodata \
+                            "a.out.reloc" "a.bin"
 
 rm *dis 2>/dev/null
 

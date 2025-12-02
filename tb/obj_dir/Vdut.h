@@ -27,6 +27,11 @@ class Vdut VL_NOT_FINAL : public VerilatedModel {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
     VL_IN8(&rst,0,0);
+    VL_OUT8(&Zero,0,0);
+    VL_OUT(&t1,31,0);
+    VL_OUT(&t2,31,0);
+    VL_OUT(&t3,31,0);
+    VL_OUT(&pc,31,0);
     VL_OUT(&a0,31,0);
 
     // CELLS

@@ -19,7 +19,7 @@ int main(int argc, char **argv, char **env) {
 
 
     top->clk = 0;
-    top->rst = 1;
+    top->rst = 0;
 
     int cycles = 0;
     while (!Verilated::gotFinish() && cycles < 20000) {
@@ -29,9 +29,6 @@ int main(int argc, char **argv, char **env) {
             top->eval();
             tfp->dump(2 * cycles + clk);
         }
-
-        if (cycles == 5)
-            top->rst = 0;
 
         // VBuddy LED 
         vbdBar(top->a0 & 0xFF);

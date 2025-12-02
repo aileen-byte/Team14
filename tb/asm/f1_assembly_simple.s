@@ -16,30 +16,26 @@ PATTERNS:
     .global _start 
 
 _start:
-    la   x1, PATTERNS     # x1 is the start of the pattern table
-    addi x2, x0, 0        # x2 holds current value
-    addi x3, x0, 9        # x3 is max
+    la   t0, PATTERNS     #4 # t0 is the start of the pattern table
+    addi t1, x0, 0        #8 # t1 holds current value
+    addi t2, x0, 9        #12 # t2 is max
 
 loop:
     # compute address = base + (i*4) -> basically shift 
-    add  x4, x2, x2       # x4 = 2*i
-    add  x4, x4, x4       # x4 = 4*i
-    add  x4, x1, x4       # x4 = base + offset
+    add  t3, t1, t1      #16 # t3 = 2*i
+    add  t3, t3, t3      #20 # t3 = 4*i
+    add  t3, t0, t3      #24 # t3 = base + offset
 
-    lb   x10, 0(x4)       # load BYTE → a0 = LED output
+    lbu   a0, 0(t3)      #28 # load BYTE → a0 = LED output
 
-    # updat x2 -> we've moved to the next one
-    addi x2, x2, 1        
+    # update t1 -> we've moved to the next one
+    addi t1, t1, 1      #32        
 
     # if i == 9 → reset
-    sub  x5, x2, x3
-    beq  x5, x0, reset
+    bne  t1, t2, loop   #36
 
-    jal  x0, loop         # unconditional jump
-
-reset:
-    addi x2, x0, 0
-    jal  x0, loop
+    addi t1, x0, 0      #40
+    jal  ra, loop       #42
 
 
 
