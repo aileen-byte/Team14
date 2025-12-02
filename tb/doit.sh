@@ -57,21 +57,10 @@ for file in "${files[@]}"; do
     fi
 
     # Detect system-installed GoogleTest
-    if [ -f /usr/include/gtest/gtest.h ]; then
-        GTEST_INCLUDE="/usr/include"
-        # Libraries might be in /usr/lib or /usr/lib/x86_64-linux-gnu
-        if [ -f /usr/lib/libgtest.a ]; then
-            GTEST_LIB="/usr/lib"
-        elif [ -f /usr/lib/x86_64-linux-gnu/libgtest.a ]; then
-            GTEST_LIB="/usr/lib/x86_64-linux-gnu"
-        else
-            echo "${RED}Error: GoogleTest libraries not found. Make sure you built libgtest.a and libgtest_main.a${RESET}"
-            exit 1
-        fi
-    else
-        echo "${RED}Error: GoogleTest headers not found.${RESET}"
-        exit 1
-    fi
+    # macOS Homebrew gtest paths
+    GTEST_INCLUDE="/opt/homebrew/include"
+    GTEST_LIB="/opt/homebrew/lib"
+
 
     # Translate Verilog -> C++ including testbench
     verilator   -Wall --trace \

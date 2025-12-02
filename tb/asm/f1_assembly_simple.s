@@ -26,21 +26,23 @@ loop:
     add  x4, x4, x4       # x4 = 4*i
     add  x4, x1, x4       # x4 = base + offset
 
-    lb   x10, 0(x4)       # load BYTE → a0 = LED output
+    lw   x10, 0(x4)       # load WORD → a0 = LED output
 
     # updat x2 -> we've moved to the next one
     addi x2, x2, 1        
 
-    # if i == 9 → reset
     sub  x5, x2, x3
-    beq  x5, x0, reset
+    beq  x5, x0, call_reset # if i == 9 → call reset
 
-    jal  x0, loop         # unconditional jump
+    jal x0, loop            # continue looping
 
-reset:
-    addi x2, x0, 0
-    jal  x0, loop
+call_reset:
+    jal ra, reset_subroutine # call subroutine
+    jal x0, loop # when done, go back to loop
 
+reset_subroutine:
+    addi x2, x0, 0            # reset reset i = 0 
+    jr ra                     # return
 
 
 

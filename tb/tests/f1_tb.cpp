@@ -1,7 +1,7 @@
 #include "Vdut.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "vbuddy.cpp" 
+// #include "vbuddy.cpp" 
 
 int main(int argc, char **argv, char **env) {
 
@@ -14,8 +14,8 @@ int main(int argc, char **argv, char **env) {
     tfp->open("cpu.vcd");
 
 
-    if (vbdOpen() != 1) return -1;  
-    vbdHeader("F1 CPU Demo");
+    //if (vbdOpen() != 1) return -1;  
+    //vbdHeader("F1 CPU Demo");
 
 
     top->clk = 0;
@@ -34,15 +34,15 @@ int main(int argc, char **argv, char **env) {
             top->rst = 0;
 
         // VBuddy LED 
-        vbdBar(top->a0 & 0xFF);
+        // vbdBar(top->a0 & 0xFF);
 
-        if (vbdGetkey() == 'q')
-            break;
+        //if (vbdGetkey() == 'q')
+        //    break;
 
         cycles++;
     }
 
-    vbdClose();
+    // vbdClose();
 
     tfp->close();
     delete top;
