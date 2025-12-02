@@ -64,8 +64,8 @@ int main(int argc, char** argv) {
     dut->StallD = 1;
 
     dut->RegWriteD = 0;
-    dut->Rs1D = 9;      // Should NOT overwrite
-    dut->RD1D = 999;    // Should NOT overwrite
+    dut->Rs1D = 9;      
+    dut->RD1D = 999;    
 
     tick(dut);
 
