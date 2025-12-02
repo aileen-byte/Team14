@@ -26,10 +26,10 @@ void check(Vpc_reg* dut, uint32_t next_pc, bool expect_reset) {
     uint32_t expected = expect_reset ? 0 : next_pc;
 
     if (dut->pc != expected) {
-        cout << "FAIL: next_pc=" << next_pc << " , pc=" << dut->pc << " (expected " << expected << ")\n";
+        cout << "FAIL: next_pc=" << next_pc << " , pc=" << dut->pc << " (expected " << expected << ")" << endl;
     } 
     else {
-        cout << "PASS: next_pc=" << next_pc << ", pc=" << dut->pc << "\n";
+        cout << "PASS: next_pc=" << next_pc << ", pc=" << dut->pc << endl;
         passed_tests++;
     }
 }

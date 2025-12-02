@@ -19,10 +19,10 @@ void check(Vbranch_adder* dut, uint32_t pc, uint32_t ImmOp){
     uint32_t expected = pc + ImmOp; 
 
         if (dut->branch_pc != expected) {
-        cout << "FAIL: pc=" << pc << " ImmOp=" << ImmOp << " , branch_pc=" << dut->branch_pc << " (expected " << expected << ")\n";
+        cout << "FAIL: pc=" << pc << " ImmOp=" << ImmOp << " , branch_pc=" << dut->branch_pc << " (expected " << expected << ")" << endl;
         } 
         else {
-        cout << "PASS: pc=" << pc << " ImmOp=" << ImmOp << " , branch_pc=" << dut->branch_pc << "\n";
+        cout << "PASS: pc=" << pc << " ImmOp=" << ImmOp << " , branch_pc=" << dut->branch_pc << endl;
         passed_tests++;
         }
 }
