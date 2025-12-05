@@ -13,6 +13,14 @@ A central focus of our project was achieving correct behaviour under all pipelin
 
 To support debugging and verification, we integrated our processor with GTKWave and produced detailed cycle accurate traces for each reference program. This workflow was essential for diagnosing subtle pipeline bugs such as incorrectly forwarded values, missed flushes on taken branches, and misaligned immediate values. Through this process, we developed a deep understanding of pipeline timing behaviour and the interactions between control and data paths.
 
+## Standard Components 
+
+One of the earliest parts of the project we completed was the arithmetic logic unit (ALU), which became the foundation for almost everything that followed. Our ALU supports all RV32I base instructions we needed for the reference programs, covering arithmetic, logical, shift and comparison operations. We chose not to implement FENCE, CSR or environment instructions, as these would have required a large amount of additional hardware for functionality that our single-core design would never use. Keeping the ALU focused on the core RV32I operations helped us maintain clarity while building the rest of the pipeline around it.
+
+The register file was similarly straightforward, but it quickly became one of the most useful tools in debugging. It provides two read ports and one write port, allowing the pipeline to access operands during decode and commit results during writeback. Although the internal implementation follows the standard RISC-V design, we added the ability for Vbuddy to write to s1 and read from a0 so that the reference programs could interact with the CPU easily. This small modification saved us a lot of time when testing and observing behaviour during development.
+
+One subtle but important aspect we had to account for was that RISC-V is little-endian. Although this seems like a small architectural detail, it shaped several parts of our design, especially in the sign-extend unit and the memory stage. Ensuring that bytes and half-words were correctly aligned and assembled in little-endian order was essential for instructions like LB, LH, SB and SH to behave correctly. We quickly learned that even a small mistake in how we handled byte ordering could lead to confusing bugs in both the register file and data memory. Dealing with these issues gave us a much stronger appreciation for how low-level details such as endianness affect the entire pipeline.
+
 ## Evidence of CPU Working 
 
 ## Design Overview 
