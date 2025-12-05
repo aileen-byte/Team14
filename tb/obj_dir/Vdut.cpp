@@ -13,11 +13,17 @@ Vdut::Vdut(VerilatedContext* _vcontextp__, const char* _vcname__)
     , vlSymsp{new Vdut__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
-    , Zero{vlSymsp->TOP.Zero}
+    , trigger{vlSymsp->TOP.trigger}
+    , t0{vlSymsp->TOP.t0}
     , t1{vlSymsp->TOP.t1}
-    , t2{vlSymsp->TOP.t2}
     , t3{vlSymsp->TOP.t3}
-    , pc{vlSymsp->TOP.pc}
+    , t4{vlSymsp->TOP.t4}
+    , a1{vlSymsp->TOP.a1}
+    , a2{vlSymsp->TOP.a2}
+    , a3{vlSymsp->TOP.a3}
+    , a4{vlSymsp->TOP.a4}
+    , a5{vlSymsp->TOP.a5}
+    , a6{vlSymsp->TOP.a6}
     , a0{vlSymsp->TOP.a0}
     , rootp{&(vlSymsp->TOP)}
 {

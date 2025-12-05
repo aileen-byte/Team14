@@ -1,4 +1,4 @@
-f1_tb.o: ../tests/f1_tb.cpp Vdut.h \
+test.o: ../tests/test.cpp Vdut.h \
  /usr/local/share/verilator/include/verilated.h \
  /usr/local/share/verilator/include/verilatedos.h \
  /usr/local/share/verilator/include/verilated_config.h \

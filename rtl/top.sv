@@ -3,6 +3,18 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
+    input logic trigger,
+    output logic [DATA_WIDTH-1:0] x0,
+    output logic [DATA_WIDTH-1:0] t0,
+    output logic [DATA_WIDTH-1:0] t1,
+    output logic [DATA_WIDTH-1:0] t3,
+    output logic [DATA_WIDTH-1:0] t4,
+    output logic [DATA_WIDTH-1:0] a1,
+    output logic [DATA_WIDTH-1:0] a2,
+    output logic [DATA_WIDTH-1:0] a3,
+    output logic [DATA_WIDTH-1:0] a4, 
+    output logic [DATA_WIDTH-1:0] a5,
+    output logic [DATA_WIDTH-1:0] a6,  
     output  logic [DATA_WIDTH-1:0] a0
 );
 
@@ -21,6 +33,7 @@ logic ALUSrc;
 logic [2:0] ImmSrc; //3-bit Immediate Selector
 logic [1:0] ResultSrc;
 logic MemWrite;
+logic [1:0] MemWriteSize;
 logic Zero;
 
 // REGISTER FILE WIRES
@@ -30,6 +43,7 @@ logic [DATA_WIDTH-1:0] RD2;  // read data 2
 
 // DATA MEMORY WIRES
 logic [DATA_WIDTH-1:0] ReadData; // output from data memory
+logic [DATA_WIDTH-1:0] load_data; // output from load selector
 
 //ALU WIRES
 logic [DATA_WIDTH-1:0] ALUop2;
@@ -85,6 +99,7 @@ control_unit CU(
     .PCSrc(PCSrc),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
+    .MemWriteSize(MemWriteSize),
     .ALUctrl(ALUctrl),
     .ALUSrc(ALUSrc),
     .ImmSrc(ImmSrc),
@@ -108,6 +123,17 @@ reg_file #(DATA_WIDTH) RF (
     .WD3(WD3),
     .RD1(RD1),
     .RD2(RD2),
+    .x0(x0),
+    .t0(t0),
+    .t1(t1),
+    .t3(t3),
+    .t4(t4),
+    .a1(a1),
+    .a2(a2),
+    .a3(a3),
+    .a4(a4),
+    .a5(a5),
+    .a6(a6),
     .a0(a0)
 );
 
@@ -117,8 +143,16 @@ data_mem #(
     .clk(clk),
     .ALUResult(ALUout),    // memory address
     .WriteData(RD2),       // data to write
-    .WE(MemWrite),         // from control unit
+    .WE(MemWrite),        // from control unit
+    .MemWriteSize(MemWriteSize),
     .RD(ReadData)          // output data
+);
+
+load_selec #(DATA_WIDTH) LS (
+    .funct3(instr[14:12]),
+    .byte_num(ALUout[1:0]),
+    .mem_data(ReadData),
+    .load_data(load_data)
 );
 
 mux ALUMUX (
@@ -145,7 +179,7 @@ jalr_mask jalr(
 // 4bit Mux
 mux4 #(DATA_WIDTH) RESULT_MUX (
     .in0(ALUout),
-    .in1(ReadData),
+    .in1(load_data),
     .in2(inc_pc),
     .in3(ImmOp), 
     .sel(ResultSrc),

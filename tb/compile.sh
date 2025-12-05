@@ -6,7 +6,7 @@
 
 # Default vars
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-output_file="../rtl/program.hex"
+output_file="program.hex"
 
 # Handle terminal arguments
 if [[ $# -eq 0 ]]; then

@@ -15,7 +15,7 @@ class Vdut___024root final : public VerilatedModule {
     // DESIGN SPECIFIC STATE
     VL_IN8(clk,0,0);
     VL_IN8(rst,0,0);
-    VL_OUT8(Zero,0,0);
+    VL_IN8(trigger,0,0);
     CData/*1:0*/ top__DOT__PCSrc;
     CData/*0:0*/ top__DOT__RegWrite;
     CData/*2:0*/ top__DOT__ALUctrl;
@@ -23,26 +23,32 @@ class Vdut___024root final : public VerilatedModule {
     CData/*2:0*/ top__DOT__ImmSrc;
     CData/*1:0*/ top__DOT__ResultSrc;
     CData/*0:0*/ top__DOT__MemWrite;
-    CData/*7:0*/ top__DOT__DM__DOT____Vlvbound_h51e3f0c4__0;
-    CData/*7:0*/ top__DOT__DM__DOT____Vlvbound_h35022570__0;
-    CData/*7:0*/ top__DOT__DM__DOT____Vlvbound_h35021543__0;
-    CData/*7:0*/ top__DOT__DM__DOT____Vlvbound_h3501834e__0;
+    CData/*1:0*/ top__DOT__MemWriteSize;
+    CData/*0:0*/ top__DOT__Zero;
     CData/*0:0*/ __Vclklast__TOP__clk;
+    VL_OUT(t0,31,0);
     VL_OUT(t1,31,0);
-    VL_OUT(t2,31,0);
     VL_OUT(t3,31,0);
-    VL_OUT(pc,31,0);
+    VL_OUT(t4,31,0);
+    VL_OUT(a1,31,0);
+    VL_OUT(a2,31,0);
+    VL_OUT(a3,31,0);
+    VL_OUT(a4,31,0);
+    VL_OUT(a5,31,0);
+    VL_OUT(a6,31,0);
     VL_OUT(a0,31,0);
     IData/*31:0*/ top__DOT__next_pc;
+    IData/*31:0*/ top__DOT__pc;
     IData/*31:0*/ top__DOT__instr;
     IData/*31:0*/ top__DOT__RD1;
     IData/*31:0*/ top__DOT__RD2;
+    IData/*31:0*/ top__DOT__ReadData;
     IData/*31:0*/ top__DOT__ALUop2;
     IData/*31:0*/ top__DOT__ALUout;
     IData/*31:0*/ top__DOT__ImmOp;
-    VlUnpacked<CData/*7:0*/, 100> top__DOT__IMEM__DOT__memory;
+    VlUnpacked<CData/*7:0*/, 1000> top__DOT__IMEM__DOT__memory;
     VlUnpacked<IData/*31:0*/, 32> top__DOT__RF__DOT__regs;
-    VlUnpacked<CData/*7:0*/, 100> top__DOT__DM__DOT__mem_array;
+    VlUnpacked<CData/*7:0*/, 131072> top__DOT__DM__DOT__mem_array;
     VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES

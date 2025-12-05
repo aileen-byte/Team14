@@ -9,20 +9,14 @@ module ALU #(
 );
 
     always_comb begin
-        Zero = 1;
         case (ALUctrl)
             3'b000: ALUout = ALUop1 + ALUop2;   // ADD
-            3'b001: begin
-                ALUout = ALUop1 - ALUop2;
-                if (ALUout == 0)
-                    Zero = 1;
-                else
-                    Zero = 0;   // SUB
-            end
-            3'b010: ALUout = ALUop1 & ALUop2;   // AND
-            3'b011: ALUout = ALUop1 | ALUop2;   // OR
-            3'b100: ALUout = ALUop1 ^ ALUop2;   // XOR
+            3'b001: ALUout = ALUop1 - ALUop2;   // SUB
+            3'b011: ALUout = ALUop1 ^ ALUop2;   // XOR
+            3'b110: ALUout = ALUop1 | ALUop2;   // OR
+            3'b111: ALUout = ALUop1 & ALUop2;   // AND
             default: ALUout = 32'h00000000;     // default
         endcase
+        Zero = (ALUout == 0);
     end
 endmodule
