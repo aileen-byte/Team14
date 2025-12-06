@@ -1,94 +1,79 @@
 #!/bin/bash
+set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-TEST_FOLDER="${SCRIPT_DIR}/tests"
-RTL_FOLDER="${SCRIPT_DIR}/../rtl"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEST_DIR="${SCRIPT_DIR}/tests"
+RTL_DIR="${SCRIPT_DIR}/../rtl"
 
-GREEN=$(tput setaf 2)
-RED=$(tput setaf 1)
-YELLOW=$(tput setaf 3)
-RESET=$(tput sgr0)
+GREEN="$(tput setaf 2)"
+RED="$(tput setaf 1)"
+YELLOW="$(tput setaf 3)"
+RESET="$(tput sgr0)"
 
 passes=0
 fails=0
-skips=0
+skipped=0
 
-# If no test names provided, use all testbench cpp files
 if [[ $# -eq 0 ]]; then
-    files=(${TEST_FOLDER}/*_tb.cpp)
+    mapfile -t files < <(ls "${TEST_DIR}"/*_tb.cpp 2>/dev/null || true)
 else
     files=("$@")
 fi
 
-rm -rf obj_dir
-cd "${SCRIPT_DIR}"
+rm -rf "${SCRIPT_DIR}/obj_dir"
 
-for file in "${files[@]}"; do
-    tb=$(basename "$file")
-    module=$(basename "$file" _tb.cpp)
+for tb in "${files[@]}"; do
 
-    # special case: "verify.cpp" → top.sv
-    if [[ "$module" == "verify" ]]; then
-        module="top"
-    fi
-
-    rtl="${RTL_FOLDER}/${module}.sv"
+    tb_base="$(basename "$tb")"
+    module="${tb_base%_tb.cpp}"   # strip only _tb.cpp
+    rtl="${RTL_DIR}/${module}.sv"
 
     echo "--------------------------------------"
-    echo "Running testbench: ${tb}"
-    echo "Module expected:   ${module}.sv"
+    echo "Running testbench: ${tb_base}"
+    echo "Module expected:   $(basename "$rtl")"
 
     if [[ ! -f "$rtl" ]]; then
-        echo "${YELLOW}[SKIP] Missing RTL: ${module}.sv${RESET}"
-        ((skips++))
+        echo "${YELLOW}[SKIP] Missing RTL: $(basename "$rtl")${RESET}"
+        ((skipped++))
         continue
     fi
 
-    echo "[BUILD] Verilating ${module}.sv ..."
+    echo "[BUILD] Verilating $(basename "$rtl") ..."
 
-    verilator -Wall --trace \
-        -cc "$rtl" \
-        --exe "$file" \
-        -y "$RTL_FOLDER" \
-        --prefix "Vdut" \
-        -o Vdut \
-        -CFLAGS "-std=c++17 -isystem /usr/include" \
-        -LDFLAGS "-lgtest -lgtest_main -lpthread"
-
-    if [[ $? -ne 0 ]]; then
+    if ! verilator -Wall --trace \
+            -cc "$rtl" \
+            --exe "$tb" \
+            -y "$RTL_DIR" \
+            --top-module "$module" \
+            -o Vdut; then
         echo "${RED}[FAIL] Verilator failed for ${module}${RESET}"
         ((fails++))
+        rm -rf "${SCRIPT_DIR}/obj_dir"
         continue
     fi
 
-    make -j -C obj_dir/ -f Vdut.mk
-    if [[ $? -ne 0 ]]; then
+    if ! make -C "${SCRIPT_DIR}/obj_dir" -f Vdut.mk >/dev/null; then
         echo "${RED}[FAIL] Build failed for ${module}${RESET}"
         ((fails++))
+        rm -rf "${SCRIPT_DIR}/obj_dir"
         continue
     fi
 
-    ./obj_dir/Vdut
-    rc=$?
-
-    if [[ $rc -eq 0 ]]; then
+    if "${SCRIPT_DIR}/obj_dir/Vdut"; then
         echo "${GREEN}[PASS] ${module}${RESET}"
         ((passes++))
     else
-        echo "${RED}[FAIL] ${module}${RESET}"
+        echo "${RED}[FAIL] Simulation failed for ${module}${RESET}"
         ((fails++))
     fi
+
+    rm -rf "${SCRIPT_DIR}/obj_dir"
 
 done
 
 echo "--------------------------------------"
-echo "Summary:"
-echo "  Passed: ${GREEN}${passes}${RESET}"
-echo "  Failed: ${RED}${fails}${RESET}"
-echo "  Skipped: ${YELLOW}${skips}${RESET}"
+echo "Passed:  ${passes}"
+echo "Failed:  ${fails}"
+echo "Skipped: ${skipped}"
 
-if [[ $fails -eq 0 ]]; then
-    echo "${GREEN}Success!${RESET}"
-else
-    echo "${RED}Some tests failed.${RESET}"
-fi
+exit $((fails))
