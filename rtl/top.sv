@@ -3,7 +3,11 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0
+    output  logic [DATA_WIDTH-1:0] a0,
+
+    // debug outputs for testbench
+    output  logic [31:0] pc_o,
+    output  logic [31:0] instr_o
 );
 
 // INSTRUCTION BLOCK WIRES 
@@ -62,7 +66,7 @@ logic JumpE;
 logic BranchE;
 logic [2:0] ALUControlE;
 logic ALUSrcE;
-logic FlushE
+logic FlushE;
 logic FlushE_hazard;
 logic FlushE_branch;
 logic [DATA_WIDTH-1:0] RD1E, RD2E;
@@ -96,11 +100,24 @@ logic [DATA_WIDTH-1:0] PCPlus4W;
 logic Jump;
 logic Branch;
 
+// Branch taken for BNE: branch when rs1 != rs2
+logic branch_takenE;
 logic [1:0] PCSrcE;
-assign PCSrcE = {JumpE, (BranchE & ZeroE)};
-assign FlushD = (PCSrcE != 2'b00);
-assign FlushE_branch = (PCSrcE != 2'b00);
-assign FlushE = FlushE_hazard | FlushE_branch;
+
+assign branch_takenE = BranchE & ~ZeroE;       // BNE condition
+
+// PCSrcE encoding:
+//  2'b00 → PC+4
+//  2'b01 → branch_targetE (B-type)
+//  2'b10 → jalrPC (JALR)
+//  2'b11 → (unused here)
+assign PCSrcE = {JumpE, branch_takenE};
+
+// Flush decode/execute when control flow changes
+assign FlushD        = branch_takenE | JumpE;
+assign FlushE_branch = branch_takenE | JumpE;
+assign FlushE        = FlushE_hazard | FlushE_branch;
+
 
 //FORWARDING 
 
@@ -403,5 +420,19 @@ mux4 #(DATA_WIDTH) RESULT_MUX (
     .sel(ResultSrcW),
     .out(WD3)
 );
+
+
+//testing: 
+
+assign pc_o    = pc;         // PC in fetch stage
+assign instr_o = instr;      // Fetched instruction
+
+always_ff @(posedge clk) begin
+    if (!rst) begin
+        $display("DBG: PC=%h PCE=%h InstrD=%h BranchE=%b ZeroE=%b PCSrcE=%b branch_targetE=%h",
+                 pc, PCE, InstrD, BranchE, ZeroE, PCSrcE, branch_targetE);
+    end
+end
+
 
 endmodule

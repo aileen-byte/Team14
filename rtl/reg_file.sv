@@ -23,9 +23,9 @@ module reg_file #(
         end
     end 
 
-
     always_ff @(posedge clk) begin
         if (WE3 && (AD3 != 5'd0)) begin
+            $display("RF WRITE @ time %0t: x%0d = 0x%08h", $time, AD3, WD3);
             regs[AD3] <= WD3;  
         end
         // Enforce x0 = 0 every cycle
