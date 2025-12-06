@@ -151,17 +151,16 @@ control_unit CU(
     .op(InstrD[6:0]),
     .funct3(InstrD[14:12]),
     .funct7b5(InstrD[30]),
-    .Zero(1'b0),
-    .PCSrc(),
+
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
     .ALUSrc(ALUSrc),
     .ImmSrc(ImmSrc),
     .RegWrite(RegWrite),
+
     .Branch(Branch),
     .Jump(Jump)
-
 );
 
 // Sign_extend 

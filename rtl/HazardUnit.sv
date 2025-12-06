@@ -25,7 +25,7 @@ logic lwstall;
 logic branchstall; 
 
 always_comb begin 
-    lwstall = MemtoRegE && ((RsD == WriteRegE) || (RtD == WriteRegE)); 
+    lwstall = MemtoRegE && (WriteRegE != 5'd0) && ((RsD == WriteRegE) || (RtD == WriteRegE));
 end 
 
 always_comb begin 
