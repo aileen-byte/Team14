@@ -25,6 +25,16 @@ One subtle but important aspect we had to account for was that RISC-V is little-
 
 ## Design Overview 
 
+## Challenges Faced 
+
+### 1. Integrating individually correct modules into a pipelined system
+
+Even though most modules worked in isolation (ALU, control unit, sign-extend, register file), the moment we put them together in a 5-stage pipeline, interactions between stages exposed bugs we simply couldn’t see in unit tests. Understanding how a mistake in one stage (e.g., a wrong immediate bit, a mis-latched control signal) propagated through the pipeline taught us the importance of debugging at the system level rather than module level. To solve this issue we worked together as a team to debug, as everyone knew how each of their individual components worked the best. 
+
+### 2. Designing and validating the hazard and forwarding logic 
+
+Data hazards ended up being more difficult than we expected. Our forwarding logic worked in isolation, but once we connected it to the full pipeline, small mistakes like comparing the wrong registers or forwarding from the wrong stage caused subtle, cycle dependent bugs. We spent a lot of time together in GTKWave stepping through instructions to see where values were going wrong. Getting the whole team on the same page about how data should move through the pipeline was what finally helped us fix the issues.
+
 ## Reflection
 
 One of the key lessons we learned was the importance of incremental verification. Early in the project we occasionally attempted to implement multiple features at once, only to discover that doing so made debugging significantly harder. Over time, we adopted a more disciplined approach: implement one feature at a time, verify it thoroughly, and only then move on. This method dramatically improved our efficiency and confidence in the correctness of each module.
