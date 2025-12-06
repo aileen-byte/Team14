@@ -3,6 +3,7 @@ module pc_reg #(
 )(
     input logic                 clk,
     input logic                 rst,
+    input  logic                en,
     input logic  [DATA_WIDTH-1:0]    next_pc, 
     output logic [DATA_WIDTH-1:0]    pc
 ); 
@@ -10,7 +11,7 @@ module pc_reg #(
 always_ff @ (posedge clk) begin
     if (rst)
         pc <= 32'b0;
-    else
+    else if (en)
         pc <= next_pc;
 end
 

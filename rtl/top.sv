@@ -31,7 +31,6 @@ logic [DATA_WIDTH-1:0] RD2;  // read data 2
 logic [DATA_WIDTH-1:0] ReadData; // output from data memory
 
 //ALU WIRES
-logic [DATA_WIDTH-1:0] ALUop2E;
 logic [DATA_WIDTH-1:0] ALUoutE;
 logic ZeroE;
 
@@ -99,12 +98,18 @@ logic [1:0] PCSrcE;
 assign PCSrcE = {JumpE, (BranchE & ZeroE)};
 assign FlushD = (PCSrcE != 2'b00);
 
+//FORWARDING 
+
+logic [1:0] ForwardAE, ForwardBE;
+logic ForwardAD, ForwardBD;  
+logic [DATA_WIDTH-1:0] SrcAE, SrcBE, SrcBE_preALUSrc;
 
 
 // pc register
 pc_reg #(DATA_WIDTH) PCREG (
     .clk(clk), 
-    .rst(rst), 
+    .rst(rst),
+    .en(~StallF), 
     .next_pc(next_pc),
     .pc(pc)
 ); 
@@ -124,7 +129,6 @@ pc_plus4 #(DATA_WIDTH) ADD4(
 
 logic [DATA_WIDTH-1:0] branch_targetE;
 assign branch_targetE = PCE + ExtImmE;
-
 
 // pc mux
 mux4 #(DATA_WIDTH) PCMUX (
@@ -148,7 +152,7 @@ control_unit CU(
     .funct3(InstrD[14:12]),
     .funct7b5(InstrD[30]),
     .Zero(1'b0),
-    .PCSrc(PCSrc),
+    .PCSrc(),
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
     .ALUctrl(ALUctrl),
@@ -190,22 +194,14 @@ data_mem #(
     .RD(ReadData)          // output data
 );
 
-mux ALUMUX (
-    .in0(RD2E),
-    .in1(ExtImmE),
-    .sel(ALUSrcE),
-    .out(ALUop2E)
-);
-
 //alu
 ALU myALU (
-    .ALUop1(RD1E),
-    .ALUop2(ALUop2E),
+    .ALUop1(SrcAE),    // forwarded ALU operand A
+    .ALUop2(SrcBE),    // forwarded ALU operand B (after ALUSrc mux)
     .ALUctrl(ALUControlE),
     .ALUout(ALUoutE),
     .Zero(ZeroE)
 );
-
 
 jalr_mask jalr(
     .ALUPC(ALUoutE),
@@ -282,7 +278,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .MemtoRegE(ResultSrcE[0]),   // If MemToReg is encoded in ResultSrc
     .MemWriteE(MemWriteE),
     .ALUOutE(ALUoutE),
-    .WriteDataE(RD2E),
+    .WriteDataE(SrcBE_preALUSrc),
     .WriteRegE(RdE),
     .ResultSrcE(ResultSrcE),
     .ExtImmE(ExtImmE),
@@ -349,6 +345,49 @@ HazardUnit HZ (
     .FlushE(FlushE)         // ⟵ connect to ID/EX flush
 );
 
+ForwardingUnit FW (
+    .RsD(InstrD[19:15]),
+    .RtD(InstrD[24:20]),
+
+    .RsE(Rs1E),
+    .RtE(Rs2E),
+
+    .WriteRegM(WriteRegM),
+    .WriteRegW(WriteRegW),
+
+    .RegWriteM(RegWriteM),
+    .RegWriteW(RegWriteW),
+
+    .ForwardAD(),     // optional — used only if you forward into branch compare
+    .ForwardBD(),
+    .ForwardAE(ForwardAE),
+    .ForwardBE(ForwardBE)
+);
+
+
+
+mux3 #(32) FORWARD_A_MUX (
+    .in0(RD1E),     // normal register value
+    .in1(WD3),      // forwarding from WB stage
+    .in2(ALUOutM),  // forwarding from MEM stage
+    .sel(ForwardAE),
+    .out(SrcAE)
+);
+
+mux3 #(32) FORWARD_B_PREALUSRC (
+    .in0(RD2E), 
+    .in1(WD3), 
+    .in2(ALUOutM), 
+    .sel(ForwardBE),
+    .out(SrcBE_preALUSrc)
+);
+
+mux #(32) ALUSRC_MUX (
+    .in0(SrcBE_preALUSrc),
+    .in1(ExtImmE),
+    .sel(ALUSrcE),
+    .out(SrcBE)
+);
 
 // 4bit Mux
 mux4 #(DATA_WIDTH) RESULT_MUX (
