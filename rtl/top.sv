@@ -62,7 +62,9 @@ logic JumpE;
 logic BranchE;
 logic [2:0] ALUControlE;
 logic ALUSrcE;
-logic FlushE;
+logic FlushE
+logic FlushE_hazard;
+logic FlushE_branch;
 logic [DATA_WIDTH-1:0] RD1E, RD2E;
 logic [DATA_WIDTH-1:0] PCE;
 logic [4:0] Rs1E, Rs2E, RdE;
@@ -90,19 +92,23 @@ logic [1:0] ResultSrcW;
 logic [DATA_WIDTH-1:0] ExtImmW;
 logic [DATA_WIDTH-1:0] PCPlus4W;
 
-// HAZARD (also the control unit???)
+// HAZARD 
 logic Jump;
 logic Branch;
 
 logic [1:0] PCSrcE;
 assign PCSrcE = {JumpE, (BranchE & ZeroE)};
 assign FlushD = (PCSrcE != 2'b00);
+assign FlushE_branch = (PCSrcE != 2'b00);
+assign FlushE = FlushE_hazard | FlushE_branch;
 
 //FORWARDING 
 
 logic [1:0] ForwardAE, ForwardBE;
 logic ForwardAD, ForwardBD;  
 logic [DATA_WIDTH-1:0] SrcAE, SrcBE, SrcBE_preALUSrc;
+
+
 
 
 // pc register
@@ -341,7 +347,7 @@ HazardUnit HZ (
 
     .StallF(StallF),        // ⟵ connect to IF/ID reg
     .StallD(StallD),        // ⟵ connect to ID/EX reg
-    .FlushE(FlushE)         // ⟵ connect to ID/EX flush
+    .FlushE_hazard(FlushE_hazard)         // ⟵ connect to ID/EX flush
 );
 
 ForwardingUnit FW (

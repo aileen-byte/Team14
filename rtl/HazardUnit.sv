@@ -18,7 +18,7 @@ module HazardUnit (
 
     output logic StallF, 
     output logic StallD, 
-    output logic FlushE
+    output logic FlushE_hazard
 ); 
 
 logic lwstall; 
@@ -35,7 +35,7 @@ end
 always_comb begin
     StallF = lwstall | branchstall;
     StallD = lwstall | branchstall;
-    FlushE = lwstall | branchstall;
+    FlushE_hazard = lwstall | branchstall;
 end 
 
 endmodule 
