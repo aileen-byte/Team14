@@ -30,4 +30,3 @@ module sign_extend(
         endcase
     end
 endmodule
-

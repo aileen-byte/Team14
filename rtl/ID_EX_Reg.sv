@@ -79,5 +79,4 @@ always_ff @(posedge clk) begin
         PCPlus4E    <= PCPlus4D; 
     end
 end 
-
 endmodule

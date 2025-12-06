@@ -29,5 +29,4 @@ always_ff @(posedge clk) begin
         InstrD          <= InstrF;
     end
 end 
-
 endmodule
