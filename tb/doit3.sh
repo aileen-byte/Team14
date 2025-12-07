@@ -1,79 +1,40 @@
 #!/bin/bash
-set -euo pipefail
+set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEST_DIR="${SCRIPT_DIR}/tests"
-RTL_DIR="${SCRIPT_DIR}/../rtl"
+echo "=============================================="
+echo " Verilating CPU + GoogleTest verify.cpp"
+echo "=============================================="
 
-GREEN="$(tput setaf 2)"
-RED="$(tput setaf 1)"
-YELLOW="$(tput setaf 3)"
-RESET="$(tput sgr0)"
+verilator -Wall --Wno-fatal --trace \
+  --top-module top \
+  --cc \
+  rtl/top.sv \
+  rtl/instr_mem.sv \
+  rtl/data_mem.sv \
+  rtl/pc_reg.sv \
+  rtl/pc_plus4.sv \
+  rtl/mux.sv \
+  rtl/mux3.sv \
+  rtl/mux4.sv \
+  rtl/control_unit.sv \
+  rtl/sign_extend.sv \
+  rtl/jalr_mask.sv \
+  rtl/reg_file.sv \
+  rtl/ALU.sv \
+  rtl/IF_ID_Reg.sv \
+  rtl/ID_EX_Reg.sv \
+  rtl/EX_ME_Reg.sv \
+  rtl/ME_WR_Reg.sv \
+  rtl/HazardUnit.sv \
+  rtl/ForwardingUnit.sv \
+  --exe ../tb/verify.cpp
 
-passes=0
-fails=0
-skipped=0
+echo "=============================================="
+echo " Building model with make"
+echo "=============================================="
+make -C obj_dir -f Vtop.mk -j
 
-if [[ $# -eq 0 ]]; then
-    mapfile -t files < <(ls "${TEST_DIR}"/*_tb.cpp 2>/dev/null || true)
-else
-    files=("$@")
-fi
-
-rm -rf "${SCRIPT_DIR}/obj_dir"
-
-for tb in "${files[@]}"; do
-
-    tb_base="$(basename "$tb")"
-    module="${tb_base%_tb.cpp}"   # strip only _tb.cpp
-    rtl="${RTL_DIR}/${module}.sv"
-
-    echo "--------------------------------------"
-    echo "Running testbench: ${tb_base}"
-    echo "Module expected:   $(basename "$rtl")"
-
-    if [[ ! -f "$rtl" ]]; then
-        echo "${YELLOW}[SKIP] Missing RTL: $(basename "$rtl")${RESET}"
-        ((skipped++))
-        continue
-    fi
-
-    echo "[BUILD] Verilating $(basename "$rtl") ..."
-
-    if ! verilator -Wall --trace \
-            -cc "$rtl" \
-            --exe "$tb" \
-            -y "$RTL_DIR" \
-            --top-module "$module" \
-            -o Vdut; then
-        echo "${RED}[FAIL] Verilator failed for ${module}${RESET}"
-        ((fails++))
-        rm -rf "${SCRIPT_DIR}/obj_dir"
-        continue
-    fi
-
-    if ! make -C "${SCRIPT_DIR}/obj_dir" -f Vdut.mk >/dev/null; then
-        echo "${RED}[FAIL] Build failed for ${module}${RESET}"
-        ((fails++))
-        rm -rf "${SCRIPT_DIR}/obj_dir"
-        continue
-    fi
-
-    if "${SCRIPT_DIR}/obj_dir/Vdut"; then
-        echo "${GREEN}[PASS] ${module}${RESET}"
-        ((passes++))
-    else
-        echo "${RED}[FAIL] Simulation failed for ${module}${RESET}"
-        ((fails++))
-    fi
-
-    rm -rf "${SCRIPT_DIR}/obj_dir"
-
-done
-
-echo "--------------------------------------"
-echo "Passed:  ${passes}"
-echo "Failed:  ${fails}"
-echo "Skipped: ${skipped}"
-
-exit $((fails))
+echo "=============================================="
+echo " Running verification"
+echo "=============================================="
+./obj_dir/Vtop

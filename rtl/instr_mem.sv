@@ -8,17 +8,13 @@ module instr_mem #(
 
 // Declare mem that stores instructions
 logic [31:0] memory [0:MEMORY_WIDTH-1];
-
+string memfile;
 // Load program into memory at start of simulation
-initial begin 
-    $readmemh("/home/venicegh/Documents/Team14/rtl/program2.hex", memory);
-    $display("Loaded bytes:");
-    $display("0: %02h", memory[0]);
-    $display("1: %02h", memory[1]);
-    $display("2: %02h", memory[2]);
-    $display("3: %02h", memory[3]);
-end 
+initial begin
+        $display("Loading instruction memory from program.hex");
+        $readmemh("program.hex", memory);
+end
 
-assign RD = memory[A >> 2];
+assign RD = memory[A[31:2]];
 
 endmodule
