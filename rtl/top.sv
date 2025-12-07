@@ -42,15 +42,15 @@ logic [DATA_WIDTH-1:0] ImmOp;
 logic [DATA_WIDTH-1:0] jalrPC;
 
 // DECODE STAGE (D) SIGNALS 
-logic RegWriteD;
+// logic RegWriteD;
 logic [1:0] ResultSrcD;
 logic MemWriteD;
 logic JumpD;
-logic BranchD;
+// logic BranchD;
 logic [2:0] ALUControlD;
 logic ALUSrcD;
 
-logic [DATA_WIDTH-1:0] RD1D, RD2D;
+// logic [DATA_WIDTH-1:0] RD1D, RD2D;
 logic [4:0] Rs1D, Rs2D, RdD;
 logic [DATA_WIDTH-1:0] ExtImmD;
 
@@ -122,10 +122,8 @@ assign FlushE        = FlushE_hazard | FlushE_branch;
 //FORWARDING 
 
 logic [1:0] ForwardAE, ForwardBE;
-logic ForwardAD, ForwardBD;  
+// logic ForwardAD, ForwardBD;  
 logic [DATA_WIDTH-1:0] SrcAE, SrcBE, SrcBE_preALUSrc;
-
-
 
 
 // pc register
@@ -380,8 +378,10 @@ ForwardingUnit FW (
     .RegWriteM(RegWriteM),
     .RegWriteW(RegWriteW),
 
+    /* verilator lint_off PINCONNECTEMPTY */
     .ForwardAD(),     // optional — used only if you forward into branch compare
     .ForwardBD(),
+    /* verilator lint_on PINCONNECTEMPTY */
     .ForwardAE(ForwardAE),
     .ForwardBE(ForwardBE)
 );

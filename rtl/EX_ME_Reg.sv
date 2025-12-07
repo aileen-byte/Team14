@@ -26,7 +26,7 @@ module EX_ME_Reg #(
     output logic [DATA_WIDTH-1:0] WriteDataM,
     output logic [4:0]          WriteRegM
 );
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             RegWriteM  <= 0;
             MemtoRegM  <= 0;

@@ -15,6 +15,7 @@ module ForwardingUnit (
     output logic       ForwardBD,
     output logic [1:0] ForwardAE,
     output logic [1:0] ForwardBE
+
 );
 
 always_comb begin 
@@ -37,6 +38,8 @@ always_comb begin
         ForwardBE = 2'b01;
     else
         ForwardBE = 2'b00;
+
+
 end
 
 endmodule

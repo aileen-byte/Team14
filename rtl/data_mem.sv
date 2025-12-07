@@ -20,4 +20,4 @@ module data_mem #(
         if (WE)
             mem_array[ALUResult] <= WriteData[7:0];
     end
-endmodule
+endmodule 

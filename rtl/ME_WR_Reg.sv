@@ -22,7 +22,7 @@ module ME_WR_Reg #(
     output logic [DATA_WIDTH-1:0] ReadDataW,
     output logic [4:0]          WriteRegW 
 );
-    always_ff @(posedge clk or posedge reset) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             RegWriteW  <= 0;
             MemtoRegW <= 0;

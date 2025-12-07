@@ -39,6 +39,7 @@ localparam UpperImmediate = 2'b11;
 // localparam JAL= 2'b10; //PC+imm (J-type)
 // localparam JALR = 2'b11; // ALU result (rs1+imm)
 
+
 always_comb begin
     // Default values — safe state
     ResultSrc = ALU;
