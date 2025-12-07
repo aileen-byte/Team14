@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "Vdut.h"
+#include "Vtop.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include "gtest/gtest.h"
@@ -19,20 +19,30 @@ public:
         ticks_ = 0;
     }
 
-    void setupTest(const std::string &name)
-    {
-        name_ = name;
-        // Assemble the program
-        std::ignore = system(("./assemble.sh asm/" + name_ + ".s").c_str());
-        // Create default empty file for data memory
-        std::ignore = system("touch data.hex");
+    void setupTest(const std::string& name) {
+        std::string progSrc = "tb/tests/" + name + "/program.hex";
+        std::string progDst = "program.hex";
+
+        std::string copyCmd = "cp " + progSrc + " " + progDst;
+        int ret = system(copyCmd.c_str());
+        if (ret != 0) {
+            std::cerr << "ERROR: Could not copy " << progSrc << std::endl;
+            exit(1);
+        }
+
+        // Only some tests need data
+        std::string dataSrc = "tb/tests/" + name + "/data.hex";
+        if (access(dataSrc.c_str(), F_OK) == 0) {
+            system(("cp " + dataSrc + " data.hex").c_str());
+        }
     }
+
 
     // CPU instantiated outside of SetUp to allow for correct
     // program to be assembled and loaded into instruction memory
     void initSimulation()
     {
-        top_ = new Vdut(context_);
+        top_ = new Vtop(context_);
         tfp_ = new VerilatedVcdC;
 
         // Initialise trace and simulation
@@ -43,7 +53,6 @@ public:
         // Initialise inputs
         top_->clk = 1;
         top_->rst = 1;
-        top_->trigger = 0;
         runSimulation(10);  // Process reset
         top_->rst = 0;
     }
@@ -92,7 +101,7 @@ public:
 
 protected:
     VerilatedContext* context_;
-    Vdut* top_;
+    Vtop* top_;
     VerilatedVcdC* tfp_;
     std::string name_;
     unsigned int ticks_;

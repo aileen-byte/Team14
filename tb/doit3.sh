@@ -27,7 +27,8 @@ verilator -Wall --Wno-fatal --trace \
   rtl/ME_WR_Reg.sv \
   rtl/HazardUnit.sv \
   rtl/ForwardingUnit.sv \
-  --exe ../tb/verify.cpp
+  --exe tb/tests/verify.cpp \
+  -LDFLAGS "-lgtest -lgtest_main -pthread"
 
 echo "=============================================="
 echo " Building model with make"
