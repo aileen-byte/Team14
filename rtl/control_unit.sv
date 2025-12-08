@@ -12,7 +12,9 @@ module control_unit(
     output logic RegWrite, // Register File write enable
 
     output logic Branch,
-    output logic Jump
+    output logic Jump,
+    output logic Jalr,
+    output logic [1:0] StoreSize 
 
 );
 
@@ -40,6 +42,7 @@ localparam UpperImmediate = 2'b11;
 // localparam JALR = 2'b11; // ALU result (rs1+imm)
 
 
+
 always_comb begin
     // Default values — safe state
     ResultSrc = ALU;
@@ -50,29 +53,40 @@ always_comb begin
     RegWrite  = 0;
     Branch    = 0;
     Jump      = 0;
+    Jalr   = 0;
+    StoreSize = 2'b00;
+
 
     case (op)
 
-        // R-TYPE —— ADD, SUB
+        // R-TYPE —— ADD, SUB, AND, OR, XOR
         7'b0110011: begin
             RegWrite = 1;
-            ResultSrc = ALU;
             ALUSrc = 0;
 
-            if (funct3 == 3'b000) begin
-                ALUctrl = (funct7b5 ? ALU_SUB : ALU_ADD);
-            end
+            case (funct3)
+                3'b000: ALUctrl = funct7b5 ? ALU_SUB : ALU_ADD;
+                3'b111: ALUctrl = 3'b010; // AND
+                3'b110: ALUctrl = 3'b011; // OR
+                3'b100: ALUctrl = 3'b100; // XOR
+                default: ALUctrl = ALU_ADD;
+            endcase
         end
 
-        // I-TYPE ARITHMETIC —— ADDI
+        // I-TYPE ALU —— ADDI, ANDI, ORI, XORI
         7'b0010011: begin
             RegWrite = 1;
             ALUSrc   = 1;
             ImmSrc   = I_TYPE;
             ResultSrc= ALU;
 
-            if (funct3 == 3'b000)
-                ALUctrl = ALU_ADD;
+            case (funct3)
+                3'b000: ALUctrl = ALU_ADD;  // ADDI
+                3'b111: ALUctrl = 3'b010;   // ANDI
+                3'b110: ALUctrl = 3'b011;   // ORI
+                3'b100: ALUctrl = 3'b100;   // XORI
+                default: ALUctrl = ALU_ADD;
+            endcase
         end
 
         // LOAD —— LB/LBU/LH/LW
@@ -87,6 +101,11 @@ always_comb begin
         // STORE —— SB/SH/SW
         7'b0100011: begin
             MemWrite = 1;
+            case (funct3)
+            3'b000: StoreSize = 2'b00; // SB
+            3'b001: StoreSize = 2'b01; // SH
+            3'b010: StoreSize = 2'b10; // SW
+            endcase
             ALUSrc   = 1;
             ImmSrc   = S_TYPE;
             ALUctrl  = ALU_ADD;
@@ -108,16 +127,18 @@ always_comb begin
             RegWrite = 1;
             ResultSrc = PCPlus4;
             ImmSrc   = J_TYPE;
+            Jalr   = 0;
         end
 
         // JALR —— Jump via register
         7'b1100111: begin
-            Jump     = 1;
+            Jump     = 0;
             RegWrite = 1;
             ALUSrc   = 1;
             ImmSrc   = I_TYPE;
             ALUctrl  = ALU_ADD;
             ResultSrc = PCPlus4;
+            Jalr   = 1;
         end
 
         // LUI —— Load Upper Immediate

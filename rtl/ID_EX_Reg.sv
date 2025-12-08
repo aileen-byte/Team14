@@ -39,7 +39,16 @@ module ID_EX_Reg #(
     output  logic [4:0]              Rs2E, 
     output  logic [4:0]              RdE, 
     output  logic [DATA_WIDTH-1:0]   ExtImmE,
-    output  logic [DATA_WIDTH-1:0]   PCPlus4E 
+    output  logic [DATA_WIDTH-1:0]   PCPlus4E, 
+
+    input  logic JalrD,
+    output logic JalrE,
+
+    input  logic [1:0] StoreSizeD,
+    output logic [1:0] StoreSizeE
+
+
+
 
 );
 
@@ -59,9 +68,13 @@ always_ff @(posedge clk) begin
         Rs2E        <= '0; 
         RdE         <= '0;
         ExtImmE     <= '0; 
-        PCPlus4E    <= '0; 
+        PCPlus4E    <= '0;
+        JalrE       <= '0; 
+        StoreSizeE <= '0;
 
-    end else if (!StallD) begin 
+
+
+    end else if (!StallD && !FlushE) begin 
         RegWriteE   <= RegWriteD;
         ResultSrcE  <= ResultSrcD; 
         MemWriteE   <= MemWriteD; 
@@ -77,6 +90,11 @@ always_ff @(posedge clk) begin
         RdE         <= RdD;
         ExtImmE     <= ExtImmD; 
         PCPlus4E    <= PCPlus4D; 
+        JalrE       <= JalrD;
+        StoreSizeE <= StoreSizeD;
+
     end
+
+
 end 
 endmodule

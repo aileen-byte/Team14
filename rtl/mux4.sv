@@ -8,7 +8,8 @@ module mux4 #(
     input   logic [1:0]             sel,
     output  logic [DATA_WIDTH-1:0]  out
 );
-    always_comb begin    
+    always_comb begin   
+        // default: out = '0; 
         case (sel)
             2'b00: out = in0;
             2'b01: out = in1;

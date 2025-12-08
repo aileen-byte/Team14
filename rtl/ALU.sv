@@ -18,6 +18,6 @@ module ALU #(
             default: ALUout = 32'h00000000;     // default
         endcase
 
-        Zero = (ALUout == 0);
+        Zero = (ALUout == {DATA_WIDTH{1'b0}});
     end
 endmodule

@@ -1,5 +1,5 @@
 module sign_extend(
-    input logic [31:7] instr,
+    input logic [31:0] instr,
     input logic [2:0] ImmSrc,
     output logic [31:0] ImmOp  //output immediate 
 );
@@ -19,7 +19,14 @@ module sign_extend(
             end
             // If J-Type
             3'b011: begin
-                ImmOp = {{11{instr[31]}},instr[31], instr[19:12], instr[20], instr[30:21], 1'b0};
+                // ImmOp = {{11{instr[31]}},instr[31], instr[19:12], instr[20], instr[30:21], 1'b0};
+                ImmOp = { {11{instr[31]}},   
+              instr[31],         // imm[20]
+              instr[19:12],      // imm[19:12]
+              instr[20],         // imm[11]
+              instr[30:21],      // imm[10:1]
+              1'b0               // imm[0]
+            };
             end
             // If U-type
             3'b100: begin

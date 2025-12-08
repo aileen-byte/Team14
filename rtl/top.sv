@@ -68,7 +68,7 @@ logic [2:0] ALUControlE;
 logic ALUSrcE;
 logic FlushE;
 logic FlushE_hazard;
-logic FlushE_branch;
+// logic FlushE_branch;
 logic [DATA_WIDTH-1:0] RD1E, RD2E;
 logic [DATA_WIDTH-1:0] PCE;
 logic [4:0] Rs1E, Rs2E, RdE;
@@ -88,7 +88,7 @@ logic [DATA_WIDTH-1:0] PCPlus4M;
 
 // WRITEBACK STAGE (W) SIGNALS
 logic RegWriteW;
-logic MemtoRegW;
+// logic MemtoRegW;
 logic [DATA_WIDTH-1:0] ALUOutW;
 logic [DATA_WIDTH-1:0] ReadDataW;
 logic [4:0] WriteRegW;
@@ -99,6 +99,21 @@ logic [DATA_WIDTH-1:0] PCPlus4W;
 // HAZARD 
 logic Jump;
 logic Branch;
+
+//JALR
+logic Jalr;
+logic JalrE;
+logic [DATA_WIDTH-1:0] jal_targetE = PCE + ExtImmE;
+
+logic [1:0] StoreSizeD;
+logic [1:0] StoreSizeM;
+logic [1:0] StoreSizeE;
+
+
+
+
+
+
 
 // Branch taken for BNE: branch when rs1 != rs2
 logic branch_takenE;
@@ -111,12 +126,27 @@ assign branch_takenE = BranchE & ~ZeroE;       // BNE condition
 //  2'b01 → branch_targetE (B-type)
 //  2'b10 → jalrPC (JALR)
 //  2'b11 → (unused here)
-assign PCSrcE = {JumpE, branch_takenE};
+// assign PCSrcE = {JumpE, branch_takenE};
+
+// Example if you add JalrE
+assign PCSrcE =
+    JalrE         ? 2'b10 :
+    JumpE         ? 2'b11 :   // JAL uses input 3
+    branch_takenE ? 2'b01 :
+                    2'b00;
 
 // Flush decode/execute when control flow changes
-assign FlushD        = branch_takenE | JumpE;
-assign FlushE_branch = branch_takenE | JumpE;
-assign FlushE        = FlushE_hazard | FlushE_branch;
+// assign FlushD        = branch_takenE | JumpE;
+assign FlushD = (PCSrcE != 2'b00);
+assign FlushE = FlushE_hazard | (PCSrcE != 2'b00);
+
+
+//assign FlushD = (PCSrcE != 2'b00);
+// assign FlushE = FlushE_hazard;   // Only flush EX on load-use stalls 
+
+logic pc_flush;
+assign pc_flush = (PCSrcE != 2'b00);
+
 
 
 //FORWARDING 
@@ -125,6 +155,10 @@ logic [1:0] ForwardAE, ForwardBE;
 // logic ForwardAD, ForwardBD;  
 logic [DATA_WIDTH-1:0] SrcAE, SrcBE, SrcBE_preALUSrc;
 
+assign Rs1D = InstrD[19:15];
+assign Rs2D = InstrD[24:20];
+assign RdD  = InstrD[11:7];
+
 
 // pc register
 pc_reg #(DATA_WIDTH) PCREG (
@@ -132,6 +166,7 @@ pc_reg #(DATA_WIDTH) PCREG (
     .rst(rst),
     .en(~StallF), 
     .next_pc(next_pc),
+    .flush(pc_flush),
     .pc(pc)
 ); 
 
@@ -156,7 +191,7 @@ mux4 #(DATA_WIDTH) PCMUX (
     .in0(inc_pc),
     .in1(branch_targetE),
     .in2(jalrPC),
-    .in3({DATA_WIDTH{1'b0}}), 
+    .in3(jal_targetE), 
     .sel(PCSrcE),
     .out(next_pc)
 );
@@ -172,6 +207,8 @@ control_unit CU(
     .op(InstrD[6:0]),
     .funct3(InstrD[14:12]),
     .funct7b5(InstrD[30]),
+    .Jalr(Jalr),
+
 
     .ResultSrc(ResultSrc),
     .MemWrite(MemWrite),
@@ -181,12 +218,13 @@ control_unit CU(
     .RegWrite(RegWrite),
 
     .Branch(Branch),
-    .Jump(Jump)
+    .Jump(Jump),
+    .StoreSize(StoreSizeD)
 );
 
 // Sign_extend 
 sign_extend SE(
-    .instr(InstrD[31:7]),
+    .instr(InstrD),
     .ImmSrc(ImmSrc),
     .ImmOp(ImmOp)
 );
@@ -194,8 +232,8 @@ sign_extend SE(
 // reg file
 reg_file #(DATA_WIDTH) RF (
     .clk(clk),
-    .AD1(InstrD[19:15]),
-    .AD2(InstrD[24:20]),
+    .AD1(Rs1D),
+    .AD2(Rs2D),
     .AD3(WriteRegW),
     .WE3(RegWriteW),
     .WD3(WD3),
@@ -210,8 +248,9 @@ data_mem #(
     .clk(clk),
     .ALUResult(ALUOutM),    // memory address
     .WriteData(WriteDataM),       // data to write
-    .WE(MemWriteM),         // from control unit
-    .RD(ReadData)          // output data
+    .MemWrite(MemWriteM),         // from control unit
+    .RD(ReadData),          // output data
+    .StoreSize(StoreSizeM)
 );
 
 //alu
@@ -251,6 +290,9 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .StallD(StallD),     // from Hazard Unit
     .FlushE(FlushE),     // also from Hazard Unit
 
+    .JalrD(Jalr),
+    .JalrE(JalrE),
+
     // Control signals in D
     .RegWriteD(RegWrite),
     .ResultSrcD(ResultSrc),
@@ -264,9 +306,9 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .RD1D(RD1),
     .RD2D(RD2),
     .PCD(PCD),
-    .Rs1D(InstrD[19:15]),
-    .Rs2D(InstrD[24:20]),
-    .RdD(InstrD[11:7]),
+    .Rs1D(Rs1D),
+    .Rs2D(Rs2D),
+    .RdD(RdD),
     .ExtImmD(ImmOp),
     .PCPlus4D(PCPlus4D),
 
@@ -286,35 +328,42 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .Rs2E(Rs2E),
     .RdE(RdE),
     .ExtImmE(ExtImmE),
-    .PCPlus4E(PCPlus4E)
+    .PCPlus4E(PCPlus4E),
+
+    .StoreSizeD(StoreSizeD),
+    .StoreSizeE(StoreSizeE)
 );
+
+logic MemtoRegE_real;
+assign MemtoRegE_real = (ResultSrcE == 2'b01);
 
 EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .clk(clk),
     .reset(rst),
 
-    // From EX stage
     .RegWriteE(RegWriteE),
-    .MemtoRegE(ResultSrcE[0]),   // If MemToReg is encoded in ResultSrc
+    .MemtoRegE(MemtoRegE_real),
     .MemWriteE(MemWriteE),
     .ALUOutE(ALUoutE),
-    .WriteDataE(SrcBE_preALUSrc),
+    .WriteDataE(RD2E),
     .WriteRegE(RdE),
     .ResultSrcE(ResultSrcE),
     .ExtImmE(ExtImmE),
     .PCPlus4E(PCPlus4E),
 
-    // Outputs to MEM stage
     .RegWriteM(RegWriteM),
     .MemtoRegM(MemtoRegM),
     .MemWriteM(MemWriteM),
+    .ResultSrcM(ResultSrcM),
+    .ExtImmM(ExtImmM),
+    .PCPlus4M(PCPlus4M),
     .ALUOutM(ALUOutM),
     .WriteDataM(WriteDataM),
     .WriteRegM(WriteRegM),
 
-    .ResultSrcM(ResultSrcM),
-    .ExtImmM(ExtImmM),
-    .PCPlus4M(PCPlus4M)
+    .StoreSizeE(StoreSizeE),
+    .StoreSizeM(StoreSizeM),
+    .FlushM(PCSrcE != 2'b00)
 );
 
 ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
@@ -323,7 +372,7 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
 
     // From MEM stage
     .RegWriteM(RegWriteM),
-    .MemtoRegM(MemtoRegM),
+    //.MemtoRegM(MemtoRegM),
     .ALUOutM(ALUOutM),
     .ReadDataM(ReadData),
     .WriteRegM(WriteRegM),
@@ -334,7 +383,7 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
 
     // Outputs to WB stage
     .RegWriteW(RegWriteW),
-    .MemtoRegW(MemtoRegW),
+    // .MemtoRegW(MemtoRegW),
     .ALUOutW(ALUOutW),
     .ReadDataW(ReadDataW),
     .WriteRegW(WriteRegW),
@@ -344,8 +393,8 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
 );
 
 HazardUnit HZ (
-    .RsD(InstrD[19:15]),     // rs1 in Decode stage
-    .RtD(InstrD[24:20]),     // rs2 in Decode stage
+    .RsD(Rs1D),     // rs1 in Decode stage
+    .RtD(Rs2D),     // rs2 in Decode stage
 
     .RsE(Rs1E),             // from ID/EX pipeline register
     .RtE(Rs2E),             // from ID/EX pipeline register
@@ -353,7 +402,7 @@ HazardUnit HZ (
     .WriteRegE(RdE),        // EX destination register
     .WriteRegM(WriteRegM),  // MEM destination register
 
-    .MemtoRegE(ResultSrcE[0]),  // EX loads
+    .MemtoRegE(MemtoRegE_real),  // EX loads
     .MemtoRegM(MemtoRegM),      // MEM loads
     .RegWriteE(RegWriteE),      // EX regwrite
     .RegWriteM(RegWriteM),      // MEM regwrite
@@ -362,12 +411,14 @@ HazardUnit HZ (
 
     .StallF(StallF),        // ⟵ connect to IF/ID reg
     .StallD(StallD),        // ⟵ connect to ID/EX reg
-    .FlushE_hazard(FlushE_hazard)         // ⟵ connect to ID/EX flush
+    .FlushE_hazard(FlushE_hazard),         // ⟵ connect to ID/EX flush
+
+    .JalrD(Jalr)
 );
 
 ForwardingUnit FW (
-    .RsD(InstrD[19:15]),
-    .RtD(InstrD[24:20]),
+    .RsD(Rs1D),
+    .RtD(Rs2D),
 
     .RsE(Rs1E),
     .RtE(Rs2E),
@@ -421,6 +472,8 @@ mux4 #(DATA_WIDTH) RESULT_MUX (
     .out(WD3)
 );
 
+// assign ZeroE = (SrcAE == SrcBE_preALUSrc); 
+
 
 //testing: 
 
@@ -431,6 +484,27 @@ always_ff @(posedge clk) begin
     if (!rst) begin
         $display("DBG: PC=%h PCE=%h InstrD=%h BranchE=%b ZeroE=%b PCSrcE=%b branch_targetE=%h",
                  pc, PCE, InstrD, BranchE, ZeroE, PCSrcE, branch_targetE);
+        $display("WriteDataM=%h ALUOutM=%h", WriteDataM, ALUOutM);
+        $display("D-STAGE: PC=%h InstrD=%h RD1=%h RD2=%h RegWrite=%b MemWriteD=%b FlushE=%b ForwardBE=%b",
+             PCD, InstrD, RD1, RD2, RegWrite, MemWriteD, FlushE, ForwardBE);
+        $display("FlushE_hazard=%b FlushE=%b", FlushE_hazard, FlushE);
+        // Detect the ADD instruction for t3 + t4 → a0
+    if (instr_o[6:0] == 7'b0110011 && instr_o[14:12] == 3'b000) begin
+        $display("[ADD-STAGE]");
+        $display("  Rs1E=%0d Rs2E=%0d RdE=%0d", Rs1E, Rs2E, RdE);
+        $display("  RD1E(raw before fwd)=%h  RD2E(raw before fwd)=%h", RD1E, RD2E);
+        $display("  SrcAE(after fwd)=%h  SrcBE_preALUSrc(after fwd)=%h", SrcAE, SrcBE_preALUSrc);
+        $display("  ForwardAE=%b ForwardBE=%b", ForwardAE, ForwardBE);
+    end
+    // Detect load instructions for debugging
+    if (instr_o[6:0] == 7'b0000011) begin
+        $display("[LOAD]");
+        $display("  RdD=%0d ImmOp=%h ALUOutE=%h ReadDataM=%h", RdD, ImmOp, ALUoutE, ReadData);
+    end
+
+
+
+
     end
 end
 

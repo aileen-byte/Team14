@@ -23,12 +23,17 @@ module instr_mem #(
         $readmemh(program_file, memory);
     end
 
+    localparam ADDR_BITS = $clog2(MEM_BYTES);
+    logic [ADDR_BITS-1:0] addr;
+    assign addr = A[ADDR_BITS-1:0];
+
     // Prevent out-of-range access
-    logic out_of_range = ((A+3) >= MEM_BYTES);
+    logic out_of_range;
+    assign out_of_range = ((addr+3) >= MEM_BYTES);
 
     // Little-endian assembly of the 32-bit instruction
     // Little-endian assembly of 32-bit instruction
     assign RD = out_of_range
                 ? 32'h00000013        // NOP (ADDI x0,x0,0)
-                : { memory[A+3], memory[A+2], memory[A+1], memory[A] };
+                : { memory[addr+3], memory[addr+2], memory[addr+1], memory[addr] };
 endmodule
