@@ -363,7 +363,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
 
     .StoreSizeE(StoreSizeE),
     .StoreSizeM(StoreSizeM),
-    .FlushM(PCSrcE != 2'b00)
+    .FlushM(1'b0)
 );
 
 ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
@@ -488,19 +488,7 @@ always_ff @(posedge clk) begin
         $display("D-STAGE: PC=%h InstrD=%h RD1=%h RD2=%h RegWrite=%b MemWriteD=%b FlushE=%b ForwardBE=%b",
              PCD, InstrD, RD1, RD2, RegWrite, MemWriteD, FlushE, ForwardBE);
         $display("FlushE_hazard=%b FlushE=%b", FlushE_hazard, FlushE);
-        // Detect the ADD instruction for t3 + t4 → a0
-    if (instr_o[6:0] == 7'b0110011 && instr_o[14:12] == 3'b000) begin
-        $display("[ADD-STAGE]");
-        $display("  Rs1E=%0d Rs2E=%0d RdE=%0d", Rs1E, Rs2E, RdE);
-        $display("  RD1E(raw before fwd)=%h  RD2E(raw before fwd)=%h", RD1E, RD2E);
-        $display("  SrcAE(after fwd)=%h  SrcBE_preALUSrc(after fwd)=%h", SrcAE, SrcBE_preALUSrc);
-        $display("  ForwardAE=%b ForwardBE=%b", ForwardAE, ForwardBE);
-    end
-    // Detect load instructions for debugging
-    if (instr_o[6:0] == 7'b0000011) begin
-        $display("[LOAD]");
-        $display("  RdD=%0d ImmOp=%h ALUOutE=%h ReadDataM=%h", RdD, ImmOp, ALUoutE, ReadData);
-    end
+
 
 
 
