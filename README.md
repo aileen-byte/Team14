@@ -42,7 +42,7 @@ We further enhanced the design by refining the pipeline’s hazard management an
 |--------------|--------|-----------|----------|--------|
 | ALU          |        |           |          | w      |
 | Branch_adder |        | w         |          |        |
-| Control Unit | w      | w         |          |        |
+| Control Unit | w      | w         | w        |        |
 | Data_mem     | w      |           |          | w      |
 | Instr_mem    | c      |           | w        |        |
 | JALR_mask    | w      |           |          |        |
