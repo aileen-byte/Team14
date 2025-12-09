@@ -25,7 +25,7 @@ COMMMENT: address the github structure and where everything is located
 | Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
 
 
-## Overall CPU Schematic
+## Overall CPU Diagram 
 <img width="1730" height="1517" alt="image" src="https://github.com/user-attachments/assets/84beb0f5-f25e-4e65-8608-31cf88b1cb7a" />
 
 ## Single Cycle RISC-V Processor 
@@ -51,8 +51,9 @@ COMMMENT: address the github structure and where everything is located
 w - main module writer 
 c - contributor 
 
+### Single Cycle CPU Diagram 
 
-
+<img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/49efff98-43ca-4516-9d4f-21e770b9ed4d" />
 
 
 
