@@ -8,12 +8,13 @@ A reflection on what you might do differently if you were to start again.
 ## Repo structure 
 
 ## Details and personal statements 
-| Name | CID | Email | Link to personal statement |
-|------|--------|-----|-------|----------------------------|
-|Aileen Sangalli| 02561984 | aileen.sangalli24@imperial.ac.uk|   | 
-|Jeshmeera Siventhiran| 02561534 | jeshmeera.siventhiran24@imperial.ac.uk | |
-|Phillipa Flintoff| 02596628 | phillipa.flintoff24@imperial.ac.uk | |
-|Venice Gainfort-Head| 02559434 | venice.gainfort-head24@imperial.ac.uk | | 
+| Name                  | CID      | Email                                   | Link to personal statement |
+|-----------------------|----------|-----------------------------------------|-----------------------------|
+| Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        |                             |
+| Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  |                             |
+| Phillipa Flintoff     | 02596628 | phillipa.flintoff24@imperial.ac.uk      |                             |
+| Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
+
 
 
 ## overall CPU 
