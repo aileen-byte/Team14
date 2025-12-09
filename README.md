@@ -14,6 +14,8 @@ A reflection on what you might do differently if you were to start again.
 ## Repo structure 
 As a team, we each worked on our own branches while keeping main for finalized, tested CPU versions. After completing a section, we merged our branch into main and removed any no-longer-needed branches to maintain a clear, tidy repository for examination.
 
+COMMMENT: address the github structure and where everything is located 
+
 ## Details and personal statements 
 | Name                  | CID      | Email                                   | Link to personal statement |
 |-----------------------|----------|-----------------------------------------|-----------------------------|
@@ -22,10 +24,14 @@ As a team, we each worked on our own branches while keeping main for finalized, 
 | Phillipa Flintoff     | 02596628 | phillipa.flintoff24@imperial.ac.uk      |                             |
 | Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
 
+
 ## Overall CPU Schematic
 <img width="1730" height="1517" alt="image" src="https://github.com/user-attachments/assets/84beb0f5-f25e-4e65-8608-31cf88b1cb7a" />
 
-## testing 
+## Single Cycle RISC-V Processor 
+
+### Task allocation 
+
 
 
 ## Introduction 
