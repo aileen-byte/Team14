@@ -32,20 +32,24 @@ COMMMENT: address the github structure and where everything is located
 
 ### Task allocation 
 
-Modules | Aileen | Jeshmeera | Phillipa | Venice | 
-ALU |  |  |  |  w | 
-Branch_adder |  | w |  |   | 
-Control Unit | w | w |  |   | 
-Data_mem | w |  |  |  w | 
-Instr_mem | c |  | w |   | 
-JALR_mask | w |  |  |   | 
-Load_selc | w |  |  |   | 
-mux4 |  |  |  |  w | 
-pc_plus_4 |  | w |  |   | 
-pc_reg |  | w |  |   | 
-reg_file |  c |  |  | w | 
-sign_extend |  |  | w |  | 
-top |  | w| w| w|
+| Modules      | Aileen | Jeshmeera | Phillipa | Venice |
+|--------------|--------|-----------|----------|--------|
+| ALU          |        |           |          | w      |
+| Branch_adder |        | w         |          |        |
+| Control Unit | w      | w         |          |        |
+| Data_mem     | w      |           |          | w      |
+| Instr_mem    | c      |           | w        |        |
+| JALR_mask    | w      |           |          |        |
+| Load_selc    | w      |           |          |        |
+| mux4         |        |           |          | w      |
+| pc_plus_4    |        | w         |          |        |
+| pc_reg       |        | w         |          |        |
+| reg_file     | c      |           |          | w      |
+| sign_extend  |        |           | w        |        |
+| top          |        | w         | w        | w      |
+
+w - main module writer 
+c - contributor 
 
 
 
