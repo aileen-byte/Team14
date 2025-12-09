@@ -82,9 +82,10 @@ Extra:
 | I    | ori                | ori rd, rs1, imm        | or immediate        | rd = rs1 OR signext(imm)         |
 | B    | beq                | beq rs1, rs2, label     | branch if equal     | if (rs1 == rs2) PC = BTA          |
 
-
-
 ### Testing 
+See below our single cpu passing all of the five tests given in verify.cpp: 
+
+<img width="946" height="635" alt="image" src="https://github.com/user-attachments/assets/61517bb8-e4b3-4d5a-a9f8-b58a875b726a" />
 
 ## Pipeline 
 ## Cache 
