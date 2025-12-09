@@ -5,7 +5,7 @@ A reflection on what you might do differently if you were to start again.
 
 # Team 14 – RISC-V CPU Project
 
-[Go to Single Cycle CPU](#overall-cpu-schematic) /n
+[Go to Single Cycle CPU](#overall-cpu-schematic) '/n'
 [Go to Pipelined CPU]()
 [Go to Pipelined and Cache CPU]()
 
