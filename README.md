@@ -61,6 +61,26 @@ c - contributor
 
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/49efff98-43ca-4516-9d4f-21e770b9ed4d" />
 
+### Instructions Implemented 
+#### J-type
+jal
+#### I-type
+jalr
+lbu
+addi
+#### S-type
+sb
+#### B-type
+bne
+#### U-type
+lui
+#### R-type
+add
+#### Extra ones
+ori
+beq
+
+
 ### Testing 
 
 ## Pipeline 
