@@ -21,18 +21,24 @@ COMMMENT: address the github structure and where everything is located
 |-----------------------|----------|-----------------------------------------|-----------------------------|
 | Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        |                             |
 | Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  |                             |
-| Phillipa Flintoff     | 02596628 | phillipa.flintoff24@imperial.ac.uk      |                             |
+| Phillippa Flintoff     | 02596628 | phillippa.flintoff24@imperial.ac.uk      |                             |
 | Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
 
+## Introduction 
+
+Our project implements a fully functional 5-stage pipelined RISC-V RV32I processor, supporting all base user-level instructions defined in the RISC-V Unprivileged ISA. The design follows the classical pipeline structure of Fetch, Decode, Execute, Memory, and Writeback, and incorporates full hazard detection, stalling, and data forwarding to ensure correct execution of dependent instructions. We implemented the complete processor in SystemVerilog, following a modular architecture that allowed us to iteratively verify, refine, and extend each stage.
+
+We further enhanced the design by refining the pipeline’s hazard management and forwarding paths to maintain high instruction throughput with minimal stalling. In addition, we implemented a simple Level-1 cache that interfaces with the Memory stage, reducing load/store latency and improving overall processor performance.
 
 ## Overall CPU Diagram 
+
 <img width="1730" height="1517" alt="image" src="https://github.com/user-attachments/assets/84beb0f5-f25e-4e65-8608-31cf88b1cb7a" />
 
 ## Single Cycle RISC-V Processor 
 
 ### Task allocation 
 
-| Modules      | Aileen | Jeshmeera | Phillipa | Venice |
+| Modules      | Aileen | Jeshmeera | Phillippa | Venice |
 |--------------|--------|-----------|----------|--------|
 | ALU          |        |           |          | w      |
 | Branch_adder |        | w         |          |        |
@@ -55,17 +61,6 @@ c - contributor
 
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/49efff98-43ca-4516-9d4f-21e770b9ed4d" />
 
-
-
-## Introduction 
-
-Our project implements a fully functional 5-stage pipelined RISC-V RV32I processor, supporting all base user-level instructions defined in the RISC-V Unprivileged ISA. The design follows the classical pipeline structure of Fetch, Decode, Execute, Memory, and Writeback, and incorporates full hazard detection, stalling, and data forwarding to ensure correct execution of dependent instructions. We implemented the complete processor in SystemVerilog, following a modular architecture that allowed us to iteratively verify, refine, and extend each stage.
-
-A central focus of our project was achieving correct behaviour under all pipeline interactions, particularly load-use hazards, branch mispredictions, and back-to-back ALU dependencies. To handle these reliably, we built a dedicated Hazard Unit that generates stall and flush signals, as well as a Forwarding Unit that selects the correct operand sources from later pipeline stages. These components ensure that the CPU maintains high throughput while preserving architectural correctness.
-
-To support debugging and verification, we integrated our processor with GTKWave and produced detailed cycle accurate traces for each reference program. This workflow was essential for diagnosing subtle pipeline bugs such as incorrectly forwarded values, missed flushes on taken branches, and misaligned immediate values. Through this process, we developed a deep understanding of pipeline timing behaviour and the interactions between control and data paths.
-
-## Single cycle 
 ## Standard Components 
 
 One of the earliest parts of the project we completed was the arithmetic logic unit (ALU), which became the foundation for almost everything that followed. Our ALU supports all RV32I base instructions we needed for the reference programs, covering arithmetic, logical, shift and comparison operations. We chose not to implement FENCE, CSR or environment instructions, as these would have required a large amount of additional hardware for functionality that our single-core design would never use. Keeping the ALU focused on the core RV32I operations helped us maintain clarity while building the rest of the pipeline around it.
