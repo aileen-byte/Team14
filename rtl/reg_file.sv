@@ -16,44 +16,34 @@ module reg_file #(
     // Outputs
     output  logic [DATA_WIDTH-1:0]  RD1,
     output  logic [DATA_WIDTH-1:0]  RD2,
+    output  logic [DATA_WIDTH-1:0]  x0,
+    output  logic [DATA_WIDTH-1:0]  t0, 
+    output  logic [DATA_WIDTH-1:0]  t1,
+    output  logic [DATA_WIDTH-1:0]  t3,
+    output  logic [DATA_WIDTH-1:0]  t4,
+    output logic [DATA_WIDTH-1:0] a1,
+    output logic [DATA_WIDTH-1:0] a2,
+    output logic [DATA_WIDTH-1:0] a3,
+    output logic [DATA_WIDTH-1:0] a4,
+    output logic [DATA_WIDTH-1:0] a5,
+    output logic [DATA_WIDTH-1:0] a6,
     output  logic [DATA_WIDTH-1:0]  a0
 );
-
-    // 32 registers of 32 bits
     logic [DATA_WIDTH-1:0] regs [31:0];
 
-    // ================================================================
-    // Register reset (optional: RISC-V only mandates x0=0)
-    // ================================================================
-    always_ff @(posedge rst) begin
-        integer i;
-        for (i = 0; i < 32; i++)
-            regs[i] <= '0;
-    end
-
-    // ================================================================
-    // WRITE — must occur on FALLING EDGE for pipelined CPU
-    // ================================================================
     always_ff @(negedge clk) begin
-        if (!rst) begin
-            if (WE3 && (AD3 != 5'd0)) begin
-                $display("RF WRITE @ %0t: x%0d <= 0x%08h", $time, AD3, WD3);
-                regs[AD3] <= WD3;
-            end
+        if (rst) begin
+            for (int i = 0; i < 32; i++)
+                regs[i] <= 32'b0;
+        end 
+        else if (WE3 && AD3 != 0) begin
+            regs[AD3] <= WD3;  
         end
-
-        // enforce x0 = 0 after every write cycle
-        regs[0] <= '0;
     end
 
-    // ================================================================
-    // ASYNCHRONOUS READS — required by RV32I microarchitecture
-    // ================================================================
-    assign RD1 = regs[AD1];
+    assign RD1 = regs[AD1]; 
     assign RD2 = regs[AD2];
 
-    // Debug port: x10 (a0)
     assign a0 = regs[10];
-
 endmodule
 

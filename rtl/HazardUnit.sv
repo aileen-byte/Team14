@@ -1,49 +1,32 @@
 module HazardUnit (
-    input logic [4:0] RsD, RtD,
-    input logic [4:0] RsE, RtE,
-    input logic [4:0] WriteRegE, WriteRegM,
-    input logic MemtoRegE, MemtoRegM,
-    input logic RegWriteE, RegWriteM,
-    input logic BranchD,
-    input logic JalrD,
+    input logic [4:0] RsD, RtD, //Rs1d, Rs2d
+    input logic [4:0] WriteRegE, //RdE
+    input logic [1:0] ResultSrcE,
+    input logic [1:0] PCSrcE,
 
     output logic StallF, 
     output logic StallD, 
-    output logic FlushE_hazard
+    output logic FlushD,
+    output logic FlushE
 );
 
 logic lwstall; 
-logic branchstall; 
-logic jalrstall;
+logic bj;
 
-// LOAD-USE
+// Stall when a load hazard occurs
 always_comb begin
-    lwstall = MemtoRegE &&
-              (WriteRegE != 5'd0) &&
-              ((RsD == WriteRegE) || (RtD == WriteRegE));
+    lwstall = (ResultSrcE == 2'b01) && (WriteRegE != 0) && ((RsD == WriteRegE) || (RtD == WriteRegE));
+    StallF = lwstall;
+    StallD = lwstall;
+    if (PCSrcE != 2'b00) begin
+        bj = 1'b1;
+    end
+    else begin 
+        bj = 1'b0;
+    end
+    FlushD = bj;
+    FlushE = lwstall || bj;
 end
-
-// BRANCH STALL: only stall on EX result or MEM-stage load
-always_comb begin
-    branchstall = BranchD &&
-                  (
-                     (RegWriteE && (WriteRegE == RsD || WriteRegE == RtD)) ||
-                     (MemtoRegM && (WriteRegM == RsD || WriteRegM == RtD))
-                  );
-end
-
-// JALR stall: same as branch but only depends on RsD
-always_comb begin
-    jalrstall = JalrD &&
-                (
-                   (RegWriteE && WriteRegE == RsD) ||
-                   (MemtoRegM && WriteRegM == RsD)
-                );
-end
-
-assign StallF = lwstall | branchstall | jalrstall;
-assign StallD = lwstall | branchstall | jalrstall;
-assign FlushE_hazard = lwstall | branchstall | jalrstall;
 
 endmodule
 

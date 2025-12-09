@@ -4,7 +4,7 @@ module IF_ID_Reg #(
     input   logic                   clk, 
     input   logic                   rst, 
 
-    input   logic                   StallF, 
+    input   logic                   StallD, 
     input   logic                   FlushD,
 
     input   logic [DATA_WIDTH-1:0]  PCF,
@@ -23,7 +23,7 @@ always_ff @(posedge clk) begin
         PCPlus4D        <= '0; 
         InstrD          <= '0; 
     end 
-    else if (!StallF) begin 
+    else if (!StallD) begin 
         PCD             <= PCF;
         PCPlus4D        <= PCPlus4F; 
         InstrD          <= InstrF;
