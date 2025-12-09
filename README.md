@@ -53,6 +53,7 @@ We further enhanced the design by refining the pipeline’s hazard management an
 | reg_file     | c      |           |          | w      |
 | sign_extend  |        |           | w        |        |
 | top          |        | w         | w        | w      |
+|f1_asm.s      | w      | w         |          |        |       
 
 w - main module writer 
 c - contributor 
@@ -86,6 +87,8 @@ Extra:
 See below our single cpu passing all of the five tests given in verify.cpp: 
 
 <img width="946" height="635" alt="image" src="https://github.com/user-attachments/assets/61517bb8-e4b3-4d5a-a9f8-b58a875b726a" />
+
+
 
 ## Pipeline 
 ## Cache 
