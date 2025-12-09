@@ -5,8 +5,11 @@ A reflection on what you might do differently if you were to start again.
 
 # Team 14 – RISC-V CPU Project
 
-## Repo structure 
+[Go to Single Cycle CPU](#overall-cpu-schematic)
+[Go to Pipelined CPU]()
+[Go to Pipelined and Cache CPU]()
 
+## Repo structure 
 As a team, we each worked on our own branches while keeping main for finalized, tested CPU versions. After completing a section, we merged our branch into main and removed any no-longer-needed branches to maintain a clear, tidy repository for examination.
 
 ## Details and personal statements 
