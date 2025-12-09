@@ -15,9 +15,9 @@ A reflection on what you might do differently if you were to start again.
 | Phillipa Flintoff     | 02596628 | phillipa.flintoff24@imperial.ac.uk      |                             |
 | Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
 
+## Overall CPU Schematic
+<img width="1730" height="1517" alt="image" src="https://github.com/user-attachments/assets/84beb0f5-f25e-4e65-8608-31cf88b1cb7a" />
 
-
-## overall CPU 
 
 ## testing 
 
