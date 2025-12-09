@@ -62,24 +62,26 @@ c - contributor
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/49efff98-43ca-4516-9d4f-21e770b9ed4d" />
 
 ### Instructions Implemented 
-#### J-type
-jal
-#### I-type
-jalr
-lbu
-addi
-#### S-type
-sb
-#### B-type
-bne
-#### U-type
-lui
-#### R-type
-add
-#### Extra ones
-ori
 
-beq
+| Type | Pseudoinstruction | RISC-V Instruction     | Description              | Operation                       |
+|------|--------------------|-------------------------|--------------------------|----------------------------------|
+| J    | jal label          | jal ra, label           | jump and link            | PC = LABEL, ra = PC + 4          |
+| I    | jalr rs1           | jalr ra, rs1, 0         | jump and link register   | PC = rs1, ra = PC + 4            |
+| I    | lbu                | lbu rd, Imm(rs1)        | load byte unsigned       | rd = ZeroExt([Address]7:0)       |
+| I    | addi               | addi rd, rs1, Imm       | add immediate            | rd = rs1 + signext(Imm)          |
+| S    | sb                 | sb rs2, Imm(rs1)        | store byte               | [Address]7:0 = rs2[7:0]          |
+| B    | bne                | bne rs1, rs2, label     | branch if not equal      | if (rs1 ≠ rs2) PC = BTA          |
+| U    | lui                | lui rd, upImm           | load upper immediate     | rd = {upImm, 12'b0}              |
+| R    | add                | add rd, rs1, rs2        | add                      | rd = rs1 + rs2                   |
+
+
+Extra: 
+
+| Type | Pseudoinstruction | RISC-V Instruction     | Description         | Operation                       |
+|------|--------------------|-------------------------|---------------------|----------------------------------|
+| I    | ori                | ori rd, rs1, imm        | or immediate        | rd = rs1 OR signext(imm)         |
+| B    | beq                | beq rs1, rs2, label     | branch if equal     | if (rs1 == rs2) PC = BTA          |
+
 
 
 ### Testing 
