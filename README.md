@@ -130,7 +130,7 @@ Our team successfully implemented a pipelined RISC-V processor that executes mul
 | ME_WR_Reg      | c      |           |          | w      | 
 | HazardUnit     | c      | w         |          |        | 
 | ForwardingUnit | c      | w         |          |        | 
-| top            |        |           | w        |        |   
+| top            |        | w         | w        | w      |   
 | Regfile        |        |           | c        |        | 
 
 w - main module writer 
