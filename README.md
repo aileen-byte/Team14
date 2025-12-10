@@ -56,6 +56,7 @@ We further enhanced the design by refining the pipeline’s hazard management an
 |f1_asm.s      | w      | w         |          |        |       
 
 w - main module writer 
+
 c - contributor 
 
 ### Single Cycle CPU Diagram 
@@ -128,6 +129,7 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 | top            |        |           | w        |        |   
 
 w - main module writer 
+
 c - contributor 
 
 ### Pipelined CPU Diagram 
