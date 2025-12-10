@@ -150,14 +150,26 @@ Our pipelined processor successfully executed all .mem test programs, producing 
 
 ## Cache 
 
-
+As a team, we successfully integrated a set-associative L1 data cache to the pipelined RISC-V processor to keep frequenctly accessed memory closer to the processor for faster access. The cache uses temporal and spatial locality to decide which data should remain in the cache and which data should be evicted. 
 
 ### Task allocation 
 
+| Modules        | Aileen | Jeshmeera | Phillippa| Venice |
+|----------------|--------|-----------|----------|--------|
+| Cache          | w      |           | w        |        |
 
+w - main module writer 
 
+c - contributor 
 
-## Design Overview 
+### Memory heirarchy 
+
+graph TB
+    A[CPU]
+    B[L1 Cache<br>1 KiB<br>4-byte blocks]
+    C[Main Memory]
+
+    A --> B --> C
 
 ## Challenges Faced 
 
