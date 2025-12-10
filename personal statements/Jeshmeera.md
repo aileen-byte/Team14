@@ -70,9 +70,15 @@ In the pipelined processor, the pipeline registers separate the five execution s
 
 ### Piplined CPU diagram 
 
+<img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/db612f5d-4e9b-4287-a086-24f910e52c40" />
 
+The structure of our pipeline registers was directly influenced by the pipelined datapath diagrams presented in Digital Design and Computer Architecture (RISC-V Edition) by Harris and Harris. This visual guidance strongly shaped our organisation and wiring of each register, helping us maintain proper instruction flow and accurately replicate the behaviour of a standard RISC-V pipelined processor.
 
+Venice and I acted as the lead designers for this section. We followed this layout closely when designing our pipeline registers, ensuring that each register captured the correct data and control signals on every clock edge. The textbook diagrams made clear which signals needed to be carried between stages—such as instruction fields, immediates, ALU results, and writeback controls—and how these values must remain stable for the subsequent stage while the next instruction progresses behind it.
 
+I took on the task of designing the IF/ID and ID/EX registers while Venice completed the remaining two, a deliberate decision that allowed us to implement the pipeline quickly and efficiently and minimise errors before moving on to the Hazard Unit. 
+
+Aileen played a crucial role in debugging and testing the pipelined design, making small but essential corrections where Venice and I had overlooked details to ensure proper functionality.
 
 ## Hazard Unit 
 
