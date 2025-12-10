@@ -35,7 +35,7 @@ Pipelined processor
 
 ## Pipeline Registers 
 
-## Mux Types 
+## Mux 
 
 ## Forwarding Unit
 
