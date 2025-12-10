@@ -173,6 +173,8 @@ graph TB
     B <--> C
 ```
 
+In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design. 
+
 ## Challenges Faced 
 
 ### 1. Integrating individually correct modules into a pipelined system
