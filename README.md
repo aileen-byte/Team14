@@ -24,13 +24,14 @@ As a team, we each worked on our own branches while keeping main for finalized, 
 COMMMENT: address the github structure and where everything is located 
 
 ## Details and personal statements 
-| Name                  | CID      | Email                                   | Link to personal statement |
-|-----------------------|----------|-----------------------------------------|-----------------------------|
-| Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        |  [Aileen](personal%20statements/Aileen)
-|
-| Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  |                             |
-| Phillippa Flintoff     | 02596628 | phillippa.flintoff24@imperial.ac.uk      |                             |
-| Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   |                             |
+
+| Name                  | CID      | Email                                   | Link to personal statement                         |
+|-----------------------|----------|-----------------------------------------|-----------------------------------------------------|
+| Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        | [Aileen](personal%20statements/Aileen)              |
+| Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  | [Jeshmeera](personal%20statements/Jeshmeera)        |
+| Phillippa Flintoff    | 02596628 | phillippa.flintoff24@imperial.ac.uk     | [Phillippa](personal%20statements/Phillippa)        |
+| Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   | [Venice](personal%20statements/Venice)              |
+
 
 ## Introduction 
 
