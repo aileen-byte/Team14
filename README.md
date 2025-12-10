@@ -97,7 +97,6 @@ https://github.com/user-attachments/assets/1cd3efb5-847b-40b7-86f0-a89b948396de
 
 https://github.com/user-attachments/assets/57de37f1-a582-495e-95b6-ba75b1612954
 
-
 #### triangle.mem 
 
 https://github.com/user-attachments/assets/d6829022-59fc-400f-8bea-2608a3759b34
@@ -111,8 +110,29 @@ We tested this using the data from lab 2.
 
 https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
-## Pipeline 
+## Pipelined RISC-V Processor
 
+### Task allocation 
+
+| Modules        | Aileen | Jeshmeera | Phillippa | Venice |
+|----------------|--------|-----------|----------|--------|
+| Control Unit   | w      |           |          |        |
+| mux3           |        |           |          | w      |
+| pc_source      | w      |           |          |        | 
+| IF_ID_Reg      | c      | w         |          |        | 
+| ID_EX_Reg      | c      | w         |          |        |
+| EX_Me_Reg      | c      |           |          | w      | 
+| ME_WR_Reg      | c      |           |          | w      | 
+| HazardUnit     | c      | w         |          |        | 
+| ForwardingUnit | c      | w         |          |        | 
+| top            |        |           | w        |        |   
+
+w - main module writer 
+c - contributor 
+
+### Pipelined CPU Diagram 
+
+<img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/c2bdd5ac-5599-413b-8615-76af48574edf" />
 
 ## Cache 
 
