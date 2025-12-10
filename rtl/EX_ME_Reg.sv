@@ -5,28 +5,28 @@ module EX_ME_Reg #(
     input  logic                reset,
 
     // Control + data from EX stage
-    input  logic                RegWriteE,
-    input  logic                MemWriteE,
-    input  logic [1:0]           ResultSrcE,
-    input  logic [DATA_WIDTH-1:0] ALUOutE,
-    input  logic [DATA_WIDTH-1:0] WriteDataE,
-    input  logic [4:0]           WriteRegE, //Rd
-    input  logic [DATA_WIDTH-1:0] PCPlus4E,
-    input logic [1:0] LoadSizeE,
+    input  logic                    RegWriteE,
+    input  logic                    MemWriteE,
+    input  logic [1:0]              ResultSrcE,
+    input  logic [DATA_WIDTH-1:0]   ALUOutE,
+    input  logic [DATA_WIDTH-1:0]   WriteDataE,
+    input  logic [4:0]              WriteRegE, //Rd
+    input  logic [DATA_WIDTH-1:0]   PCPlus4E,
+    input logic [1:0]               LoadSizeE,
 
     // Store size for memory writes
     input  logic [1:0]           StoreSizeE,
     output logic [1:0]           StoreSizeM,
 
     // Outputs to MEM stage
-    output logic                RegWriteM,
-    output logic                MemWriteM,
-    output logic [1:0]          ResultSrcM,
-    output logic [DATA_WIDTH-1:0] PCPlus4M,
-    output logic [DATA_WIDTH-1:0] ALUOutM,
-    output logic [DATA_WIDTH-1:0] WriteDataM,
-    output logic [4:0]          WriteRegM,
-    output logic [1:0] LoadSizeM
+    output logic                    RegWriteM,
+    output logic                    MemWriteM,
+    output logic [1:0]              ResultSrcM,
+    output logic [DATA_WIDTH-1:0]   PCPlus4M,
+    output logic [DATA_WIDTH-1:0]   ALUOutM,
+    output logic [DATA_WIDTH-1:0]   WriteDataM,
+    output logic [4:0]              WriteRegM,
+    output logic [1:0]              LoadSizeM
 );
 
     always_ff @(posedge clk) begin
