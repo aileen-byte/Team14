@@ -94,6 +94,10 @@ When Designing the Base implementation of the Hazard detection unit i followed t
 
 Aileen as implementation lead, acted as a co-author in this section, making small but essential alterations to the module to ensure correct functionality. 
 
+Through implementing the Hazard Unit, I developed a clearer understanding of how data and control hazards arise in a pipelined design, how load-use dependencies must be resolved with precise timing, and how stalls and flushes work together to preserve correct execution. 
+
+Although this section stood out as one of the more challenging concepts I had to implement, it proved to be an essential learning experience that strengthened my understanding of hazard handling from the textbook and solidified my SystemVerilog skills.
+
 ## Forwarding Unit
 
 ## Testing 
