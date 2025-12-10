@@ -12,7 +12,7 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#cache) Cache Implementation
 
-[Go to](#further-enhancements) Further Enhancements 
+[Go to](#further-enhancements:-full-rv32i-design) Further Enhancements: Full RV32I Design
 
 [Go to](#future-considerations) Future considerations 
 
@@ -185,7 +185,7 @@ In our Cache implented RISC-V processor, the memory heirarchy places a small, fa
 ### Testing 
 - screenshot gtk wave 
 
-## Further Enhancements 
+## Further Enhancements: Full RV32I Design
 
 
 
