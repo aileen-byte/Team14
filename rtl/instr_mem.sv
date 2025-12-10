@@ -2,9 +2,9 @@ module instr_mem #(
     parameter DATA_WIDTH = 32,
     parameter MEMORY_WIDTH = 1000
 )(
-    input logic rst,
-    input logic [DATA_WIDTH-1:0] A, // Address from PC
-    output logic [DATA_WIDTH-1:0] RD // Insstr output 
+    input  logic                     rst,
+    input  logic [DATA_WIDTH-1:0]    A, // Address from PC
+    output logic [DATA_WIDTH-1:0]    RD // Insstr output 
 );
 
 // Declare mem that stores instructions
