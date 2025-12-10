@@ -163,6 +163,7 @@ w - main module writer
 c - contributor 
 
 ### Memory heirarchy 
+```mermaid
 graph TB
     A[CPU]
     B[L1 Cache<br>1 KiB<br>4-byte blocks]
@@ -170,7 +171,7 @@ graph TB
 
     A <--> B
     B <--> C
-
+```
 
 ## Challenges Faced 
 
