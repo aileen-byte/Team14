@@ -37,22 +37,22 @@ logic [DATA_WIDTH-1:0] ReadData; // output from data memory
 
 //ALU WIRES
 logic [DATA_WIDTH-1:0] ALUoutE;
-logic ZeroE;
+logic                  ZeroE;
 
 logic [DATA_WIDTH-1:0] ImmOp; 
 logic [DATA_WIDTH-1:0] jalrPC;
 
 // DECODE STAGE (D) SIGNALS 
-logic RegWriteD;
-logic [1:0] ResultSrcD;
-logic MemWriteD;
-logic [1:0] JumpD;
-logic [1:0] BranchD;
-logic [2:0] ALUControlD;
-logic ALUSrcD;
-logic [2:0] ImmSrcD;
-logic [1:0] StoreSizeD;
-logic [1:0] LoadSizeD;
+logic         RegWriteD;
+logic [1:0]   ResultSrcD;
+logic         MemWriteD;
+logic [1:0]   JumpD;
+logic [1:0]   BranchD;
+logic [2:0]   ALUControlD;
+logic         ALUSrcD;
+logic [2:0]   ImmSrcD;
+logic [1:0]   StoreSizeD;
+logic [1:0]   LoadSizeD;
 
 logic [4:0] Rs1D, Rs2D, RdD;
 assign Rs1D = InstrD[19:15];
@@ -62,43 +62,43 @@ assign RdD  = InstrD[11:7];
 logic [DATA_WIDTH-1:0] PCD, InstrD, PCPlus4D;
 
 // EXECUTE STAGE (E) SIGNALS 
-logic RegWriteE;
-logic [1:0] ResultSrcE;
-logic MemWriteE;
-logic [1:0] JumpE;
-logic [1:0] BranchE;
-logic [2:0] ALUControlE;
-logic ALUSrcE;
-logic [1:0] StoreSizeE;
-logic [1:0] LoadSizeE;
+logic         RegWriteE;
+logic [1:0]   ResultSrcE;
+logic         MemWriteE;
+logic [1:0]   JumpE;
+logic [1:0]   BranchE;
+logic [2:0]   ALUControlE;
+logic         ALUSrcE;
+logic [1:0]   StoreSizeE;
+logic [1:0]   LoadSizeE;
 
-logic [DATA_WIDTH-1:0] RD1E, RD2E;
-logic [DATA_WIDTH-1:0] PCE;
-logic [4:0] Rs1E, Rs2E, RdE;
-logic [DATA_WIDTH-1:0] ExtImmE;
-logic [DATA_WIDTH-1:0] PCPlus4E;
+logic [DATA_WIDTH-1:0]     RD1E, RD2E;
+logic [DATA_WIDTH-1:0]     PCE;
+logic [4:0]                Rs1E, Rs2E, RdE;
+logic [DATA_WIDTH-1:0]     ExtImmE;
+logic [DATA_WIDTH-1:0]     PCPlus4E;
 
 logic [1:0] PCSrcE;
 
 // MEMORY STAGE (M) SIGNALS
-logic RegWriteM;
-logic MemWriteM;
-logic [DATA_WIDTH-1:0] ALUOutM;
-logic [DATA_WIDTH-1:0] WriteDataM;
-logic [4:0] WriteRegM; //RdM
-logic [1:0] ResultSrcM;
-logic [DATA_WIDTH-1:0] PCPlus4M;
-logic [1:0] StoreSizeM;
-logic [DATA_WIDTH-1:0] ReadDataM;
-logic [1:0] LoadSizeM;
+logic                     RegWriteM;
+logic                     MemWriteM;
+logic [DATA_WIDTH-1:0]    ALUOutM;
+logic [DATA_WIDTH-1:0]    WriteDataM;
+logic [4:0]               WriteRegM; //RdM
+logic [1:0]               ResultSrcM;
+logic [DATA_WIDTH-1:0]    PCPlus4M;
+logic [1:0]               StoreSizeM;
+logic [DATA_WIDTH-1:0]    ReadDataM;
+logic [1:0]               LoadSizeM;
 
 // WRITEBACK STAGE (W) SIGNALS
-logic RegWriteW;
-logic [DATA_WIDTH-1:0] ALUOutW;
-logic [DATA_WIDTH-1:0] ReadDataW;
-logic [4:0] WriteRegW; //RdW
-logic [1:0] ResultSrcW;
-logic [DATA_WIDTH-1:0] PCPlus4W;
+logic                     RegWriteW;
+logic [DATA_WIDTH-1:0]    ALUOutW;
+logic [DATA_WIDTH-1:0]    ReadDataW;
+logic [4:0]               WriteRegW; //RdW
+logic [1:0]               ResultSrcW;
+logic [DATA_WIDTH-1:0]    PCPlus4W;
 
 // HAZARD UNIT SIGNALS
 logic StallF, StallD, FlushD, FlushE;
@@ -211,10 +211,10 @@ data_mem #(
     .DATA_WIDTH(DATA_WIDTH)
 ) DM (
     .clk(clk),
-    .ALUResult(ALUOutM),    // memory address
-    .WriteData(WriteDataM),       // data to write
-    .MemWrite(MemWriteM),         // from control unit
-    .RD(ReadData),          // output data
+    .ALUResult(ALUOutM),    
+    .WriteData(WriteDataM),       
+    .MemWrite(MemWriteM),       
+    .RD(ReadData),          
     .StoreSize(StoreSizeM)
 );
 
@@ -227,8 +227,8 @@ load_selec #(DATA_WIDTH) LS (
 
 //alu
 ALU myALU (
-    .ALUop1(SrcAE),    // forwarded ALU operand A
-    .ALUop2(SrcBE),    // forwarded ALU operand B (after ALUSrc mux)
+    .ALUop1(SrcAE),    
+    .ALUop2(SrcBE),    
     .ALUctrl(ALUControlE),
     .ALUout(ALUoutE),
     .Zero(ZeroE)
@@ -243,14 +243,14 @@ IF_ID_Reg #(.DATA_WIDTH(DATA_WIDTH)) IF_ID (
     .clk(clk),
     .rst(rst),
 
-    .StallD(StallD),    // from Hazard Unit
-    .FlushD(FlushD),    // also from Hazard Unit (branch mispredict)
+    .StallD(StallD),    
+    .FlushD(FlushD),    
 
-    .PCF(pc),           // current PC
-    .PCPlus4F(inc_pc),  // PC+4
-    .InstrF(instr),     // fetched instruction
+    .PCF(pc),           
+    .PCPlus4F(inc_pc),  
+    .InstrF(instr),    
 
-    .PCD(PCD),          // outputs to Decode stage
+    .PCD(PCD),        
     .InstrD(InstrD),
     .PCPlus4D(PCPlus4D)
 );
@@ -259,7 +259,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .clk(clk),
     .rst(rst),
 
-    .FlushE(FlushE),     // also from Hazard Unit
+    .FlushE(FlushE),    
 
     // Control signals in D
     .RegWriteD(RegWriteD),
@@ -353,16 +353,16 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
 );
 
 HazardUnit HZ (
-    .RsD(Rs1D),     // rs1 in Decode stage
-    .RtD(Rs2D),     // rs2 in Decode stage
+    .RsD(Rs1D),    
+    .RtD(Rs2D),   
 
-    .WriteRegE(RdE),        // EX destination register
+    .WriteRegE(RdE),      
 
-    .ResultSrcE(ResultSrcE), // EX-stage load indicator
+    .ResultSrcE(ResultSrcE),
     .PCSrcE(PCSrcE),
 
-    .StallF(StallF),        // ⟵ connect to IF/ID reg
-    .StallD(StallD),        // ⟵ connect to ID/EX reg
+    .StallF(StallF),      
+    .StallD(StallD),      
     .FlushD(FlushD),
     .FlushE(FlushE)
 );
@@ -384,9 +384,9 @@ ForwardingUnit FW (
 
 
 mux3 #(32) FORWARD_A_MUX (
-    .in0(RD1E),     // normal register value
-    .in1(WD3),      // forwarding from WB stage
-    .in2(ALUOutM),  // forwarding from MEM stage
+    .in0(RD1E),     
+    .in1(WD3),    
+    .in2(ALUOutM), 
     .sel(ForwardAE),
     .out(SrcAE)
 );
