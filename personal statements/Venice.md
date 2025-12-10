@@ -42,7 +42,7 @@ During Lab 4, when our group divided the processor components among us, I volunt
 
 ## ALU
 
-The ALU (Arithmetic Logic Unit) is one of the core components of the CPU datapath. Its primary role is to perform the arithmetic and logical operations required by RISC-V instructions. In our implementation, the ALU supports a set of arithmetic operations—ADD and SUB—as well as logical operations such as AND, OR, and XOR. Additionally, a pass-through operation is included, which simply forwards the second operand (ALUop2). A default case is also implemented to set the output to zero for any unsupported ALU control value.
+The ALU (Arithmetic Logic Unit) is one of the core components of the CPU datapath. Its primary role is to perform the arithmetic and logical operations required by RISC-V instructions. In our implementation, the ALU supports a set of arithmetic operations - ADD and SUB - as well as logical operations AND, OR, and XOR. Additionally, a pass-through operation is included, which simply forwards the second operand (ALUop2). A default case is also implemented to set the output to zero for any unsupported ALU control value.
 
 In the earlier Lab 4 design, an explicit equality (EQ) operation existed within the ALU to support branch decisions. However, in the full single-cycle implementation, this operation was removed and replaced with a dedicated Zero logic block. After the ALU computes its result, the Zero output is asserted if the result is equal to zero, implemented as Zero = (ALUout == {DATA_WIDTH{1'b0}});. For branch instructions such as BEQ and BNE, the ALU performs a subtraction between the two source registers, and the Zero signal indicates whether the two values were equal. This simplifies the ALU while still enabling correct branch behaviour under the RISC-V ISA. 
 
@@ -56,7 +56,19 @@ Aileen and I chose to enhance the data memory by introducing the MemWriteSize si
 
 The memory is initialised using a $readmemh call, which loads data from a data.hex file into the memory array at simulation start. Overall, this module provides the necessary data storage and retrieval functionality for load and store instructions while maintaining correct byte addressing, alignment, and memory formatting in accordance with the RISC-V ISA.
 
+## MUX 
+
+The original two-input multiplexer was provided in the initial packet from Peter Cheung, but a four-input multiplexer was also required for the full implementation of the processor. Since I was responsible for the initial datapath section that included the 2-input mux, I also took on the task of designing and implementing the 4-input mux needed for the extended functionality of the single-cycle processor.
+
+The additional inputs are essential for supporting all RISC-V control flow and write-back scenarios: one mux is used to select the next program counter value (PC+4, branch target, JALR target, or a default input), while the second mux determines what data is written back to the register file (ALU result, loaded data, PC+4 for jumps, or an upper immediate). Implementing the 4-input mux ensured that the datapath could correctly support branching, jumping, immediate instructions and full write-back behaviour as required by the complete RISC-V ISA.
+
+## Top Implementation (Single Cycle)
+
+All of my assigned modules including the ALU, Register File, the original 2-input multiplexer, and the additional 4-input multiplexers were what I incorporated directly into the top-level top.sv file. Each module was instantiated exactly as designed, with its ports connected to the datapath signals required for the full RISC-V instruction flow. While I provided the modules themselves, the final wiring and signal integration within the top-level design were carried out collaboratively by the whole of the group. In particular, Aileen took primary responsibility for connecting the modules correctly because she led the development of the testbenches and therefore had the clearest understanding of the signal behaviours required for full processor functionality. Her knowledge of the verification framework ensured that the datapath connections matched the control logic expectations and that each of my modules interacted correctly with the wider system.
+
 ## Pipeline Registers 
+
+
 
 ## Mux 
 
