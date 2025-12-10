@@ -100,7 +100,13 @@ Although this section stood out as one of the more challenging concepts I had to
 
 ## Forwarding Unit
 
+When designing the base implementation of the Forwarding Unit, I followed the data-forwarding strategy outlined in the textbook, represnted by the diagram [here][#pipelined-cpu-diagram]. I deliberately implemented the hazard detection and forwarding logic as separate modules to keep the design modular, easier to debug, and consistent with the structure recommended in the textbook.
 
+The goal of this module was to resolve data hazards without stalling by forwarding results from later pipeline stages back into the Execute stage. It compares the Execute-stage source registers with the destination registers in the Memory and Writeback stages and determines whether those stages will produce a result. Using this information, it generates the ForwardAE and ForwardBE signals to select the correct ALU operands, ensuring the pipeline continues flowing even when instructions depend on recently computed values.
+
+Aileen, as implementation lead, acted as a co-author in this section and made small but important adjustments to ensure correct forwarding behaviour across all instruction types.
+
+Through implementing this module, I developed a deeper understanding of data dependencies in pipelines and how forwarding paths help maintain high performance without sacrificing correctness.
 
 ## Testing 
 
