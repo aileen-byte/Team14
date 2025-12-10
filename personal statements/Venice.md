@@ -10,15 +10,19 @@ Single-cycle processor
 
   - [Data Mem](#data-mem)
 
+  - [Multiplexers](#multiplexers)
+
+  - [Top Implementation (Single Cycle)](#top-implementation-(single-cycle))
+
 Pipelined processor 
 
   - [Pipeline Registers](#pipeline-registers)
 
-  - [Mux types](#mux)
+  - [Further Multiplexers](#further-multiplexers)
 
-  - [Top Implementation](#top-implementation) 
+  - [Top Implementation (Pipelined)](#top-implementation) 
 
-###  Auxiliary Tasks  
+###  Auxiliary Tasks 
 
   - [Repo and Documentation Support](#repo-and-documentation-support)
 
@@ -56,7 +60,7 @@ Aileen and I chose to enhance the data memory by introducing the MemWriteSize si
 
 The memory is initialised using a $readmemh call, which loads data from a data.hex file into the memory array at simulation start. Overall, this module provides the necessary data storage and retrieval functionality for load and store instructions while maintaining correct byte addressing, alignment, and memory formatting in accordance with the RISC-V ISA.
 
-## MUX 
+## Multiplexers 
 
 The original two-input multiplexer was provided in the initial packet from Peter Cheung, but a four-input multiplexer was also required for the full implementation of the processor. Since I was responsible for the initial datapath section that included the 2-input mux, I also took on the task of designing and implementing the 4-input mux needed for the extended functionality of the single-cycle processor.
 
@@ -82,7 +86,7 @@ The EX_ME_Reg module serves as the pipeline register between the Execute (EX) st
 
 The ME_WR_Reg module acts as the pipeline register between the Memory (MEM) stage and the Write-Back (WB) stage. Its purpose is to hold the memory output, ALU result, write-back control signals, and destination register number produced in the MEM stage so that the WB stage receives stable, correctly timed values on the next clock cycle. On reset, all outputs are cleared to avoid accidental writes to the register file. This register ensures that the write-back stage always operates on the correct instruction results, maintaining smooth and reliable progression through the final stage of the pipeline.
 
-## Mux 
+## Further Multiplexers
 
 A further three select multiplexter was needed for the pipeline intergration - specifically for the correct implementation of the forwarding logic. 
 
