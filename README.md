@@ -190,7 +190,7 @@ In the single-cycle processor, every instruction completes all stages in one clo
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Compare
+    direction LR
 
     Compare --> Compare: Hit
     Compare --> WriteBack: Miss
