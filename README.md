@@ -165,8 +165,11 @@ c - contributor
 ### Memory heirarchy 
 
 graph TB
+
     A[CPU]
+    
     B[L1 Cache<br>1 KiB<br>4-byte blocks]
+    
     C[Main Memory]
 
     A --> B --> C
