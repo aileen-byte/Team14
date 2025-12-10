@@ -91,8 +91,8 @@ See below our single cpu passing all of the five tests given in verify.cpp:
 #### Testing videos 
 ##### f1.s 
 
+https://github.com/user-attachments/assets/1cd3efb5-847b-40b7-86f0-a89b948396de
 
-https://github.com/user-attachments/assets/ade0178c-72c4-474c-ba57-165faa057331
 
 
 
