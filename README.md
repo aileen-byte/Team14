@@ -176,18 +176,23 @@ graph TB
 
 In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design. 
 
-## Challenges Faced 
+### Tests 
+- screenshot gtk wave 
 
-### 1. Integrating individually correct modules into a pipelined system
+## Further Enhancements 
 
-Even though most modules worked in isolation (ALU, control unit, sign-extend, register file), the moment we put them together in a 5-stage pipeline, interactions between stages exposed bugs we simply couldn’t see in unit tests. Understanding how a mistake in one stage (e.g., a wrong immediate bit, a mis-latched control signal) propagated through the pipeline taught us the importance of debugging at the system level rather than module level. To solve this issue we worked together as a team to debug, as everyone knew how each of their individual components worked the best. 
 
-### 2. Designing and validating the hazard and forwarding logic 
 
-Data hazards ended up being more difficult than we expected. Our forwarding logic worked in isolation, but once we connected it to the full pipeline, small mistakes like comparing the wrong registers or forwarding from the wrong stage caused subtle, cycle dependent bugs. We spent a lot of time together in GTKWave stepping through instructions to see where values were going wrong. Getting the whole team on the same page about how data should move through the pipeline was what finally helped us fix the issues.
+## Future Considerations 
 
-## Reflection
+In future iterations of our RISC-V processor, several architectiral enhancements can be integrated to significantly improve preformance and efficiency. The main potential developements we, as a team, want to implement would focus on further reducing pipeline stalls, increasing instructions overall, and incoperating more advanced techniques that extend beyond our current implementation. 
 
-One of the key lessons we learned was the importance of incremental verification. Early in the project we occasionally attempted to implement multiple features at once, only to discover that doing so made debugging significantly harder. Over time, we adopted a more disciplined approach: implement one feature at a time, verify it thoroughly, and only then move on. This method dramatically improved our efficiency and confidence in the correctness of each module.
+Potential enhancements: 
 
-Working as a team also helped us develop complementary strengths. Some members focused more on RTL correctness, while others specialised in understanding pipeline timing or debugging waveform traces. By sharing knowledge and explaining design decisions to each other, we became more comfortable reasoning about hazards, pipeline flushing, ALU control, and instruction decoding. These collaborative discussions led to cleaner design choices and a deeper collective understanding of the microarchitecture.
+- Introduce branch prediction: Implementing static or dynamic branch prediction would help reduce control hazards and minimise pipeline stalls, improving preformance on the branch-heavy workloads. 
+
+- Improve pipeline efficiency: Redefining the forwarding paths, eliminating unnecessary stalls, and potentially adding speculative execution would allow the pipeline to operate more efficiently and increase overall instruction throughout. 
+
+## Acknowledgements
+
+We would like to acknowledge Digital Design and Computer Architecture (RISC-V Edition) by Sarah Harris and David Harris for its clear explanations and diagrams, which supported our understanding and guided aspects of our CPU design.
