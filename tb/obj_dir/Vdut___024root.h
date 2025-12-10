@@ -26,6 +26,7 @@ class Vdut___024root final : public VerilatedModule {
     CData/*1:0*/ top__DOT__MemWriteSize;
     CData/*0:0*/ top__DOT__Zero;
     CData/*0:0*/ __Vclklast__TOP__clk;
+    VL_OUT(x0,31,0);
     VL_OUT(t0,31,0);
     VL_OUT(t1,31,0);
     VL_OUT(t3,31,0);

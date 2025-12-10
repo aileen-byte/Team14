@@ -5,7 +5,5 @@ module branch_adder #(
     input logic [DATA_WIDTH-1:0]             ImmOp,
     output logic [DATA_WIDTH-1:0]         branch_pc
 ); 
-
-assign branch_pc = pc + ImmOp;
-
+    assign branch_pc = pc + ImmOp;
 endmodule 

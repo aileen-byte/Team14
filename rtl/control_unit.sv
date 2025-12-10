@@ -1,16 +1,17 @@
 module control_unit(
-    input logic [6:0] op,
-    input logic [2:0] funct3,
-    input logic funct7b5,
-    input logic Zero,
-    output logic [1:0] PCSrc,
-    output logic [1:0] ResultSrc, // 0: ALUResult, 1: ReadData into register
-    output logic MemWrite, // Data Memory write enable
-    output logic [1:0] MemWriteSize, // Data Memory write size
-    output logic [2:0] ALUctrl, // ALU operation selection
-    output logic ALUSrc, // 0: register, 1: immediate
-    output logic [2:0] ImmSrc, // immediate type selection
-    output logic RegWrite // Register File write enable
+    input logic [6:0]   op,
+    input logic [2:0]   funct3,
+    input logic         funct7b5,
+    input logic         Zero,
+    output logic [1:0]  PCSrc,
+    output logic [1:0]  ResultSrc, // 0: ALUResult, 1: ReadData into register
+    output logic        MemWrite, 
+    output logic [1:0]  MemWriteSize, 
+    output logic [1:0]  LoadSize,
+    output logic [2:0]  ALUctrl,
+    output logic        ALUSrc, // 0: register, 1: immediate
+    output logic [2:0]  ImmSrc, 
+    output logic        RegWrite 
 );
 
 // ALU operations
@@ -43,8 +44,8 @@ always_comb begin
     case(op)
         // R-type instructions
         7'b0110011: begin
-            ResultSrc = ALU; // ALU result
-            MemWrite = 0; //no memory write
+            ResultSrc = ALU; 
+            MemWrite = 0; 
             ALUSrc = 0; // second ALU input = rs2
             RegWrite = 1; //write back to rd
             if (funct3 == 3'b000) begin
@@ -56,49 +57,51 @@ always_comb begin
                 end
             end
             if (funct3 == 3'b100) begin
-                ALUctrl = XOR; // XOR
+                ALUctrl = ALU_XOR; // XOR
             end
         end
 
         // I-type instructions
-        // jalr t =pc+4; pc=(x[rs1]+sext(offset))&∼1; x[rd]=t
-        7'b1100111: begin // still have to zero out least significant bit
+        // jalr
+        7'b1100111: begin
             ResultSrc = PCPlus4; 
-            MemWrite = 0; //no memory write
+            MemWrite = 0; 
             ALUctrl = ALU_ADD; //x[rs1]+sext(offset) 
-            ALUSrc = 1; // second ALU input = imm
-            RegWrite = 1; //write back to rd
+            ALUSrc = 1; //second ALU input = imm
+            RegWrite = 1; 
             ImmSrc = I_TYPE;
             PCSrc = JALR;
         end
-        // load (lbu)
-        7'b0000011: begin //need f3 if more instructions
-            ResultSrc = Memory; // ReadData from memory
-            MemWrite = 0; //no memory write
+
+        // lbu
+        7'b0000011: begin 
+            ResultSrc = Memory; 
+            MemWrite = 0; 
             ALUctrl = ALU_ADD; //x[rs1]+sext(offset)
-            ALUSrc = 1; // second ALU input = imm
-            RegWrite = 1; //write back to rd
+            ALUSrc = 1; 
+            RegWrite = 1; 
             ImmSrc = I_TYPE;
+            LoadSize = 2'b00;
         end
+
         // immediate arithmetic (addi)
         7'b0010011: begin 
-            ResultSrc = ALU; // ALU result
-            MemWrite = 0; //no memory write
+            ResultSrc = ALU; 
+            MemWrite = 0; 
             if (funct3 == 3'b000)
                 ALUctrl = ALU_ADD;
-            if (funct3 == 3'b110)
-                ALUctrl = ALU_ORI;
+            if (funct3 == 3'b100)
+                ALUctrl = ALU_XOR;
             ALUSrc = 1; // second ALU input = imm
-            RegWrite = 1; //write back to rd
+            RegWrite = 1; 
             ImmSrc = I_TYPE; 
         end
 
-        // U-type instructions (lui - load upper immediate)
-        // x[rd] = sext(immediate[31:12] << 12)
-        7'b0110111: begin //does EXT handle this?
+        // U-type instructions (lui)
+        7'b0110111: begin 
             ResultSrc = UpperImmediate;
             MemWrite = 0;
-            RegWrite = 1; //write back to rd
+            RegWrite = 1; 
             ImmSrc = U_TYPE; 
         end
 
@@ -113,7 +116,6 @@ always_comb begin
         end
 
         // B-type instructions (bne)
-        // if (x[rs1] != x[rs2]) pc += sext(offset)
         7'b1100011: begin
             MemWrite = 0;
             RegWrite = 0;
@@ -133,15 +135,15 @@ always_comb begin
             end
         end
 
-        // J-type instructions
-        // jal: x[rd] = pc+4; pc += sext(offset)
+        // J-type instructions(jal)
         7'b1101111: begin
             ResultSrc = PCPlus4;
-            RegWrite = 1; //write back to rd
+            RegWrite = 1; 
             MemWrite = 0;
             ImmSrc = J_TYPE;
             PCSrc = Immediate;
         end
+
     endcase
 end
 endmodule

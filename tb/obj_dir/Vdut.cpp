@@ -14,6 +14,7 @@ Vdut::Vdut(VerilatedContext* _vcontextp__, const char* _vcname__)
     , clk{vlSymsp->TOP.clk}
     , rst{vlSymsp->TOP.rst}
     , trigger{vlSymsp->TOP.trigger}
+    , x0{vlSymsp->TOP.x0}
     , t0{vlSymsp->TOP.t0}
     , t1{vlSymsp->TOP.t1}
     , t3{vlSymsp->TOP.t3}

@@ -3,8 +3,8 @@ module data_mem #(
     MEMORY_WIDTH = 131072
 )(
     input   logic                      clk,
-    input logic [DATA_WIDTH-1:0] ALUResult, 
-    input logic [DATA_WIDTH-1:0] WriteData,
+    input logic [DATA_WIDTH-1:0]       ALUResult, 
+    input logic [DATA_WIDTH-1:0]       WriteData,
     input logic                        WE,
     input logic [1:0]                  MemWriteSize,    
     output logic [DATA_WIDTH-1:0]      RD 
@@ -16,24 +16,28 @@ module data_mem #(
     end 
 
     // Read
-    assign RD = {mem_array[ALUResult+3], mem_array[ALUResult+2], mem_array[ALUResult+1], mem_array[ALUResult]};
+    logic [DATA_WIDTH-1:0] word_base = {ALUResult[DATA_WIDTH-1:2], 2'b00};
+    assign RD = {mem_array[word_base+3], mem_array[word_base+2], mem_array[word_base+1], mem_array[word_base]};
 
     // Write
     always_ff @(posedge clk) begin
         if (WE) begin
-            if (MemWriteSize == 2'b00) // byte
-                mem_array[ALUResult] <= WriteData[7:0];
-            else if (MemWriteSize == 2'b01) begin // half-word
-                mem_array[ALUResult] <= WriteData[7:0];
-                mem_array[ALUResult+1] <= WriteData[15:8];
-            end
-            else if (MemWriteSize == 2'b10) // word
-            begin
-                mem_array[ALUResult] <= WriteData[7:0];
-                mem_array[ALUResult+1] <= WriteData[15:8];
-                mem_array[ALUResult+2] <= WriteData[23:16];
-                mem_array[ALUResult+3] <= WriteData[31:24];
-            end
+            case(MemWriteSize)
+                2'b00: begin //SB
+                    mem_array[ALUResult] <= WriteData[7:0];
+                end
+                2'b01: begin //SH
+                    mem_array[ALUResult] <= WriteData[7:0];
+                    mem_array[ALUResult+1] <= WriteData[15:8];
+                end
+                2'b10: begin //SW
+                    mem_array[ALUResult] <= WriteData[7:0];
+                    mem_array[ALUResult+1] <= WriteData[15:8];
+                    mem_array[ALUResult+2] <= WriteData[23:16];
+                    mem_array[ALUResult+3] <= WriteData[31:24];
+                end
+                default: ;
+            endcase
         end
     end
 endmodule
