@@ -100,6 +100,8 @@ Although this section stood out as one of the more challenging concepts I had to
 
 ## Forwarding Unit
 
+
+
 ## Testing 
 
 As with the single-cycle design, I created simple testbenches for the pipeline modules to verify their functionality in isolation. 
@@ -115,9 +117,14 @@ NOTE: ADD TESTBENCHES AND RESULTS HERE
 
 ## Repo and Documentation Support
 
+
+
+
 # Reflection 
 
 ## Challenges Faced 
+
+
 
 ## What I would do differently 
 
