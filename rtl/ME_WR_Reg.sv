@@ -4,19 +4,19 @@ module ME_WR_Reg #(
     input  logic                clk,
     input  logic                reset,
 
-    input logic                 RegWriteM,
-    input logic [DATA_WIDTH-1:0] ALUOutM,
-    input logic [DATA_WIDTH-1:0] ReadDataM,
-    input logic [4:0]           WriteRegM,
-    input  logic [1:0] ResultSrcM,
-    input  logic [DATA_WIDTH-1:0] PCPlus4M,
+    input logic                     RegWriteM,
+    input logic [DATA_WIDTH-1:0]    ALUOutM,
+    input logic [DATA_WIDTH-1:0]    ReadDataM,
+    input logic [4:0]               WriteRegM,
+    input logic [1:0]               ResultSrcM,
+    input logic [DATA_WIDTH-1:0]    PCPlus4M,
 
-    output logic                RegWriteW,
-    output logic [1:0] ResultSrcW,
-    output logic [DATA_WIDTH-1:0] PCPlus4W,
-    output logic [DATA_WIDTH-1:0] ALUOutW,
-    output logic [DATA_WIDTH-1:0] ReadDataW,
-    output logic [4:0]          WriteRegW
+    output logic                    RegWriteW,
+    output logic [1:0]              ResultSrcW,
+    output logic [DATA_WIDTH-1:0]   PCPlus4W,
+    output logic [DATA_WIDTH-1:0]   ALUOutW,
+    output logic [DATA_WIDTH-1:0]   ReadDataW,
+    output logic [4:0]              WriteRegW
 );
     always_ff @(posedge clk) begin
         if (reset) begin
