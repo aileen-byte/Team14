@@ -45,6 +45,15 @@ The PC Register stores the current instruction address and updates on each risin
 - When reset is asserted, it is cleared to the starting address, ensuring the program always begins from a known location.
 - Every cycle, it loads the next_PC value selected by the multiplexer—either PC + 4 for sequential execution or the branch target for conditional control-flow changes.
 
+### Sequential and Branch Logic
+
+The sequential and branch logic determines how the next instruction address is selected each cycle. 
+
+- For normal execution, the PC+4 adder provides the next sequential address
+- The branch adder computes PC + immediate for branch instructions.
+
+The PCsrc control signal then selects between these two paths through a multiplexer, enabling correct conditional branching in the single-cycle processor.
+
 ## Pipeline Registers 
 
 ## Hazard Unit 
