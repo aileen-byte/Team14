@@ -117,7 +117,7 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 | Modules        | Aileen | Jeshmeera | Phillippa | Venice |
 |----------------|--------|-----------|----------|--------|
-| Control Unit   | w      |           |          |        |
+| Control Unit   | w      |           | c        |        |
 | mux3           |        |           |          | w      |
 | pc_source      | w      |           |          |        | 
 | IF_ID_Reg      | c      | w         |          |        | 
