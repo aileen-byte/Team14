@@ -1,10 +1,10 @@
 module load_selec #(
     parameter DATA_WIDTH = 32
 )(
-    input logic [1:0] size,
-    input logic [1:0] byte_num,
-    input logic [DATA_WIDTH-1:0] mem_data,
-    output logic [DATA_WIDTH-1:0] load_data
+    input  logic [1:0]                 size,
+    input  logic [1:0]                 byte_num,
+    input  logic [DATA_WIDTH-1:0]      mem_data,
+    output logic [DATA_WIDTH-1:0]      load_data
 );
 
 logic [7:0] selected_byte;
