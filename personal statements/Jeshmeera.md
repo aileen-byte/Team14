@@ -56,6 +56,10 @@ The sequential and branch logic determines how the next instruction address is s
 
 I also implemented the relevant code in the top-level module. Most notably, in the top-level module, we used the provided mux2 to select between the sequential address and the branch target based on PCsrc, and we (co-author Aileen) implemented this directly in the top. This was a purposeful design choice we made to simplify the design and avoid creating an unnecessary additional module.
 
+### Testing 
+
+I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something we conciously aimed to do with most modules to minimise future sources of error. 
+
 ## Pipeline Registers 
 
 ## Hazard Unit 
