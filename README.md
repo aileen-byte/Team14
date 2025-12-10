@@ -40,7 +40,7 @@ We further enhanced the design by refining the pipeline’s hazard management an
 
 | Modules      | Aileen | Jeshmeera | Phillippa | Venice |
 |--------------|--------|-----------|----------|--------|
-| ALU          |        |           |          | w      |
+| ALU          |        |           | c        | w      |
 | Branch_adder |        | w         |          |        |
 | Control Unit | w      |           | w        |        |
 | Data_mem     | w      |           |          | w      |
@@ -115,18 +115,19 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 ### Task allocation 
 
-| Modules        | Aileen | Jeshmeera | Phillippa | Venice |
+| Modules        | Aileen | Jeshmeera | Phillippa| Venice |
 |----------------|--------|-----------|----------|--------|
 | Control Unit   | w      |           | c        |        |
 | mux3           |        |           |          | w      |
 | pc_source      | w      |           |          |        | 
 | IF_ID_Reg      | c      | w         |          |        | 
-| ID_EX_Reg      | c      | w         |          |        |
+| ID_EX_Reg      | c      | w         | c        |        |
 | EX_Me_Reg      | c      |           |          | w      | 
 | ME_WR_Reg      | c      |           |          | w      | 
 | HazardUnit     | c      | w         |          |        | 
 | ForwardingUnit | c      | w         |          |        | 
 | top            |        |           | w        |        |   
+| Regfile        |        |           | c        |        | 
 
 w - main module writer 
 
