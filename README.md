@@ -115,6 +115,7 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 ## Pipelined RISC-V Processor
 
+Our team successfully implemented a pipelined RISC-V processor that executes multiple instructions concurrently accross the IF, ID, EX, MEM, and WB stages. We also implemented fully working Hazard detection, stalling, and forwarding logic to ensure that the pipeline operates correctly for all instruction types. 
 
 ### Task allocation 
 
