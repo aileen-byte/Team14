@@ -34,7 +34,7 @@ Pipelined processor
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/559af967-2254-4d58-ab8f-dcc40b8ef88c" />
 
-During our time in lab 4 and spliting up the section, I volenteered to do the red section which included the ALU, Reg File, and multiplexer (already provided). 
+During Lab 4, when our group divided the processor components among us, I volunteered to implement the red section of the datapath, which included the ALU, the register file, and the provided 2-bit multiplexer.
 
 ## Single Cycle CPU Diagram 
 
