@@ -27,10 +27,10 @@ COMMMENT: address the github structure and where everything is located
 
 | Name                  | CID      | Email                                   | Link to personal statement                         |
 |-----------------------|----------|-----------------------------------------|-----------------------------------------------------|
-| Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        | [Aileen's statement](personal%20statements/Aileen)              |
-| Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  | [Jeshmeera's statement](personal%20statements/Jeshmeera)        |
-| Phillippa Flintoff    | 02596628 | phillippa.flintoff24@imperial.ac.uk     | [Phillippa's statement](personal%20statements/Phillippa)        |
-| Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   | [Venice's statement](personal%20statements/Venice)              |
+| Aileen Sangalli       | 02561984 | aileen.sangalli24@imperial.ac.uk        | [Aileen's statement](personal%20statements/Aileen.md)              |
+| Jeshmeera Siventhiran | 02561534 | jeshmeera.siventhiran24@imperial.ac.uk  | [Jeshmeera's statement](personal%20statements/Jeshmeera.md)        |
+| Phillippa Flintoff    | 02596628 | phillippa.flintoff24@imperial.ac.uk     | [Phillippa's statement](personal%20statements/Phillippa.md)        |
+| Venice Gainfort-Head  | 02559434 | venice.gainfort-head24@imperial.ac.uk   | [Venice's statement](personal%20statements/Venice.md)              |
 
 
 ## Introduction 
