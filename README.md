@@ -36,6 +36,8 @@ We further enhanced the design by refining the pipeline’s hazard management an
 
 ## Single Cycle RISC-V Processor 
 
+Our single-cycle Processor successfully executes RISC-V instructions, with each instruction completing in one clock cycle by preforming instruction fetch, decode, execute, memory access, and write back within a single unified datapath. 
+
 ### Task allocation 
 
 | Modules      | Aileen | Jeshmeera | Phillippa | Venice |
@@ -113,6 +115,7 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 ## Pipelined RISC-V Processor
 
+
 ### Task allocation 
 
 | Modules        | Aileen | Jeshmeera | Phillippa| Venice |
@@ -136,6 +139,10 @@ c - contributor
 ### Pipelined CPU Diagram 
 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/c2bdd5ac-5599-413b-8615-76af48574edf" />
+
+### Testing 
+
+Our pipelined processor successfully executed all .mem test programs, producing results identical to the results we produced with the single-cycle processor. 
 
 ## Cache 
 
