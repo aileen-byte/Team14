@@ -92,14 +92,9 @@ To extend our original single-cycle processor into a fully pipelined RISC-V impl
 
 Although I led the initial conversion from single-cycle to pipelined operation, both of us contributed significantly to the integration and debugging of the complete design. Aileen provided crucial support during verification, using her testbench expertise to ensure correct stage interactions and to identify issues that appeared during multi-instruction program execution. Together, this collaboration produced a fully functional pipelined CPU that preserved single-cycle behaviour while improving throughput.
 
-
-
-
-## Mux 
-
-# Top Implementation 
-
 # Repo and Documentation Support
+
+Alongside my design responsibilities, I also contributed to keeping the repository and documentation clear, structured, and easy to navigate. Throughout the project I regularly reviewed our files to ensure that formatting remained consistent across modules, removing unnecessary comments and tidying older sections of code as the implementation evolved. This helped maintain a professional and readable codebase, reduced clutter, and made it easier for the group to work collaboratively without confusion. My attention to maintaining clean, well-organised files supported both the development workflow and the reliability of the final design.
 
 # Reflection 
 
