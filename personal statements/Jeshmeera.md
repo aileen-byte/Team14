@@ -52,7 +52,7 @@ The sequential and branch logic determines how the next instruction address is s
 - For normal execution, the PC+4 adder provides the next sequential address
 - The branch adder computes PC + immediate for branch instructions.
 
-The PCsrc control signal then selects between these two paths through a multiplexer, enabling correct conditional branching in the single-cycle processor.
+In the top-level module, I used the provided mux2 component to choose between these two values based on the PCsrc control signal, ensuring correct behaviour for both sequential flow and conditional branching in the single-cycle processor.
 
 ## Pipeline Registers 
 
