@@ -68,7 +68,7 @@ NOTE: ADD TESTBENCHES AND RESULTS HERE
 
 In the pipelined processor, the pipeline registers separate the five execution stages and ensure that each instruction’s data and control signals are correctly forwarded each clock cycle. Our four registers:  IF/ID, ID/EX, EX/ME, and ME/WB store instruction fields, operands, immediates, ALU results, and control signals, allowing multiple instructions to execute concurrently. By holding these intermediate values between stages, the pipeline registers form the core structure that enables correct instruction flow and higher throughput compared to the single-cycle design.
 
-### Piplined CPU diagram 
+### Pipelined CPU diagram 
 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/db612f5d-4e9b-4287-a086-24f910e52c40" />
 
