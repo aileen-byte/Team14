@@ -103,13 +103,12 @@ https://github.com/user-attachments/assets/b1953e2d-3289-41eb-ba9e-292c402f503e
 
 #### noisy.mem 
 
+https://github.com/user-attachments/assets/4b7d8409-93f4-4ae9-9395-f1d673b66e5c
 
+#### sine.mem 
+We tested this using the data from lab 2. 
 
-
-
-
-
-
+https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 ## Pipeline 
 
