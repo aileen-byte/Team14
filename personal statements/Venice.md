@@ -12,7 +12,7 @@ Single-cycle processor
 
   - [Multiplexers](#multiplexers)
 
-  - [Top Implementation (Single Cycle)](#top-implementation-(single-cycle))
+  - [Top Implementation](#top-implementation-for-single-cycle)
 
 Pipelined processor 
 
@@ -20,7 +20,7 @@ Pipelined processor
 
   - [Further Multiplexers](#further-multiplexers)
 
-  - [Top Implementation (Pipelined)](#top-implementation) 
+  - [Top Implementation](#top-implementation-for-pipeline) 
 
 ###  Auxiliary Tasks 
 
@@ -66,7 +66,7 @@ The original two-input multiplexer was provided in the initial packet from Peter
 
 The additional inputs are essential for supporting all RISC-V control flow and write-back scenarios: one mux is used to select the next program counter value (PC+4, branch target, JALR target, or a default input), while the second mux determines what data is written back to the register file (ALU result, loaded data, PC+4 for jumps, or an upper immediate). Implementing the 4-input mux ensured that the datapath could correctly support branching, jumping, immediate instructions and full write-back behaviour as required by the complete RISC-V ISA.
 
-## Top Implementation (Single Cycle)
+## Top Implementation For Single Cycle
 
 All of my assigned modules including the ALU, Register File, the original 2-input multiplexer, and the additional 4-input multiplexers were what I incorporated directly into the top-level top.sv file. Each module was instantiated exactly as designed, with its ports connected to the datapath signals required for the full RISC-V instruction flow. While I provided the modules themselves, the final wiring and signal integration within the top-level design were carried out collaboratively by the whole of the group. In particular, Aileen took primary responsibility for connecting the modules correctly because she led the development of the testbenches and therefore had the clearest understanding of the signal behaviours required for full processor functionality. Her knowledge of the verification framework ensured that the datapath connections matched the control logic expectations and that each of my modules interacted correctly with the wider system.
 
@@ -90,7 +90,7 @@ The ME_WR_Reg module acts as the pipeline register between the Memory (MEM) stag
 
 A further three select multiplexter was needed for the pipeline intergration - specifically for the correct implementation of the forwarding logic. 
 
-## top implementation
+## Top Implementation For Pipeline
 
 To extend our original single-cycle processor into a fully pipelined RISC-V implementation, the datapath was restructured into the classical five-stage pipeline: IF, ID, EX, MEM, and WB. This required breaking apart the monolithic single-cycle design and introducing pipeline registers between each stage to preserve the correct data and control signals as instructions advanced through the pipeline. Jeshmeera and I shared this responsibility—she created half of the pipeline registers along with the hazard detection and forwarding units, while I implemented the remaining registers and adapted the single-cycle modules to operate correctly within a multi-stage environment.
 
