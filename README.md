@@ -7,9 +7,9 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#single-cycle-risc-v-processor) Single Cycle CPU
 
-[Go to Pipelined CPU]()
+[Go to](#pipelined-risc-v-processor) Pipeline Implementation 
 
-[Go to Pipelined and Cache CPU]()
+[Go to](#cache) Cache Implementation
 
 ## Repo structure 
 As a team, we each worked on our own branches while keeping main for finalized, tested CPU versions. After completing a section, we merged our branch into main and removed any no-longer-needed branches to maintain a clear, tidy repository for examination.
