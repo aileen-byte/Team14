@@ -97,6 +97,11 @@ https://github.com/user-attachments/assets/1cd3efb5-847b-40b7-86f0-a89b948396de
 
 https://github.com/user-attachments/assets/57de37f1-a582-495e-95b6-ba75b1612954
 
+#### triangle.mem 
+
+https://github.com/user-attachments/assets/b1953e2d-3289-41eb-ba9e-292c402f503e
+
+
 
 
 
