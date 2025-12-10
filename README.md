@@ -12,7 +12,7 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#cache) Cache Implementation
 
-[Go to](#further-enhancements:-full-rv32i-design) Further Enhancements: Full RV32I Design
+[Go to](#further-enhancements-full-rv32i-design) Further Enhancements: Full RV32I Design
 
 [Go to](#future-considerations) Future considerations 
 
