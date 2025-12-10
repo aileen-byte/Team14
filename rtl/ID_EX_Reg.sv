@@ -13,6 +13,7 @@ module ID_EX_Reg #(
     input   logic [1:0]             BranchD,
     input   logic [2:0]             ALUControlD, 
     input   logic                   ALUSrcD,
+    input logic [1:0] LoadSizeD,
 
     input   logic [DATA_WIDTH-1:0]  RD1D,
     input   logic [DATA_WIDTH-1:0]  RD2D, 
@@ -30,6 +31,7 @@ module ID_EX_Reg #(
     output  logic [1:0]             BranchE,
     output  logic [2:0]             ALUControlE,  
     output  logic                   ALUSrcE, 
+    output logic [1:0] LoadSizeE,
 
     output  logic [DATA_WIDTH-1:0]   RD1E,
     output  logic [DATA_WIDTH-1:0]   RD2E,  
@@ -62,6 +64,7 @@ always_ff @(posedge clk) begin
         ExtImmE     <= '0; 
         PCPlus4E    <= '0;
         StoreSizeE <= '0;
+        LoadSizeE <= '0;
     end 
     else begin 
         RegWriteE   <= RegWriteD;
@@ -80,6 +83,7 @@ always_ff @(posedge clk) begin
         ExtImmE     <= ExtImmD; 
         PCPlus4E    <= PCPlus4D; 
         StoreSizeE <= StoreSizeD;
+        LoadSizeE <= LoadSizeD;
     end
 end 
 endmodule

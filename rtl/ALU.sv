@@ -15,6 +15,7 @@ module ALU #(
             3'b010: ALUout = ALUop1 & ALUop2;   // AND
             3'b011: ALUout = ALUop1 | ALUop2;   // OR
             3'b100: ALUout = ALUop1 ^ ALUop2;   // XOR
+            3'b101: ALUout = ALUop2; // pass
             default: ALUout = 32'h00000000;     // default
         endcase
 

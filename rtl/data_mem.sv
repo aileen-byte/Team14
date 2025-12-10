@@ -15,7 +15,8 @@ module data_mem #(
         $readmemh("data.hex", mem_array, 32'h10000);
     end 
 
-    assign RD = {mem_array[ALUResult+3], mem_array[ALUResult+2], mem_array[ALUResult+1], mem_array[ALUResult]};
+    logic [DATA_WIDTH-1:0] word_base = {ALUResult[DATA_WIDTH-1:2], 2'b00};
+    assign RD = {mem_array[word_base+3], mem_array[word_base+2], mem_array[word_base+1], mem_array[word_base]};
 
     always_ff @(posedge clk) begin
         if (MemWrite) begin

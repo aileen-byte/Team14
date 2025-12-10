@@ -14,6 +14,7 @@ logic [7:0]memory[MEMORY_WIDTH-1:0];
 initial begin 
     $readmemh("program.hex", memory);
 end 
+
 always_comb begin
     if (rst) begin
         RD = 32'b0;

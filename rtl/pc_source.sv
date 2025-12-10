@@ -6,30 +6,31 @@ module pc_source(
 );
 
 always_comb begin
-    case (JumpType)
-        2'b01: begin // JAL
+    if (JumpType == 2'b01) begin
+        PCSrcE = 2'b01;
+    end
+    else if (JumpType == 2'b10) begin
+        PCSrcE = 2'b10;
+    end
+    else if (BranchType == 2'b10) begin
+        if (ZeroE) begin
             PCSrcE = 2'b01; // Immediate
         end
-        2'b10: begin // JALR
-            PCSrcE = 2'b10; // JALR
+        else begin
+            PCSrcE = 2'b00; // Normal
+        end 
+    end        
+    else if (BranchType == 2'b01) begin
+        if (!ZeroE) begin
+            PCSrcE = 2'b01; // Immediate
         end
-        default: PCSrcE = 2'b00;
-    endcase
-    case (BranchType)
-        2'b10: begin // BEQ
-            if (ZeroE)
-                PCSrcE = 2'b01; // Immediate
-            else
-                PCSrcE = 2'b00; // Normal
-        end
-        2'b01: begin // BNE
-            if (!ZeroE)
-                PCSrcE = 2'b01; // Immediate
-            else
-                PCSrcE = 2'b00; // Normal
-        end
-        default: PCSrcE = 2'b00; // Normal
-    endcase
+        else begin
+            PCSrcE = 2'b00; // Normal
+        end 
+    end   
+    else begin
+        PCSrcE = 2'b00;
+    end
 end
 
 endmodule

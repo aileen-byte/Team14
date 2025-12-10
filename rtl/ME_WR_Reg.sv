@@ -10,15 +10,13 @@ module ME_WR_Reg #(
     input logic [4:0]           WriteRegM,
     input  logic [1:0] ResultSrcM,
     input  logic [DATA_WIDTH-1:0] PCPlus4M,
-    input logic [DATA_WIDTH-1:0] ExtImmM,
 
     output logic                RegWriteW,
     output logic [1:0] ResultSrcW,
     output logic [DATA_WIDTH-1:0] PCPlus4W,
     output logic [DATA_WIDTH-1:0] ALUOutW,
     output logic [DATA_WIDTH-1:0] ReadDataW,
-    output logic [4:0]          WriteRegW,
-    output logic [DATA_WIDTH-1:0] ExtImmW
+    output logic [4:0]          WriteRegW
 );
     always_ff @(posedge clk) begin
         if (reset) begin
@@ -28,7 +26,6 @@ module ME_WR_Reg #(
             WriteRegW <= 0;
             ResultSrcW  <= 0;      
             PCPlus4W    <= 0;
-            ExtImmW <= 0;
         end 
         else begin
             RegWriteW  <= RegWriteM;
@@ -37,7 +34,6 @@ module ME_WR_Reg #(
             WriteRegW  <= WriteRegM;
             ResultSrcW <= ResultSrcM;
             PCPlus4W   <= PCPlus4M;
-            ExtImmW <= ExtImmM;
         end
     end
 

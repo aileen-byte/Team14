@@ -15,6 +15,8 @@ module top #(
     output logic [DATA_WIDTH-1:0] a4, 
     output logic [DATA_WIDTH-1:0] a5,
     output logic [DATA_WIDTH-1:0] a6,
+    output logic [DATA_WIDTH-1:0] s0,
+    output logic [DATA_WIDTH-1:0] t2,
     output  logic [DATA_WIDTH-1:0] a0
 );
 
@@ -50,6 +52,7 @@ logic [2:0] ALUControlD;
 logic ALUSrcD;
 logic [2:0] ImmSrcD;
 logic [1:0] StoreSizeD;
+logic [1:0] LoadSizeD;
 
 logic [4:0] Rs1D, Rs2D, RdD;
 assign Rs1D = InstrD[19:15];
@@ -67,6 +70,7 @@ logic [1:0] BranchE;
 logic [2:0] ALUControlE;
 logic ALUSrcE;
 logic [1:0] StoreSizeE;
+logic [1:0] LoadSizeE;
 
 logic [DATA_WIDTH-1:0] RD1E, RD2E;
 logic [DATA_WIDTH-1:0] PCE;
@@ -83,9 +87,10 @@ logic [DATA_WIDTH-1:0] ALUOutM;
 logic [DATA_WIDTH-1:0] WriteDataM;
 logic [4:0] WriteRegM; //RdM
 logic [1:0] ResultSrcM;
-logic [DATA_WIDTH-1:0] ExtImmM;
 logic [DATA_WIDTH-1:0] PCPlus4M;
 logic [1:0] StoreSizeM;
+logic [DATA_WIDTH-1:0] ReadDataM;
+logic [1:0] LoadSizeM;
 
 // WRITEBACK STAGE (W) SIGNALS
 logic RegWriteW;
@@ -93,7 +98,6 @@ logic [DATA_WIDTH-1:0] ALUOutW;
 logic [DATA_WIDTH-1:0] ReadDataW;
 logic [4:0] WriteRegW; //RdW
 logic [1:0] ResultSrcW;
-logic [DATA_WIDTH-1:0] ExtImmW;
 logic [DATA_WIDTH-1:0] PCPlus4W;
 
 // HAZARD UNIT SIGNALS
@@ -162,6 +166,7 @@ control_unit CU(
     .ALUSrc(ALUSrcD),
     .ImmSrc(ImmSrcD),
     .RegWrite(RegWriteD),
+    .LoadSize(LoadSizeD),
 
     .BranchType(BranchD),
     .JumpType(JumpD),
@@ -197,6 +202,8 @@ reg_file #(DATA_WIDTH) RF (
     .a4(a4),
     .a5(a5),
     .a6(a6),
+    .s0(s0),
+    .t2(t2),
     .a0(a0)
 );
 
@@ -209,6 +216,13 @@ data_mem #(
     .MemWrite(MemWriteM),         // from control unit
     .RD(ReadData),          // output data
     .StoreSize(StoreSizeM)
+);
+
+load_selec #(DATA_WIDTH) LS (
+    .size(LoadSizeM),
+    .byte_num(ALUOutM[1:0]),
+    .mem_data(ReadData),
+    .load_data(ReadDataM)
 );
 
 //alu
@@ -255,6 +269,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .BranchD(BranchD),
     .ALUControlD(ALUControlD),
     .ALUSrcD(ALUSrcD),
+    .LoadSizeD(LoadSizeD),
 
     // Data signals
     .RD1D(RD1),
@@ -274,6 +289,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .BranchE(BranchE),
     .ALUControlE(ALUControlE),
     .ALUSrcE(ALUSrcE),
+    .LoadSizeE(LoadSizeE),
 
     .RD1E(RD1E),
     .RD2E(RD2E),
@@ -299,7 +315,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .WriteRegE(RdE),
     .ResultSrcE(ResultSrcE),
     .PCPlus4E(PCPlus4E),
-    .ExtImmE(ExtImmE),
+    .LoadSizeE(LoadSizeE),
 
     .RegWriteM(RegWriteM),
     .MemWriteM(MemWriteM),
@@ -308,7 +324,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .ALUOutM(ALUOutM),
     .WriteDataM(WriteDataM),
     .WriteRegM(WriteRegM),
-    .ExtImmM(ExtImmM),
+    .LoadSizeM(LoadSizeM),
 
     .StoreSizeE(StoreSizeE),
     .StoreSizeM(StoreSizeM)
@@ -321,12 +337,11 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
     // From MEM stage
     .RegWriteM(RegWriteM),
     .ALUOutM(ALUOutM),
-    .ReadDataM(ReadData),
+    .ReadDataM(ReadDataM),
     .WriteRegM(WriteRegM),
 
     .ResultSrcM(ResultSrcM),
     .PCPlus4M(PCPlus4M),
-    .ExtImmM(ExtImmM),
 
     // Outputs to WB stage
     .RegWriteW(RegWriteW),
@@ -334,8 +349,7 @@ ME_WR_Reg #(.DATA_WIDTH(DATA_WIDTH)) MEM_WB (
     .ReadDataW(ReadDataW),
     .WriteRegW(WriteRegW),
     .ResultSrcW(ResultSrcW),
-    .PCPlus4W(PCPlus4W),
-    .ExtImmW(ExtImmW)
+    .PCPlus4W(PCPlus4W)
 );
 
 HazardUnit HZ (
@@ -397,7 +411,7 @@ mux4 #(DATA_WIDTH) RESULT_MUX (
     .in0(ALUOutW),
     .in1(ReadDataW),
     .in2(PCPlus4W),
-    .in3(ExtImmW), 
+    .in3(32'b0), 
     .sel(ResultSrcW),
     .out(WD3)
 );

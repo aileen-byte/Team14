@@ -5,6 +5,7 @@ module control_unit(
     output logic [1:0] ResultSrc, // 0: ALUResult, 1: ReadData into register
     output logic MemWrite, // Data Memory write enable
     output logic [1:0] MemWriteSize, // Data Memory write size
+    output logic [1:0] LoadSize,
     output logic [2:0] ALUctrl, // ALU operation selection
     output logic ALUSrc, // 0: register, 1: immediate
     output logic [2:0] ImmSrc, // immediate type selection
@@ -29,7 +30,6 @@ localparam U_TYPE = 3'b100;
 localparam ALU = 2'b00;
 localparam Memory = 2'b01;
 localparam PCPlus4 = 2'b10;
-localparam UpperImmediate = 2'b11;
 
 // BranchType encodings
 localparam NO_BRANCH = 2'b00;
@@ -103,10 +103,12 @@ always_comb begin
         // U-type instructions (lui - load upper immediate)
         // x[rd] = sext(immediate[31:12] << 12)
         7'b0110111: begin //does EXT handle this?
-            ResultSrc = UpperImmediate;
+            ResultSrc = ALU;
             MemWrite = 0;
             RegWrite = 1; //write back to rd
             ImmSrc = U_TYPE; 
+            ALUSrc = 1;
+            LoadSize = 2'b00; //byte size load
         end
 
         // S-type instructions (sb)
