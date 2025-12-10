@@ -89,7 +89,7 @@ See below our single cpu passing all of the five tests given in verify.cpp:
 <img width="946" height="635" alt="image" src="https://github.com/user-attachments/assets/61517bb8-e4b3-4d5a-a9f8-b58a875b726a" />
 
 #### Testing videos 
-##### f1.s 
+##### f1 lights  
 
 https://github.com/user-attachments/assets/1cd3efb5-847b-40b7-86f0-a89b948396de
 
