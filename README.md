@@ -4,6 +4,7 @@ Comments about any design decisions you made that are not obvious.
 A reflection on what you might do differently if you were to start again.
 
 # Team 14 – RISC-V CPU Project
+[Go to](#repo-structure) Repository Structure and Personal Statements 
 
 [Go to](#single-cycle-risc-v-processor) Single Cycle CPU
 
