@@ -13,7 +13,7 @@ module IF_ID_Reg #(
 
     output  logic [DATA_WIDTH-1:0]   PCD, 
     output  logic [DATA_WIDTH-1:0]   PCPlus4D,
-    output logic[DATA_WIDTH-1:0] InstrD
+    output logic[DATA_WIDTH-1:0]     InstrD
 );
 
 always_ff @(posedge clk) begin
