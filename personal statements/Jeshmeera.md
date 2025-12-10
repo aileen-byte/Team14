@@ -90,6 +90,10 @@ In our design, the ID/EX register stores the decoded control signals, operands, 
 
 ## Hazard Unit 
 
+When Designing the Base implementation of the Hazard detection unit i followed the hazard handling approach outlined in the textbook, shown in the diagram [here](#pipelined-cpu-diagram). It detects when the pipeline must stall or flush to maintain correct execution, identifies load-use hazards by checking wether a load in the Execute stage writes a register needed by the Decode stage, and if som it stalls Fetch and Decode and flushes Execute. It also handles branch and jump hazards by flushing the Decode and Execute stages whenever PCSrcE indicates a control transfer. Together, these mechanisms ensure the pipelined processor never uses incorrect operands and preserves correct RISC-V program flow. 
+
+Aileen as implementation lead, acted as a co-author in this section she altered the module accordingly to ensure correct functionality. 
+
 ## Forwarding Unit
 
 ## Testing 
