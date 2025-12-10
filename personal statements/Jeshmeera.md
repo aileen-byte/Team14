@@ -27,7 +27,13 @@ Pipelined processor
 
 # Contributions 
 
+## Simple single cycle diagram 
+
+
+
 ## Program Counter 
+
+In the single cycle processor, the Program counter (PC) determines the address of the next instruction to fetch each clock cycle. In our single cycle implementation the PC uses three main modules: PC_Reg, PC+4.  and branch adder, with a multiplexer selecting between sequential and branch execution. These modules work together to determine both sequential and branch instruction addresses based on the RISC-V ISA. 
 
 ## Pipeline Registers 
 
