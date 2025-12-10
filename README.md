@@ -61,6 +61,8 @@ w - main module writer
 
 c - contributor 
 
+NOTE: In the single-cycle implementation of the processor, Aileen served as the Implementation Lead, validating majority of the core implementation work and also handling debugging and testing to ensure the single-cycle design operated correctly.
+
 ### Single Cycle CPU Diagram 
 
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/49efff98-43ca-4516-9d4f-21e770b9ed4d" />
@@ -124,18 +126,19 @@ Our team successfully implemented a pipelined RISC-V processor that executes mul
 | Control Unit   | w      |           | c        |        |
 | mux3           |        |           |          | w      |
 | pc_source      | w      |           |          |        | 
-| IF_ID_Reg      | c      | w         |          |        | 
-| ID_EX_Reg      | c      | w         | c        |        |
-| EX_Me_Reg      | c      |           |          | w      | 
-| ME_WR_Reg      | c      |           |          | w      | 
-| HazardUnit     | c      | w         |          |        | 
-| ForwardingUnit | c      | w         |          |        | 
-| top            |        | w         | w        | w      |   
-| Regfile        |        |           | c        |        | 
+| IF_ID_Reg      |        | w         |          |        | 
+| ID_EX_Reg      |        | w         |          |        |
+| EX_Me_Reg      |        |           |          | w      | 
+| ME_WR_Reg      |        |           |          | w      | 
+| HazardUnit     |        | w         |          |        | 
+| ForwardingUnit |        | w         |          |        | 
+| top            |        |           | w        | w      |   
 
 w - main module writer 
 
 c - contributor 
+
+NOTE: In the pipelined portion of the project Aileen served as the Implementation lead and Pippa as the Implementation Support. They carried out majority of the implementation work and were also responsible for debugging and testing the design to ensure that all components functioned correctly. 
 
 ### Pipelined CPU Diagram 
 
@@ -146,6 +149,13 @@ c - contributor
 Our pipelined processor successfully executed all .mem test programs, producing results identical to the results we produced with the single-cycle processor. 
 
 ## Cache 
+
+
+
+### Task allocation 
+
+
+
 
 ## Design Overview 
 
