@@ -44,6 +44,8 @@ During Lab 4, when our group divided the processor components among us, I volunt
 
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/62fbb526-c526-4252-8709-36710a8e8c9f" />
 
+We, as a team, agreed to follow the diagram above from the textbook, which ensured we were all aligned in our design approach and working from the same architectural understanding.
+
 ## ALU
 
 The ALU (Arithmetic Logic Unit) is one of the core components of the CPU datapath. Its primary role is to perform the arithmetic and logical operations required by RISC-V instructions. In our implementation, the ALU supports a set of arithmetic operations - ADD and SUB - as well as logical operations AND, OR, and XOR. Additionally, a pass-through operation is included, which simply forwards the second operand (ALUop2). A default case is also implemented to set the output to zero for any unsupported ALU control value.
@@ -103,7 +105,7 @@ To ensure propper testing throughout the project testbenches were used to test e
 
 ## Top Implementation For Single Cycle
 
-All of my assigned modules including the ALU, Register File, the original 2-input multiplexer, and the additional 4-input multiplexers were what I incorporated directly into the top-level top.sv file. Each module was instantiated exactly as designed, with its ports connected to the datapath signals required for the full RISC-V instruction flow. While I provided the modules themselves, the final wiring and signal integration within the top-level design were carried out collaboratively by the whole of the group. In particular, Aileen took primary responsibility for connecting the modules correctly because she led the development of the testbenches and therefore had the clearest understanding of the signal behaviours required for full processor functionality. Her knowledge of the verification framework ensured that the datapath connections matched the control logic expectations and that each of my modules interacted correctly with the wider system.
+All of my assigned modules including the ALU, Register File, the original 2-input multiplexer, and the additional 4-input multiplexers were what I incorporated directly into the top-level top.sv file. Each module was instantiated exactly as designed, with its ports connected to the datapath signals required for the full RISC-V instruction flow. While I provided the modules themselves, the final wiring and signal integration within the top-level design were carried out collaboratively by the whole of the group. In particular, Aileen, as the implementation lead, took primary responsibility for ensuring that the modules implemented by Jeshmeera, Pippa, and me were wired together correctly. Her careful oversight of the datapath connections ensured that each module interacted properly with the rest of the system and that the overall design functioned consistently with our control logic.
 
 # Pipeline CPU Contributions
 ## Pipelined CPU Diagram 
