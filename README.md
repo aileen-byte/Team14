@@ -19,10 +19,6 @@
    ```c
    cd tb
    ```
-3. Make the script executable
-     ```c
-   chmod +x ./assemble.sh
-   ```
 4. Now run
    ```c
    ./doit.sh tests/f1_tb.cpp top
