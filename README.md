@@ -198,18 +198,15 @@ In our Cache implented RISC-V processor, the memory heirarchy places a small, fa
 
 ### Testing 
 
-Here is evidence our Cache works as expected: 
+Here is evidence our Cache working: 
 
-<img width="1583" height="198" alt="image" src="https://github.com/user-attachments/assets/3e01e307-bb81-4621-a820-8abcea46cd95" />
-
-<img width="1509" height="235" alt="image" src="https://github.com/user-attachments/assets/22bcb7b1-f81b-49b9-b763-d2df6d704cb9" />
+<img width="1358" height="163" alt="image" src="https://github.com/user-attachments/assets/907f3a8e-2d6b-4669-92da-4712e5f061d1" />
 
 The waveform above is produced when we tested this assembly code: 
 
 <img width="892" height="586" alt="image" src="https://github.com/user-attachments/assets/7e323309-0dbf-4100-b75e-d0a6cae70f1e" />
 
-
-
+Our cached processor stores t1 and t2 in the cache as expected. 
 
 ## Challenges we faced as a team 
 
