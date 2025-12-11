@@ -109,6 +109,9 @@ Throughout this process, I continuously referred back to the lecture diagrams to
 
 I also wrote a set of targeted tests to validate the full cache behaviour checking hit and miss detection, verifying correct line replacement, and ensuring that data was properly written back to and fetched from main memory allowing me to confirm that each part of the cache operated correctly before integrating it into the full processor.
 
+<img width="451" height="927" alt="image" src="https://github.com/user-attachments/assets/ad38fa89-2806-4f4d-b3a5-5ff0604d1ab7" />
+
+
 <img width="641" height="390" alt="image" src="https://github.com/user-attachments/assets/54422de9-da94-4582-a168-4ded8130c78d" />
 
 
