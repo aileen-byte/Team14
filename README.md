@@ -184,22 +184,6 @@ graph TB
 
 In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
-### Finite state machine for Cache implementation 
-
-In the single-cycle processor, every instruction completes all stages in one clock cycle. However, in the pipelined processor, instructions overlap, meaning we must sometimes wait a few cycles if a following instruction depends on data that has not yet been written back. To handle these cases, we implemented a hazard-handling finite state machine that detects such conflicts and introduces stalls when necessary to ensure correct execution.
-
-```mermaid
-stateDiagram-v2
-    direction LR
-
-    Compare --> Compare: Hit
-    Compare --> WriteBack: Miss
-
-    WriteBack --> Allocate
-    Allocate --> Refill
-    Refill --> Compare
-```
-
 ### Testing 
 - screenshot gtk wave 
 
