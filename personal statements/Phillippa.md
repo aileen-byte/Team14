@@ -39,6 +39,10 @@ I wrote part of the control unit that decodes ADDI and BNE. It sets safe default
 
 I wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign-extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
 
+## Instruction_Mem
+
+
+
 # Testbenches
 ## CU Testbench 
 
@@ -149,7 +153,7 @@ I helped the team stay organised when it came to testing, I used Makefile to sta
 
 One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead.
 
-Although these mistakes slowed my progress, they significantly improved my understanding of pipeline structure, testbench design, and debugging methodology. They also helped me develop a more disciplined workflow, where I write testbenches only when the underlying hardware is stable and review modules systematically for naming and structural correctness.
+One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was just a simplified, word-granularity model that only ever sees aligned 32-bit instructions.
 
 The main mistake I made while debugging was not reading the Harris and Harris textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
