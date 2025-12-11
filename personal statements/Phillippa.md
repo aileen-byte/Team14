@@ -148,11 +148,11 @@ The main mistake I made while debugging was not reading the Harris and Harris te
 
 This project also forced me to internalise several hardware concepts that rarely show up in small lab exercises:
 
-– how write timing (posedge vs negedge) affects register file semantics in a pipelined CPU
+– How write timing (posedge vs negedge) affects register file semantics in a pipelined CPU
 
-– why hazard and forwarding logic must be designed around the exact pipeline stage ordering 
+– Why hazard and forwarding logic must be designed around the exact pipeline stage ordering 
 
-– how little-endian byte addressing interacts with immediate generation and branch targets.
+– How little-endian byte addressing interacts with immediate generation and branch targets.
 Making (and then fixing) mistakes in each of these areas has given me a much deeper understanding than simply following the textbook design.
 
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
