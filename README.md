@@ -155,6 +155,18 @@ NOTE: In the pipelined portion of the project Aileen served as the Implementatio
 
 Our pipelined processor successfully executed all .mem test programs, producing results identical to the results we produced with the single-cycle processor. 
 
+Here is evidence of our pipelined processor working in gtkWave: 
+
+<img width="1554" height="217" alt="image" src="https://github.com/user-attachments/assets/b9ac1bbf-ceb5-4c3a-a782-9b5cdaa1b5fb" />
+
+The waveform above is produced when we run this assembly code: 
+
+<img width="858" height="352" alt="image" src="https://github.com/user-attachments/assets/aaa1dc3c-1e2e-4404-9d1c-60427bf0c811" />
+
+Our waveform shows that the pipeline in our processor is operating exactly the way we intended. The program continuously increments a1 from 0 to 255, stores the value into a0, and branches back to the start of the loop. Because each instruction depends on the results of the previous ones, our pipeline must correctly handle forwarding, branch resolution, and register updates. The PC trace in the waveform confirms that the control flow repeatedly cycles through the iloop and mloop instructions, and the regular pulses on FlushE show that our branch flushing logic is functioning properly on every taken branch.
+
+We can also see that our forwarding unit is behaving exactly as designed. ForwardAE and ForwardBE activate at the correct times, ensuring that dependent instructions receive the most recent values directly from MEM or WB without needing to stall. Since we never observe StallD or StallF, the pipeline is successfully avoiding unnecessary stalls and is resolving all hazards through forwarding alone. The register values in the waveform, such as the expected incrementing of a0, also confirm correct dataflow. Altogether, the pipeline behavior—PC progression, forwarding, flushing, and register updates—shows that our team’s implementation is handling dependencies, branches, and loop execution correctly and consistently.
+
 ## Cache 
 
 As a team, we successfully integrated a set-associative L1 data cache to the pipelined RISC-V processor to keep frequenctly accessed memory closer to the processor for faster access. The cache uses temporal and spatial locality to decide which data should remain in the cache and which data should be evicted. 
