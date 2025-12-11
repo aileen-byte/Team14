@@ -30,23 +30,22 @@ module cache #(
     output logic cache_to_memory_write_enable,
     output logic cache_stall
 );
-
-
-
 logic [110:0] cache_memory [SIZE-1:0];
 
 // logic [8:0] set_index = memory_address[10:2];
 assign set_index = memory_address[10:2];
  
 assign tag = memory_address[31:11];
-logic [1:0] byte_offset = memory_address[1:0];
+logic [1:0] byte_offset; 
+assign byte_offset = memory_address[1:0];
 
 assign cache_line_current = cache_memory[set_index];
 //logic [110:0] cache_line_next;
 //logic [110:0] cache_line_current;
 
 
-logic used = cache_line_current[110];
+logic used;
+assign used = cache_line_current[110];
 //logic valid1 = cache_line_current[109];
 //logic valid0 = cache_line_current[54];
 assign valid1 = cache_line_current[109];
@@ -58,8 +57,10 @@ assign dirty0 = cache_line_current[53];
 assign cache_tag1 = cache_line_current[107:87];
 //logic [20:0] cache_tag0 = cache_line_current[52:32];
 assign cache_tag0 = cache_line_current[52:32];
-logic [31:0] cache_data1 = cache_line_current[86:55];
-logic [31:0] cache_data0 = cache_line_current[31:0];
+logic [31:0] cache_data1;
+assign cache_data1 = cache_line_current[86:55];
+logic [31:0] cache_data0;
+assign cache_data0 = cache_line_current[31:0];
 
 //logic hit1;
 //logic hit0;
