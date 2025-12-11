@@ -2,13 +2,15 @@
 
 CID: 02561984
 
+//not sure where to put her use of writing the hex? 
+// also dont know where the main initial testbench is? 
+// cashe is confusing also not sure what to add in pipe thats ur job :)
+
 ### Contributions
 
 Single-cycle processor 
 
   - [Control Unit](#control-unit)
-
-  - [Data Mem](#data-mem)
 
   - [Jalr Mask](#jalr-mask)
 
@@ -17,10 +19,6 @@ Single-cycle processor
   - [Top Implementation](#top-implementation-for-single-cycle)
 
 Pipelined processor 
-
-  - [Pipeline Registers](#pipeline-registers)
-
-  - [Further Multiplexers](#further-multiplexers)
 
   - [Top Implementation](#top-implementation-for-pipeline) 
 
@@ -48,44 +46,45 @@ During Lab 4, I was incharge of implementing the testbench portion of the lab. T
 
 ## Control Unit 
 
-## Data Mem
+The original control unit fof lab 4 was designed by Pippa and was designed only to recognise addi and bne, providing minimal control signals suitable for the early single-cycle prototype. In the upgraded single-cycle implementation, I upgraded the control unit significantly and extended it to handle a much wider subset of the RISC-V RV32I instruction set, with additional control signals introduced to support memory sizes, jump behaviour, and write-back selection.
+
+The enhanced control unit now correctly decodes R-type instructions, enabling arithmetic and logical operations such as add, sub, and xor, using both register operands. It also adds full support for I-type arithmetic (e.g., addi, xori) and immediate-based addressing required for loads and jalr.
+
+Memory access behaviour has been expanded as well: the control logic now distinguishes between byte, half-word, and word stores using the MemWriteSize signal, and supports byte loads through the LoadSize signal and the load-select unit. This feature was fully supported by also changing the data memory initially written by Venice. This allows correct execution of instructions such as lb, lbu, and sb.
+
+Branching capability has also been upgraded beyond the original bne. The improved unit now generates correct control signals for both BEQ and BNE, using the ALU’s Zero flag to determine when a branch is taken. Additionally, full jump support has been added through JAL and JALR, where the control unit selects PC+4 as the return address and sets the PC source accordingly.
+
+Finally, U-type instructions such as LUI are now decoded through the UpperImmediate path, enabling immediate construction of 32-bit constants.
+
+Overall, the extended control unit transforms the basic prototype into a much more complete RISC-V single-cycle processor capable of handling arithmetic, memory operations, branching, and immediate-based addressing across a broad set of instructions. // specifically mention which were the requirement and which were extra 
 
 ## Jalr mask
 
+The jalr_mask module ensures correct alignment of the jump target address for the jalr instruction. RISC-V requires the least significant bit of a JALR target to be zero, so this module clears bit 0 of the computed address while leaving the remaining bits unchanged. This guarantees proper alignment and prevents misaligned control flow.
+
 ## Load Select
+
+The load_selec module determines how data is returned from memory for different load instructions. Based on the address offset (byte_num), it selects the correct byte from the word read from memory. Using the size signal, it then performs the appropriate extension: zero-extension for lbu, sign-extension for lb, or returns the full word for lw. This ensures that load instructions of different sizes produce correctly formatted 32-bit values for the register file.
 
 ## Top Implementation For Single Cycle
 
+As the person responsible for connecting the design in the top module and creating the testbenches, my role was to integrate all components of the single-cycle processor so that they operate as in the reference diagram. The top module brings together the PC logic, Instruction Memory, Control Unit, Register File, ALU, Immediate Generator, Data Memory, and the multiplexers that link each stage.
+
+While integrating these modules, I ensured that all signals aligned with testbench requirements. This included adding named register outputs such as x0 and t registers to allow my automated tests to verify program correctness. The top module therefore acts as the complete implementation of the datapath shown in the reference diagram and enables full functional testing of the processor.
 
 # Pipeline CPU Contributions
-##Pipelined CPU Diagram 
+
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/6f0836fb-eda3-430a-a995-8bc63b91eda5" />
-Jeshmeera and I shared the responsibility for implementing the pipeline functionality. Together, we developed the pipeline registers, hazard detection unit, and forwarding unit, then wired and integrated these components into the top.sv design. Following the implementation, we jointly carried out the testing and debugging process, with valuable support from Aileen, who ensured that the pipelined processor behaved correctly under the testbench framework.
-
-## Pipeline Registers 
-In the pipelined processor, the pipeline registers separate the five execution stages and ensure that each instruction’s data and control signals are correctly forwarded each clock cycle. Our four registers: IF/ID, ID/EX, EX/ME, and ME/WB store instruction fields, operands, immediates, ALU results, and control signals, allowing multiple instructions to execute concurrently. By holding these intermediate values between stages, the pipeline registers form the core structure that enables correct instruction flow and higher throughput compared to the single-cycle design.
-
-### ex_me reg
-
-The EX_ME_Reg module serves as the pipeline register between the Execute (EX) stage and the Memory (MEM) stage in the pipelined processor. Its role is to capture and store all control signals and datapath values produced in the EX stage - including the ALU result, write-back controls, memory access controls, and destination register - so they can be reliably used in the MEM stage on the following clock cycle. On reset, all outputs are cleared to prevent unintended writes. This register ensures that each stage operates on the correct set of values as instructions progress through the pipeline, maintaining proper timing, consistency, and separation between the EX and MEM stages.
-
-### me_wr reg
-
-The ME_WR_Reg module acts as the pipeline register between the Memory (MEM) stage and the Write-Back (WB) stage. Its purpose is to hold the memory output, ALU result, write-back control signals, and destination register number produced in the MEM stage so that the WB stage receives stable, correctly timed values on the next clock cycle. On reset, all outputs are cleared to avoid accidental writes to the register file. This register ensures that the write-back stage always operates on the correct instruction results, maintaining smooth and reliable progression through the final stage of the pipeline.
-
-## Further Multiplexers
-
-A further three select multiplexter was needed for the pipeline intergration - specifically for the correct implementation of the forwarding logic. 
+Jeshmeera and Venice were incharge of the initial pipeline build and I came in to assist later during the wiring and testing stage to ensure all the modules had been implemented correctly especially within the top module. 
 
 ## Top Implementation For Pipeline
 
-To extend our original single-cycle processor into a fully pipelined RISC-V implementation, the datapath was restructured into the classical five-stage pipeline: IF, ID, EX, MEM, and WB. This required breaking apart the monolithic single-cycle design and introducing pipeline registers between each stage to preserve the correct data and control signals as instructions advanced through the pipeline. Jeshmeera and I shared this responsibility—she created half of the pipeline registers along with the hazard detection and forwarding units, while I implemented the remaining registers and adapted the single-cycle modules to operate correctly within a multi-stage environment.
-
-Although I led the initial conversion from single-cycle to pipelined operation, both of us contributed significantly to the integration and debugging of the complete design. Aileen provided crucial support during verification, using her testbench expertise to ensure correct stage interactions and to identify issues that appeared during multi-instruction program execution. Together, this collaboration produced a fully functional pipelined CPU that preserved single-cycle behaviour while improving throughput.
 
 # Repo and Documentation Support
 
-Alongside my design responsibilities, I also contributed to keeping the repository and documentation clear, structured, and easy to navigate. Throughout the project I regularly reviewed our files to ensure that formatting remained consistent across modules, removing unnecessary comments and tidying older sections of code as the implementation evolved. This helped maintain a professional and readable codebase, reduced clutter, and made it easier for the group to work collaboratively without confusion. My attention to maintaining clean, well-organised files supported both the development workflow and the reliability of the final design.
+As the repository manager, I oversaw the organisation, version control and overall consistency of the project throughout development. I was responsible for ensuring that all work was carried out in the correct branches, that merges were made cleanly and that the repository remained structured, readable and easy for the team to navigate. This included reviewing commit histories, resolving merge conflicts and maintaining a clear workflow so that each stage of the processor could be developed and tested without disruption.
+
+I also took charge of the full testing pipeline. This involved writing and running the testbenches, interpreting results and identifying issues that needed to be addressed in the datapath or control logic. As part of this role, I reviewed the final versions of every module and stage, ensuring that they adhered to the RISC-V specification and behaved correctly under all the scenarios defined in Peter Cheung’s test suite. Many of the final refinements to the top-level design and control logic were made as a result of these tests, ensuring that edge cases, load and store behaviour, branching and jump instructions, and pipeline hazards were all handled correctly.
 
 # Reflection 
 
