@@ -1,17 +1,28 @@
-# Contents
-- Overview 
-- CU, Instruction_Mem and Sign_extend 
-- Testbenches
-- Debugging
-- Adding Data Memory Cache 
-- Mistakes I Made 
-- Refection
+# Philippa's Personal Statement 
+
+CID: 02596628
+
+### Contributions
+
+- [Overview](#overview)
+    
+### Analysis of my Work 
+  
+- [CU, Instruction_Mem and Sign_extend](#cu-instruction_mem-and-sign_extend)
+- [Testbenches](#testbenches)
+- [Debugging](#debugging)
+- [Pipelining Cache](#pipelining-cache)
+    
+### Reflection 
+  
+- [Mistakes I Made](#mistakes-i-made)
+- [Reflection](#reflection)
 
 # Overview 
 
 My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. I am grateful for this role as it gave me a good understanding of all of the modules and taught me how to debug. 
 
-#  CU, Intstruction_Mem and Sign_extend 
+# CU, Instruction_Mem and Sign_extend
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
 
@@ -22,7 +33,7 @@ I wrote part of the control unit that decodes ADDI and BNE. It sets safe default
 
 I also wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign-extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
 
-# Testbenchs 
+# Testbenches
 ## Writing CU Testbench 
 Initially, I wrote an incorrect branch_testbench discussed further in 'Mistakes I made'. I then wrote the CU testbench. 
 My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump.
@@ -53,6 +64,8 @@ During this part of the project, I focused on verifying and debugging the Regist
 During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they worked correctly together under Verilator. A large amount of time was spent resolving structural issues, such as inconsistent module naming, missing files (e.g., `ME_WR_Reg`), incorrect port widths, and implicit nets created by typos like `ALUoutW` vs. `ALUOutW`. I also identified several wiring errors inside `top.sv`, particularly around PC control, instruction memory routing, and control-signal propagation between pipeline stages. 
 
 Many warnings—undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts—helped uncover hidden design defects that weren’t caught by the unit testbenches. After cleaning these up, I corrected the testbench by removing leftover VBuddy calls so that it compiled and ran fully within the Verilator environment. Once the CPU executed the full F1 program successfully, I confirmed the behaviour visually using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages. This debugging phase improved my understanding of how small structural mistakes cascade through a pipelined CPU, reinforcing the importance of consistent naming, complete default assignments, and careful pipeline wiring.
+
+### Main Issues I found 
 
 ## **1. JALR/JAL in CU** 
 
@@ -87,7 +100,7 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 The main mistake I made while debugging was not reading the textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
-# Pipelining the Cache 
+# Pipelining Cache 
 
 Ailleen wrote a cache that worked in a single-cycle it was my job to pipeline it. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. 
 
@@ -115,11 +128,11 @@ Although these mistakes slowed my progress, they significantly improved my under
 
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
 
-    - Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team.
+- Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team.
     
-    - Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
+- Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
     
-    - Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring             puzzle.
+- Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring             puzzle.
 
 
 
