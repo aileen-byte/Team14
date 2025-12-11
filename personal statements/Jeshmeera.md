@@ -6,6 +6,8 @@ CID: 02561534
 Single-cycle processor 
 
   - [Program Counter](#program-counter)
+
+  - [F1 assembly code](#f1-assembly-code)
   
   - [F1 Testbench](#f1-testbench)
 
@@ -63,6 +65,10 @@ I also implemented the relevant code in the top-level module. Most notably, in t
 I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something we conciously aimed to do with most modules to minimise future sources of error. 
 
 NOTE: ADD TESTBENCHES AND RESULTS HERE 
+
+
+## F1 Aseembly code 
+
 
 ## F1 Testbench
 
