@@ -8,9 +8,14 @@
 - Refection 
 
 #  CU, Intstruction_Mem and Sign_extend
-
-
 ## CU 
+
+
+
+## Instruction_Mem 
+## Sign_extend 
+
+
 
 ## Intstruction_Mem 
 ## Sign_extend 
@@ -19,9 +24,9 @@
 ## Writing CU Testbench 
 Initially, I wrote an incorrect branch_testbench discussed further in 'Mistakes I made'. I then wrote the CU testbench. 
 My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump. 
-![[Screenshot 2025-11-30 at 14.04.42.png]]
+[[Screenshot 2025-11-30 at 14.04.42.png]]
 JAL set to branch PC instead of initalising a new jump PC. 
-![[Screenshot 2025-11-30 at 14.07.52.png]]
+[[Screenshot 2025-11-30 at 14.07.52.png]]
 Also, found another error in which JALR was carrying stale control signals. 
 
 The Control Unit initially failed several instruction tests because not all output signals were given default values. This caused leftover control signals from previous instructions to persist, leading to incorrect behaviour in JAL, JALR, and branch operations. Additionally, the `PCSrc` constants were incorrectly encoded, causing jump instructions to select the wrong PC path, and a missing `Immediate` constant caused a compile error. After adding full default assignments and correcting the `PCSrc` encodings, all instructions produced the expected control signals and the CU passed the complete testbench.
@@ -38,10 +43,14 @@ During this part of the project, I focused on verifying and debugging the Regist
 
 # Debugging 
 ### After Pipelining 
-During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they worked correctly together under Verilator. A large amount of time was spent resolving structural issues, such as inconsistent module naming, missing files (e.g., `ME_WR_Reg`), incorrect port widths, and implicit nets created by typos like `ALUoutW` vs. `ALUOutW`. I also identified several wiring errors inside `top.sv`, particularly around PC control, instruction memory routing, and control-signal propagation between pipeline stages. Many warnings—undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts—helped uncover hidden design defects that weren’t caught by the unit testbenches. After cleaning these up, I corrected the testbench by removing leftover VBuddy calls so that it compiled and ran fully within the Verilator environment. Once the CPU executed the full F1 program successfully, I confirmed the behaviour visually using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages. This debugging phase improved my understanding of how small structural mistakes cascade through a pipelined CPU, reinforcing the importance of consistent naming, complete default assignments, and careful pipeline wiring.
+During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they worked correctly together under Verilator. A large amount of time was spent resolving structural issues, such as inconsistent module naming, missing files (e.g., `ME_WR_Reg`), incorrect port widths, and implicit nets created by typos like `ALUoutW` vs. `ALUOutW`. I also identified several wiring errors inside `top.sv`, particularly around PC control, instruction memory routing, and control-signal propagation between pipeline stages. 
+
+Many warnings—undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts—helped uncover hidden design defects that weren’t caught by the unit testbenches. After cleaning these up, I corrected the testbench by removing leftover VBuddy calls so that it compiled and ran fully within the Verilator environment. Once the CPU executed the full F1 program successfully, I confirmed the behaviour visually using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages. This debugging phase improved my understanding of how small structural mistakes cascade through a pipelined CPU, reinforcing the importance of consistent naming, complete default assignments, and careful pipeline wiring.
 
 
-## **2. Forwarding Unit Not Correctly Integrated**
+
+
+## **2. Forwarding Not Correctly Integrated**
 
 Another major issue was the incomplete or incorrect wiring of the **Forwarding Unit**. Although the logic for detecting data hazards was partially implemented, the ALU inputs were not properly multiplexed based on `forwardA` and `forwardB`. As a result, dependent instructions would read stale register values instead of the most recent results from EX/MEM or MEM/WB.
 
