@@ -77,7 +77,7 @@ I reviewed the entire processor implementation, added the little-endian address 
 
 ## F1 assembly code 
 
-I also wrote the assembly program required to produce the F1 lights output on Vbuddy, using the state diagram to verify that the control flow and timing behaved exactly as intended.
+I also wrote the assembly program required to produce the F1 lights output on Vbuddy (co-authur Jeshmeera), using the state diagram to verify that the control flow and timing behaved exactly as intended.
 
 # Pipleined Processor 
 
