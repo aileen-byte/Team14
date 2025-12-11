@@ -9,7 +9,7 @@
 
 # Overview 
 
-My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU and implemeting blocking cache for a multi-cycle CPU. 
+My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. 
 
 #  CU, Intstruction_Mem and Sign_extend
 
@@ -57,7 +57,8 @@ During the debugging stage of the project, I focused on integrating all modules 
 
 Many warnings—undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts—helped uncover hidden design defects that weren’t caught by the unit testbenches. After cleaning these up, I corrected the testbench by removing leftover VBuddy calls so that it compiled and ran fully within the Verilator environment. Once the CPU executed the full F1 program successfully, I confirmed the behaviour visually using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages. This debugging phase improved my understanding of how small structural mistakes cascade through a pipelined CPU, reinforcing the importance of consistent naming, complete default assignments, and careful pipeline wiring.
 
-## **1. JALR/JAL in CU 
+## **1. JALR/JAL in CU** 
+
 
 
 
@@ -106,6 +107,7 @@ stateDiagram-v2
 One problem I hit was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states.
 
 # Mistakes I made 
+
 One of the main mistakes I made early on was attempting to write and verify the branch unit testbench before the rest of the pipeline and supporting modules were complete. Because several team members were still developing their parts, the hardware required for the testbench did not yet exist, meaning the testbench could not run and produced misleading errors. When I returned to it later, I realised that the design of the branch logic had changed and that my testbench instantiated signals and modules that were no longer part of the CPU. As a result, I had to discard the entire branch testbench and instead focus on writing dedicated CU and ALU testbenches.
 
 Another mistake was assuming the Control Unit would behave correctly without fully resetting unused signals. In practice, I discovered that failing to give every output a default value caused leftover control signals to “leak” into subsequent instructions. This created bugs that were difficult to diagnose because they only appeared after specific instruction sequences. Through debugging, I learned to always initialise every control signal explicitly, especially in combinational logic.
