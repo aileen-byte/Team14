@@ -196,24 +196,6 @@ graph TB
 
 In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
-### Pipelined Cache 
-
-```mermaid
-stateDiagram-v2
-    direction LR
-
-    Compare --> Compare: Hit
-    Compare --> WriteBack: Miss
-
-    WriteBack --> Allocate
-    Allocate --> Refill
-    Refill --> Compare
-```
-
-In our pipelined implementation, this state machine models how the cache responds to memory accesses as they progress through the pipeline. Each access begins in the Compare state, where the cache checks the tag of the requested address against the stored tag in the indexed line. If they match, indicating a hit, the request is serviced immediately and the controller remains in the Compare state so it can handle subsequent pipeline accesses without interruption. If the tags do not match, the access is a miss, and the pipeline triggers the cache controller to begin a line replacement sequence.
-
-When a miss occurs, the controller checks whether the victim line is dirty and, if so, transitions to the WriteBack state. Here, the dirty line is written back to main memory to preserve program correctness during this time, the pipeline typically stalls while memory completes the write. Once the write-back finishes, the controller enters the Allocate state, initiating a request for the new line from memory. When the requested block begins to return, the machine transitions to Refill, where the line is populated with the incoming data, the valid bit is set, and the dirty bit cleared. After the line is fully refilled, the controller returns to the Compare state, allowing the pipeline to retry the original access, which will now complete as a hit.
-
 ### Testing 
 
 Here is evidence our Cache working: 
@@ -232,7 +214,37 @@ We also created a unit test, to test the functionality of the cache:
 
 <img width="641" height="390" alt="image" src="https://github.com/user-attachments/assets/954995d5-d198-4f29-a897-f7193434de75" />
 
+The images below shows the gtK waveform produced when we run the Unit test. All outputs behave as expected.
 
+<img width="1205" height="225" alt="image" src="https://github.com/user-attachments/assets/ac7d45a1-1b47-4bf2-bd09-8afb1bf760ce" />
+
+The image above shows that when there is a miss the Cache goes to fetch the data from the memory and writes back into the Cache. 
+
+<img width="952" height="213" alt="image" src="https://github.com/user-attachments/assets/17063daa-253e-45ae-905d-781d82e3ae6d" />
+
+The image above shows that when there is a miss, since MemoryAdress 2000 has the same set index as 1000 the return data is written way0. 
+
+<img width="1513" height="249" alt="image" src="https://github.com/user-attachments/assets/78b47e6f-7b22-4c1f-af2e-c74f4c6d470e" />
+
+The image above shows eviction at the Cache entry corresponding to memory address 20000, its data is written back to memory and then 8 A's are written back into the Cache corresponding to the memory address 40000. 
+
+### Pipelined Cache 
+
+```mermaid
+stateDiagram-v2
+    direction LR
+
+    Compare --> Compare: Hit
+    Compare --> WriteBack: Miss
+
+    WriteBack --> Allocate
+    Allocate --> Refill
+    Refill --> Compare
+```
+
+In our pipelined implementation, this state machine models how the cache responds to memory accesses as they progress through the pipeline. Each access begins in the Compare state, where the cache checks the tag of the requested address against the stored tag in the indexed line. If they match, indicating a hit, the request is serviced immediately and the controller remains in the Compare state so it can handle subsequent pipeline accesses without interruption. If the tags do not match, the access is a miss, and the pipeline triggers the cache controller to begin a line replacement sequence.
+
+When a miss occurs, the controller checks whether the victim line is dirty and, if so, transitions to the WriteBack state. Here, the dirty line is written back to main memory to preserve program correctness during this time, the pipeline typically stalls while memory completes the write. Once the write-back finishes, the controller enters the Allocate state, initiating a request for the new line from memory. When the requested block begins to return, the machine transitions to Refill, where the line is populated with the incoming data, the valid bit is set, and the dirty bit cleared. After the line is fully refilled, the controller returns to the Compare state, allowing the pipeline to retry the original access, which will now complete as a hit.
 
 ## Challenges we faced as a team 
 
