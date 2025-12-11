@@ -11,7 +11,7 @@ CID: 02596628
 - [CU, Instruction_Mem and Sign_extend](#cu-instruction_mem-and-sign_extend)
 - [Testbenches](#testbenches)
 - [Debugging](#debugging)
-- [Pipelining Cache](#pipelining-cache)
+- [Multi cycled Cache](#multi-cycled-cache)
     
 ### Reflection 
   
@@ -100,7 +100,7 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 The main mistake I made while debugging was not reading the textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
-# Pipelining Cache 
+# Multi Cycled Cache 
 
 Ailleen wrote a cache that worked in a single-cycle it was my job to pipeline it. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. 
 
