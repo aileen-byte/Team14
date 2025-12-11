@@ -140,16 +140,17 @@ Throughout the development process, Venice and I shared responsibility for maint
 
 ## Challenges Faced 
 
+One of the first challenges I encountered was learning to use GitHub effectively, as this was my first time working with it in a collaborative project. Early on, I found it difficult to manage branches, track changes, and merge work cleanly, but as the project progressed I became much more confident. By the end, I had a far better understanding of how to maintain a tidy repository, resolve conflicts, and work synchronously with my team using proper commit practices.
 
+Communication within the team was also a learning curve. At the beginning, we didn’t fully appreciate how critical clear communication is especially when working on GitHub because failing to coordinate properly can lead to duplicated work or accidentally overwriting code that someone else has already fixed. As the project progressed, we improved significantly in this area by discussing implementations before coding, updating each other on changes, and reviewing each other’s work. This helped us avoid unnecessary conflicts and ensured that our modules were aligned both functionally and structurally.
+
+Another major challenge arose when I attempted to build modules before I fully understood how the underlying hardware concepts worked. For example, during the pipelining stage, I initially struggled to decide which signals needed to be carried through the pipeline registers and how the control logic interacted between stages. I realised that my partial understanding wasn’t enough, so I went back to the lecture PowerPoints and revisited the relevant sections of the textbook. Taking the time to study the diagrams and descriptions in detail gave me a much clearer mental model, and once I did that, the implementation became far more manageable.
 
 ## What I would do differently 
 
+If I were to revisit the design, one change I would make is in the PC unit. Instead of implementing the PC+4 adder and branch adder as two separate modules, I would create a single general-purpose adder module. This would simplify the design, reduce duplicated logic, and make debugging easier, as there would be fewer modules to maintain. The top-level could then select the appropriate inputs based on the control signals, allowing the same adder to serve multiple purposes including PC increments, branch target calculation, and any future additions that require arithmetic resulting in a cleaner and more modular design.
 
-
-
-
-
-
+I would also make sure to develop a solid understanding of all key modules especially the pipeline registers, hazard unit, and forwarding unit before beginning the designing stage, as having this clarity from the start would have saved a significant amount of time and prevented many of the issues I encountered early on, like deciding which signals were significant and how to wire everything correctly. 
 
 
 
