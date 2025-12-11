@@ -90,11 +90,11 @@ I also created simple testbenches for each module to verify their basic function
 
 ## F1 Testbench
 
-I helped Aileen implement the assembly code for the F1 lights program [(here)](..README.md/f1) and then wrote a testbench to run and verify the assembled code. This task was especially valuable, as it helped me understand how the SystemVerilog modules interacted with the testbench, the assembly program, and the generated hex data.
+I helped Aileen implement the assembly code for the F1 lights program , which can be seen working [(here)](..README.md/f1-lights), and then wrote a testbench to run and verify the assembled code. This task was especially valuable, as it helped me understand how the SystemVerilog modules interacted with the testbench, the assembly program, and the generated hex data.
 
 ## Pipeline Registers 
 
-In the pipelined processor, the pipeline registers separate the five execution stages and ensure that each instruction’s data and control signals are correctly forwarded each clock cycle. Our four registers:  IF/ID, ID/EX, EX/ME, and ME/WB store instruction fields, operands, immediates, ALU results, and control signals, allowing multiple instructions to execute concurrently. By holding these intermediate values between stages, the pipeline registers form the core structure that enables correct instruction flow and higher throughput compared to the single-cycle design.
+In the pipelined processor, the pipeline registers separate the five execution stages and ensure that each instruction’s data and control signals are correctly forwarded each clock cycle. Our four registers: IF/ID, ID/EX, EX/ME, and ME/WB store instruction fields, operands, immediates, ALU results, and control signals, allowing multiple instructions to execute concurrently. By holding these intermediate values between stages, the pipeline registers form the core structure that enables correct instruction flow and higher throughput compared to the single-cycle design.
 
 ### Pipelined CPU diagram 
 
@@ -118,9 +118,7 @@ In our design, the ID/EX register stores the decoded control signals, register o
 
 ## Hazard Unit 
 
-When Designing the Base implementation of the Hazard detection unit i followed the hazard handling approach outlined in the textbook, shown in the diagram [here](#pipelined-cpu-diagram). It detects when the pipeline must stall or flush to maintain correct execution, identifies load-use hazards by checking wether a load in the Execute stage writes a register needed by the Decode stage, and if som it stalls Fetch and Decode and flushes Execute. It also handles branch and jump hazards by flushing the Decode and Execute stages whenever PCSrcE indicates a control transfer. Together, these mechanisms ensure the pipelined processor never uses incorrect operands and preserves correct RISC-V program flow. 
-
-Aileen as implementation lead, acted as a co-author in this section, making small but essential alterations to the module to ensure correct functionality. 
+When Designing the Base implementation of the Hazard detection unit i followed the hazard handling approach outlined in the textbook, shown in the diagram [here](#pipelined-cpu-diagram). It detects when the pipeline must stall or flush to maintain correct execution, identifies load-use hazards by checking wether a load in the Execute stage writes a register needed by the Decode stage, and if so it stalls Fetch and Decode and flushes Execute. It also handles branch and jump hazards by flushing the Decode and Execute stages whenever PCSrcE indicates a control transfer. Together, these mechanisms ensure the pipelined processor never uses incorrect operands and preserves correct RISC-V program flow. 
 
 Through implementing the Hazard Unit, I developed a clearer understanding of how data and control hazards arise in a pipelined design, how load-use dependencies must be resolved with precise timing, and how stalls and flushes work together to preserve correct execution. 
 
@@ -128,18 +126,16 @@ Although this section stood out as one of the more challenging concepts I had to
 
 ## Forwarding Unit
 
-When designing the base implementation of the Forwarding Unit, I followed the data-forwarding strategy outlined in the textbook, represnted by the diagram [here](#pipelined-cpu-diagram). I deliberately implemented the hazard detection and forwarding logic as separate modules to keep the design modular, easier to debug, and consistent with the structure recommended in the textbook.
+When designing the base implementation of the Forwarding Unit, I followed the data-forwarding strategy outlined in the textbook, represented by the diagram [here](#pipelined-cpu-diagram). I deliberately implemented the hazard detection and forwarding logic as separate modules to keep the design modular, easier to debug, and consistent with the structure recommended in the textbook.
 
 The goal of this module was to resolve data hazards without stalling by forwarding results from later pipeline stages back into the Execute stage. It compares the Execute-stage source registers with the destination registers in the Memory and Writeback stages and determines whether those stages will produce a result. Using this information, it generates the ForwardAE and ForwardBE signals to select the correct ALU operands, ensuring the pipeline continues flowing even when instructions depend on recently computed values.
-
-Aileen, as implementation lead, acted as a co-author in this section and made small but important adjustments to ensure correct forwarding behaviour across all instruction types.
 
 Through implementing this module, I developed a deeper understanding of data dependencies in pipelines and how forwarding paths help maintain high performance without sacrificing correctness.
 
 ### Testing 
+Although I designed and wrote the modules, Venice upadated the top.sv to support the pipelined processor. Aileen, as implementation lead, then ensured that the functionality of the overall system was as expected. 
 
 As with the single-cycle design, I created simple testbenches for the pipeline modules to verify their functionality in isolation. 
-
 
 #### Testing the IF/ID Reg
 
