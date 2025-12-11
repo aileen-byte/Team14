@@ -123,7 +123,7 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 # Multi Cycled Cache 
 
-Aileen implemented the majority of single cycle data cache that appears in our final submission. In parallel, I experimented with extending this into a multi-cycle blocking cache controlled by a small finite state machine. The prototype used states like COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
+Aileen implemented the majority of the single cycle data cache that appears in our final submission. In parallel, I experimented with extending this into a multi cycle blocking cache controlled by a small finite state machine in a separate branch of the repo. The prototype used states like COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
 
 It didn't fully verify and integrate it into the pipelined CPU without risking regressions in the working design. As a team we therefore chose to keep the simpler single cycle cache for the final hand in. 
 
