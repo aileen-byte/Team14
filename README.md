@@ -198,6 +198,24 @@ graph TB
 
 In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
+### Pipelined Cache 
+
+```mermaid
+stateDiagram-v2
+    direction LR
+
+    Compare --> Compare: Hit
+    Compare --> WriteBack: Miss
+
+    WriteBack --> Allocate
+    Allocate --> Refill
+    Refill --> Compare
+```
+
+In our pipelined implementation, this state machine models how the cache responds to memory accesses as they progress through the pipeline. Each access begins in the Compare state, where the cache checks the tag of the requested address against the stored tag in the indexed line. If they match, indicating a hit, the request is serviced immediately and the controller remains in the Compare state so it can handle subsequent pipeline accesses without interruption. If the tags do not match, the access is a miss, and the pipeline triggers the cache controller to begin a line replacement sequence.
+
+When a miss occurs, the controller checks whether the victim line is dirty and, if so, transitions to the WriteBack state. Here, the dirty line is written back to main memory to preserve program correctness during this time, the pipeline typically stalls while memory completes the write. Once the write-back finishes, the controller enters the Allocate state, initiating a request for the new line from memory. When the requested block begins to return, the machine transitions to Refill, where the line is populated with the incoming data, the valid bit is set, and the dirty bit cleared. After the line is fully refilled, the controller returns to the Compare state, allowing the pipeline to retry the original access, which will now complete as a hit.
+
 ### Testing 
 
 Here is evidence our Cache working: 
