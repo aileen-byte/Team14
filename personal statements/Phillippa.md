@@ -58,6 +58,8 @@ Another issue found was an error in which JALR was carrying stale control signal
 
 Our Control Unit initially failed several instruction tests because some outputs lacked default values, so stale control signals persisted and broke JAL, JALR and branch behaviour. We also wrongly coded the PCSrc constants and omitted an Immediate constant, causing incorrect PC selection and a compile error. After adding full default assignments and fixing the PCSrc encodings, all control signals were correct and the CU passed the full testbench. Venice also wrote a c++ testbench for final integration.
 
+After these fixes, my CU testbench now passes all directed cases for ADDI, BNE, JAL and JALR, and its waveforms match the expected PC and control-signal behaviour from the lecture slides.
+
 ## ALU Testbench 
 
 Though the ALU was written by Venice during the debugging stage i decided to make a fully comprehensive system verilog test to ensure full functionality within the ALU. 
@@ -69,6 +71,8 @@ This included directed tests for all operations (ADD, SUB, AND, OR, XOR), corner
 During testing, I discovered a bug in the ALU: the Zero flag was being assigned twice, causing incorrect results for non-SUB instructions. I identified and fixed the issue by computing the Zero flag once from the final ALU output. After the fix, all tests passed under Verilator, confirming that the ALU behaves correctly and is ready for integration. Venice also wrote a c++ testbench for final integration.  
 
 <img width="672" height="411" alt="Screenshot 2025-12-11 at 13 54 34" src="https://github.com/user-attachments/assets/c9458910-dcfe-4c07-90db-9d3bd46eaa4c" />
+
+The final ALU testbench runs ~N directed checks plus 100+ randomised ADD cases under Verilator with no failures, giving us strong confidence that the ALU is correct before integration.
 
 ## Reg_file Testbench 
 
@@ -119,7 +123,9 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 # Multi Cycled Cache 
 
-Ailleen implemented the cache that worked in a single-cycle and it was my job to implement it for the multi-cycled cpu. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. I also implemented cache stall for when there was miss. 
+Aileen implemented the majority of single cycle data cache that appears in our final submission. In parallel, I experimented with extending this into a multi-cycle blocking cache controlled by a small finite state machine. The prototype used states like COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
+
+It didn't fully verify and integrate it into the pipelined CPU without risking regressions in the working design. As a team we therefore chose to keep the simpler single cycle cache for the final hand in. 
 
 ```mermaid
 stateDiagram-v2
@@ -133,8 +139,11 @@ stateDiagram-v2
     Refill --> Compare
 ```
 
-One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states.
+One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
+# Auxilary 
+
+I helped the team stay organised when it came to testing, I used Makefile to standardise how we built and ran the tests (tb/doit.sh), which helped the team reproduce failures quickly. I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.   
 
 # Mistakes I made 
 
