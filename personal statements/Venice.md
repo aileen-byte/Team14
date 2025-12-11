@@ -50,7 +50,7 @@ The ALU (Arithmetic Logic Unit) is one of the core components of the CPU datapat
 
 In the earlier Lab 4 design, an explicit equality (EQ) operation existed within the ALU to support branch decisions. However, in the full single-cycle implementation, this operation was removed and replaced with a dedicated Zero logic block. After the ALU computes its result, the Zero output is asserted if the result is equal to zero, implemented as Zero = (ALUout == {DATA_WIDTH{1'b0}});. For branch instructions such as BEQ and BNE, the ALU performs a subtraction between the two source registers, and the Zero signal indicates whether the two values were equal. This simplifies the ALU while still enabling correct branch behaviour under the RISC-V ISA. 
 
-###Testing the ALU 
+### Testing the ALU 
 
 <img width="651" height="1540" alt="image" src="https://github.com/user-attachments/assets/608b7806-b7d8-4bdc-83bf-0c0340dcc12a" />
 <img width="180" height="171" alt="image" src="https://github.com/user-attachments/assets/ff31f5e9-b928-472a-98bf-fa64773c2670" />
