@@ -9,16 +9,14 @@
 
 # Overview 
 
-My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. 
+My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. I am grateful for this role as it gave me a good understanding of all of the modules and taught me how to debug. 
 
-#  CU, Intstruction_Mem and Sign_extend
+#  CU, Intstruction_Mem and Sign_extend 
+
+<img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
 
 ## CU 
 I wrote part of the control unit that decodes ADDI and BNE. It sets safe default control signals, then for ADDI enables register write with an I-type immediate added in the ALU, and for BNE selects a B-type immediate, does rs1 - rs2 in the ALU, and sets PCSrc to take the branch when rs1 != rs2 (i.e. Zero == 0).
-
-## Instruction_Mem 
-
-I implemented a simple word-addressed instruction memory to feed the CPU. It stores 256 32-bit instructions in an internal array and uses $readmemh("program.hex", memory) to load the program at the start of simulation. The PC address comes in as A, and I drop the lower two bits (A[31:2]) to enforce word alignment before indexing the array, so the correct 32-bit instruction is always driven on RD.
 
 ## Sign_extend 
 
@@ -34,7 +32,6 @@ My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not
 JAL set to branch PC instead of initalising a new jump PC. 
 
 <img width="446" height="143" alt="Screenshot 2025-12-11 at 09 44 10" src="https://github.com/user-attachments/assets/498ce554-eb33-42b1-8022-93b49daf70c1" />
-
 
 Also, found another error in which JALR was carrying stale control signals. 
 
@@ -59,14 +56,16 @@ Many warnings—undriven signals, unused nets, width mismatches, and asynchronou
 
 ## **1. JALR/JAL in CU** 
 
+The CU didn't specify the difference between a JAL jump and and JALR jump, this caused issues in the 4_jal_ret test. 
 
+One issue I ran into while implementing the Control Unit was with the jump instructions, JAL and JALR. At first, both instructions behaved inconsistently in simulation, and it took a while to realise that the problem wasn’t in the immediate generation or the ALU, but in the CU itself. We had only set a generic jump signal, meaning JAL and JALR were effectively treated the same, even though they require different PC sources: JAL jumps to PC + immediate, while JALR must use the ALU-computed address. Once I introduced distinct encodings for each jump type and routed them properly, the CPU immediately started behaving as expected. 
 
 
 ## **2. Forwarding Not Correctly Integrated**
 
 Another major issue was the Forwarding Unit wiring. The hazard detection logic existed, but the ALU inputs weren’t actually selected using ForwardAE and ForwardBE, so dependent instructions sometimes saw stale register values instead of the EX/MEM or MEM/WB results. I rewired the forwarding to follow the standard RISC-V convention: EX/MEM has priority (2'b10), then MEM/WB (2'b01), otherwise the register file (2'b00). This ensures the ALU always sees the latest operands for back-to-back ALU dependencies, while load-use hazards are still handled by the hazard unit with a one-cycle stall.
 
-Another major issue was the Forwarding Unit wiring. The original design tried to do decode-stage forwarding, so values were bypassed in ID instead of properly forwarded into EX, and the ALU inputs weren’t really using ForwardAE/ForwardBE. I rewired it to do standard EX-stage forwarding, EX/MEM first, then MEM/WB, otherwise the register file, so the ALU now always sees the latest operands, with any remaining load-use cases handled by a one-cycle stall in the hazard unit.
+Another major issue was the Forwarding Unit wiring. The original design tried to do decode stage forwarding in some modules and not in others, and the ALU inputs weren’t really using ForwardAE/ForwardBE. I rewired it to do standard EX-stage forwarding, EX/MEM first, then MEM/WB, otherwise the register file, so the ALU now always sees the latest operands, with any remaining load-use cases handled by a one-cycle stall in the hazard unit.
 
 ## **3. Reg-File** 
 
@@ -86,7 +85,7 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 ## Mistakes I made while Debugging 
 
-The main mistake I made while debugging was not reading the textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that I later had to remove. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
+The main mistake I made while debugging was not reading the textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
 # Pipelining the Cache 
 
@@ -108,7 +107,19 @@ One problem I hit was that the original design assumed the memory address stayed
 
 # Mistakes I made 
 
-One of the main mistakes I made early on was attempting to write and verify the branch unit testbench before the rest of the pipeline and supporting modules were complete. Because several team members were still developing their parts, the hardware required for the testbench did not yet exist, meaning the testbench could not run and produced misleading errors. When I returned to it later, I realised that the design of the branch logic had changed and that my testbench instantiated signals and modules that were no longer part of the CPU. As a result, I had to discard the entire branch testbench and instead focus on writing dedicated CU and ALU testbenches.
+One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead.
 
 Although these mistakes slowed my progress, they significantly improved my understanding of pipeline structure, testbench design, and debugging methodology. They also helped me develop a more disciplined workflow, where I write testbenches only when the underlying hardware is stable and review modules systematically for naming and structural correctness.
+
+# Reflection 
+
+Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
+
+    - Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team.
+    
+    - Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
+    
+    - Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring             puzzle.
+
+
 
