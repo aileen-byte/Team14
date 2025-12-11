@@ -53,8 +53,10 @@ In the earlier Lab 4 design, an explicit equality (EQ) operation existed within 
 ### Testing the ALU 
 
 <img width="651" height="1540" alt="image" src="https://github.com/user-attachments/assets/608b7806-b7d8-4bdc-83bf-0c0340dcc12a" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my ALU testbench. 
+
 <img width="180" height="171" alt="image" src="https://github.com/user-attachments/assets/ff31f5e9-b928-472a-98bf-fa64773c2670" />
-To ensure propper testing throughout the project testbenches were used to test each induvidual module.  
 
 
 ## Data Mem
@@ -67,11 +69,37 @@ Aileen and I chose to enhance the data memory by introducing the MemWriteSize si
 
 The memory is initialised using a $readmemh call, which loads data from a data.hex file into the memory array at simulation start. Overall, this module provides the necessary data storage and retrieval functionality for load and store instructions while maintaining correct byte addressing, alignment, and memory formatting in accordance with the RISC-V ISA.
 
+### Testing the Data Mem
+<img width="460" height="1459" alt="image" src="https://github.com/user-attachments/assets/eda64e11-f372-4347-b0f1-6e11d9c37f56" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my Data_mem testbench. This was initailised using an empty data.hex file to properly test the modules functionality. 
+
+<img width="313" height="183" alt="image" src="https://github.com/user-attachments/assets/a2d24281-8c19-4285-b0b8-2fdc715ce83a" />
+
+
 ## Multiplexers 
 
 The original two-input multiplexer was provided in the initial packet from Peter Cheung, but a four-input multiplexer was also required for the full implementation of the processor. Since I was responsible for the initial datapath section that included the 2-input mux, I also took on the task of designing and implementing the 4-input mux needed for the extended functionality of the single-cycle processor.
 
 The additional inputs are essential for supporting all RISC-V control flow and write-back scenarios: one mux is used to select the next program counter value (PC+4, branch target, JALR target, or a default input), while the second mux determines what data is written back to the register file (ALU result, loaded data, PC+4 for jumps, or an upper immediate). Implementing the 4-input mux ensured that the datapath could correctly support branching, jumping, immediate instructions and full write-back behaviour as required by the complete RISC-V ISA.
+
+### Testing the Multiplexers
+
+#### Mux:
+<img width="662" height="1207" alt="image" src="https://github.com/user-attachments/assets/1ef8c7ea-2a8c-4bd7-a02a-f4bd1db7fba1" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my Mux testbench. 
+
+<img width="280" height="194" alt="image" src="https://github.com/user-attachments/assets/4179dce1-ec33-41ca-967b-1904f72e3661" />
+
+#### Mux4:
+
+<img width="635" height="1317" alt="image" src="https://github.com/user-attachments/assets/0bfc59af-8862-4ce8-9a87-5d27b5884bbf" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my Mux4 testbench. 
+
+<img width="289" height="225" alt="image" src="https://github.com/user-attachments/assets/37e5e164-0910-4908-965e-46468defccce" />
+
 
 ## Top Implementation For Single Cycle
 
