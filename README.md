@@ -1,14 +1,15 @@
-A README.md that show evidences of the CPU working properly with the program.
-A short narrative to state the challenges you encountered as a team.
-Comments about any design decisions you made that are not obvious.
-A reflection on what you might do differently if you were to start again.
+# How to run tb5 (Test bach 5)
 
-# Team 14 – RISC-V CPU Project
-
-## Team Statement
-
-## Evidence of CPU Working 
-
-## Design Overview 
-
-## Reflection
+1. Open a terminal
+2. Go into folder tb5
+   ```c
+   cd tb5
+   ```
+3. Make the script executable
+     ```c
+   chmod +x ./assemble.sh
+   ```
+4. Now run
+   ```c
+   ./doit.sh
+   ```
