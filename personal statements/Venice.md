@@ -144,11 +144,13 @@ To ensure propper testing throughout the project testbenches were used to test e
 A further three select multiplexter was needed for the pipeline intergration - specifically for the correct implementation of the forwarding logic. 
 
 ### Testing the Mux3
-<img width="460" height="1459" alt="image" src="https://github.com/user-attachments/assets/eda64e11-f372-4347-b0f1-6e11d9c37f56" />
+
+<img width="822" height="1206" alt="image" src="https://github.com/user-attachments/assets/59576c96-5f09-4261-8b80-4b3f3c188fb5" />
 
 To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my Mux3 testbench.
 
-<img width="313" height="183" alt="image" src="https://github.com/user-attachments/assets/a2d24281-8c19-4285-b0b8-2fdc715ce83a" />
+<img width="291" height="190" alt="image" src="https://github.com/user-attachments/assets/9863f53d-af10-4c8a-a16a-e2cdf0592ca0" />
+
 
 ## Top Implementation For Pipeline
 
