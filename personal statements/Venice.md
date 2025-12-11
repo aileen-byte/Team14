@@ -69,8 +69,6 @@ For read operations, the memory returns a full 32-bit word by assembling four co
 
 Aileen and I chose to enhance the data memory by introducing the MemWriteSize signal because it significantly improved testability and increased the flexibility of our design. Without this signal, verifying store behaviour was much more difficult, as the size of each memory write was implicit. By explicitly encoding whether the operation is a byte, half-word, or word store, we gained clearer control over the memory system and made the design far easier to debug and extend.
 
-The memory is initialised using a $readmemh call, which loads data from a data.hex file into the memory array at simulation start. Overall, this module provides the necessary data storage and retrieval functionality for load and store instructions while maintaining correct byte addressing, alignment, and memory formatting in accordance with the RISC-V ISA.
-
 ### Testing the Data Mem
 <img width="460" height="1459" alt="image" src="https://github.com/user-attachments/assets/eda64e11-f372-4347-b0f1-6e11d9c37f56" />
 
@@ -119,7 +117,7 @@ In the pipelined processor, the pipeline registers separate the five execution s
 
 The EX_ME_Reg module serves as the pipeline register between the Execute (EX) stage and the Memory (MEM) stage in the pipelined processor. Its role is to capture and store all control signals and datapath values produced in the EX stage - including the ALU result, write-back controls, memory access controls, and destination register - so they can be reliably used in the MEM stage on the following clock cycle. On reset, all outputs are cleared to prevent unintended writes. This register ensures that each stage operates on the correct set of values as instructions progress through the pipeline, maintaining proper timing, consistency, and separation between the EX and MEM stages.
 
-####Testing the Ex_Me_Reg
+#### Testing the Ex_Me_Reg
 
 <img width="669" height="1416" alt="image" src="https://github.com/user-attachments/assets/0c17e768-450a-4ec5-a41a-9befbf7dd8c4" />
 
@@ -132,7 +130,7 @@ To ensure propper testing throughout the project testbenches were used to test e
 
 The ME_WR_Reg module acts as the pipeline register between the Memory (MEM) stage and the Write-Back (WB) stage. Its purpose is to hold the memory output, ALU result, write-back control signals, and destination register number produced in the MEM stage so that the WB stage receives stable, correctly timed values on the next clock cycle. On reset, all outputs are cleared to avoid accidental writes to the register file. This register ensures that the write-back stage always operates on the correct instruction results, maintaining smooth and reliable progression through the final stage of the pipeline.
 
-####Testing the Me_Wr_Reg
+#### Testing the Me_Wr_Reg
 
 <img width="644" height="1326" alt="image" src="https://github.com/user-attachments/assets/99ba45f7-1174-4536-9be1-ce15803fb2e3" />
 
@@ -158,7 +156,7 @@ To ensure propper testing throughout the project testbenches were used to test e
 
 To extend our original single-cycle processor into a fully pipelined RISC-V implementation, the datapath was restructured into the classical five-stage pipeline: IF, ID, EX, MEM, and WB. This required breaking apart the monolithic single-cycle design and introducing pipeline registers between each stage to preserve the correct data and control signals as instructions advanced through the pipeline. Jeshmeera and I shared this responsibility—she created half of the pipeline registers along with the hazard detection and forwarding units, while I implemented the remaining registers and adapted the single-cycle modules to operate correctly within a multi-stage environment.
 
-Although I led the initial conversion from single-cycle to pipelined operation, both of us contributed significantly to the integration and debugging of the complete design. Aileen provided crucial support during verification, using her testbench expertise to ensure correct stage interactions and to identify issues that appeared during multi-instruction program execution. Together, this collaboration produced a fully functional pipelined CPU that preserved single-cycle behaviour while improving throughput.
+Although I led the initial conversion in the top.sv from single-cycle to pipelined operation, the whole team contributed significantly to the integration and debugging of the complete design. Aileen provided crucial support during verification, using her testbench expertise to ensure correct stage interactions and to identify issues that appeared during multi-instruction program execution. Together, this collaboration produced a fully functional pipelined CPU that preserved single-cycle behaviour while improving throughput.
 
 # Repo and Documentation Support
 
