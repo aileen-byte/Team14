@@ -195,7 +195,15 @@ graph TB
 In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
 ### Testing 
-- screenshot gtk wave 
+
+Here is evidence our Cache works as expected: 
+
+<img width="1583" height="198" alt="image" src="https://github.com/user-attachments/assets/3e01e307-bb81-4621-a820-8abcea46cd95" />
+
+The gtk wave above was produced from: 
+
+
+The waveform above is produced when we run this assembly code: 
 
 ## Future Considerations 
 
