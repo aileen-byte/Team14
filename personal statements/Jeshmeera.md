@@ -64,10 +64,6 @@ I also created simple testbenches for each module to verify their basic function
 
 NOTE: ADD TESTBENCHES AND RESULTS HERE 
 
-
-## F1 Aseembly code 
-
-
 ## F1 Testbench
 
 
@@ -90,11 +86,11 @@ Aileen played a crucial role in debugging and testing the pipelined design, maki
 
 ### IF/ID Register 
 
-In our CPU, the IF/ID register captures the fetched instruction and PC+4, ensuring the Decode stage receives stable inputs each cycle.
+In our CPU, the IF/ID register captures both the fetched instruction and the incremented program counter (PC+4), ensuring that the Decode stage receives stable and consistent inputs each cycle. By latching these values on the clock edge, the register prevents changes in the Fetch stage from affecting the Decode stage mid-cycle, allowing the pipeline to operate correctly and enabling multiple instructions to be processed simultaneously. It also supports flushing during control hazards, ensuring incorrect instructions do not propagate further into the pipeline.
 
 ### ID/EX Register 
 
-In our design, the ID/EX register stores the decoded control signals, operands, and immediate values, providing the Execute stage with all the information needed to perform ALU operations and evaluate branches. 
+In our design, the ID/EX register stores the decoded control signals, register operands, and immediate values, ensuring that the Execute stage receives all the information it needs to perform ALU operations and evaluate branch conditions. By capturing these signals at the clock edge, it isolates the Execute stage from changes in the Decode stage, allowing instructions to progress smoothly through the pipeline. This register also carries forward branch-related signals and memory control information, making it a crucial link between instruction decoding and the core computational logic of the processor.
 
 ## Hazard Unit 
 
