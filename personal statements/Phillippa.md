@@ -24,9 +24,9 @@
 ## Writing CU Testbench 
 Initially, I wrote an incorrect branch_testbench discussed further in 'Mistakes I made'. I then wrote the CU testbench. 
 My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump. 
-[[Screenshot 2025-11-30 at 14.04.42.png]]
+Screenshot 2025-11-30 at 14.04.42.png
 JAL set to branch PC instead of initalising a new jump PC. 
-[[Screenshot 2025-11-30 at 14.07.52.png]]
+Screenshot 2025-11-30 at 14.07.52.png
 Also, found another error in which JALR was carrying stale control signals. 
 
 The Control Unit initially failed several instruction tests because not all output signals were given default values. This caused leftover control signals from previous instructions to persist, leading to incorrect behaviour in JAL, JALR, and branch operations. Additionally, the `PCSrc` constants were incorrectly encoded, causing jump instructions to select the wrong PC path, and a missing `Immediate` constant caused a compile error. After adding full default assignments and correcting the `PCSrc` encodings, all instructions produced the expected control signals and the CU passed the complete testbench.
