@@ -63,6 +63,24 @@ I also implemented the relevant code in the top-level module. Most notably, in t
 I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something we conciously aimed to do with most modules to minimise future sources of error. 
 
 NOTE: ADD TESTBENCHES AND RESULTS HERE 
+### Testing PC Plus4 
+
+<img width="698" height="1024" alt="image" src="https://github.com/user-attachments/assets/6a760b63-6387-484a-87fe-81e67a8bee98" />
+
+
+<img width="338" height="190" alt="image" src="https://github.com/user-attachments/assets/07238a8c-a916-4805-ba73-3154e739c284" />
+
+### Testing PC Reg 
+
+<img width="644" height="1441" alt="image" src="https://github.com/user-attachments/assets/93a11e7d-dfa0-43a1-802c-3f666a57379a" />
+
+
+<img width="196" height="140" alt="image" src="https://github.com/user-attachments/assets/2278f068-0263-4311-a5c7-94c7963a321d" />
+
+### Testing Branch Adder
+
+
+
 
 ## F1 Testbench
 
