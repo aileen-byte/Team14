@@ -62,31 +62,29 @@ I also implemented the relevant code in the top-level module. Most notably, in t
 
 I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something we conciously aimed to do with most modules to minimise future sources of error. 
 
-NOTE: ADD TESTBENCHES AND RESULTS HERE 
+#### Testing PC Plus4 
 
-### Testing PC Plus4 
-
-#### Testbench 
+##### Testbench 
 <img width="698" height="1024" alt="image" src="https://github.com/user-attachments/assets/6a760b63-6387-484a-87fe-81e67a8bee98" />
 
-#### Results 
+##### Results 
 <img width="338" height="190" alt="image" src="https://github.com/user-attachments/assets/07238a8c-a916-4805-ba73-3154e739c284" />
 
 
-### Testing PC Reg 
+#### Testing PC Reg 
 
-#### Testbench 
+##### Testbench 
 <img width="644" height="1441" alt="image" src="https://github.com/user-attachments/assets/93a11e7d-dfa0-43a1-802c-3f666a57379a" />
 
-#### Results 
+##### Results 
 <img width="196" height="140" alt="image" src="https://github.com/user-attachments/assets/2278f068-0263-4311-a5c7-94c7963a321d" />
 
-### Testing Branch Adder
+#### Testing Branch Adder
 
-#### Testbench 
+##### Testbench 
 <img width="624" height="1063" alt="image" src="https://github.com/user-attachments/assets/7e334aab-6a15-4b50-8def-f3869038542e" />
 
-#### Results 
+##### Results 
 <img width="212" height="113" alt="image" src="https://github.com/user-attachments/assets/75fabba3-8b29-489e-8e63-1fcd62d81017" />
 
 
@@ -138,49 +136,49 @@ Aileen, as implementation lead, acted as a co-author in this section and made sm
 
 Through implementing this module, I developed a deeper understanding of data dependencies in pipelines and how forwarding paths help maintain high performance without sacrificing correctness.
 
-## Testing 
+### Testing 
 
 As with the single-cycle design, I created simple testbenches for the pipeline modules to verify their functionality in isolation. 
 
 
-### Testing the IF/ID Reg
+#### Testing the IF/ID Reg
 
-#### Testbench 
+##### Testbench 
 
 <img width="577" height="1206" alt="image" src="https://github.com/user-attachments/assets/d1d6b152-b56c-4ab3-801f-e667b5c35317" />
 
-#### Result 
+##### Result 
 
 <img width="185" height="115" alt="image" src="https://github.com/user-attachments/assets/6b0c7d9e-a251-459e-bc37-9a03c6aadfa9" />
 
 
-### Testing the ID/EX Reg 
+#### Testing the ID/EX Reg 
 
-#### Testbench 
+##### Testbench 
 
 <img width="241" height="1456" alt="image" src="https://github.com/user-attachments/assets/30cdf999-4ca3-41c6-bcaf-f50a7e438d18" />
 
-#### Result 
+##### Result 
 
 <img width="225" height="118" alt="image" src="https://github.com/user-attachments/assets/4201d960-30fe-4877-939d-9fcb01dab5ac" />
 
-### Testing the Hazard
+#### Testing the Hazard
 
-#### Testbench 
+##### Testbench 
 
 <img width="739" height="1445" alt="image" src="https://github.com/user-attachments/assets/0bf5167e-be03-45e2-ad58-e4aaa52c421a" />
 
-#### Result 
+##### Result 
 
 <img width="311" height="187" alt="image" src="https://github.com/user-attachments/assets/f27bc215-1a71-44fc-985c-f0023edf4e3d" />
 
-### Testing the Forwarding Unit 
+#### Testing the Forwarding Unit 
 
-#### Testbench 
+##### Testbench 
 
 <img width="336" height="1330" alt="image" src="https://github.com/user-attachments/assets/fe0c946c-fa58-461b-b7ae-109df6c15cb9" />
 
-#### Result 
+##### Result 
 
 <img width="234" height="145" alt="image" src="https://github.com/user-attachments/assets/3a2775bf-26a1-49f2-8ee5-0ccb01caa4a7" />
 
