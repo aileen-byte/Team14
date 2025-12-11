@@ -12,6 +12,8 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#cache) Cache Implementation
 
+[Go to](#challenges-we-faced-as-a-team) Challenges we Faced as a Team
+
 [Go to](#future-considerations) Future considerations 
 
 [Go to](#acknowledgements) Acknowledgements
@@ -210,6 +212,14 @@ The waveform above is produced when we tested this assembly code:
 The waveforms show that our cached CPU is correctly handling stores, loads, and cache-line updates as the program executes. When we first store the value 100 to address 0x00010000, we see a cache miss, which causes the processor to generate a cache_to_memory_address request and fetch the entire cache line containing that address. Once the line returns, the cache updates its internal cache_line_current entry and writes the byte into the appropriate offset. Immediately afterward, when we store 200 into address 0x00010001, the waveform shows that the instruction hits inside the same cache line, since the line was already brought in during the previous miss. Because of this, the hit signal goes high, and no additional memory request is issued. The updated cache line visible in the waveform now contains both stored bytes (100 and 200), matching the expected behavior of a write-through or write-update cache design depending on configuration.
 
 Later in the program, when we execute the loads (lbu t3, 0(s0) and lbu t4, 1(s0)), the waveform demonstrates that both accesses are cache hits. The cache already contains the line loaded during the earlier store miss, so the hit signal remains high, and no new memory fetch occurs. The values returned by the cache correspond exactly to the bytes we stored earlier, 100 at offset 0 and 200 at offset 1 confirming that our cache is correctly maintaining and returning modified data. The final updated cache_line_current field shows both values present and consistent, supporting the correct execution of the final addition instruction, which computes the expected result of 300. Overall, the waveform verifies that our CPU’s cache correctly detects misses, fetches lines, tracks hits, and updates data according to our design.
+
+## Challenges we faced as a team 
+
+One of the major challenges we faced as a team was communication, especially when working collaboratively on GitHub. At the beginning of the project, we underestimated how essential clear communication would be for synchronising our work and avoiding conflicts in the repository. This occasionally led to situations where two people were working on the same module without realising it, or where changes made by one group member unintentionally overwrote another’s progress. As we gained experience, we improved significantly by discussing design decisions more openly, updating each other regularly, and coordinating branches more carefully, but the early issues highlighted just how crucial communication is. 
+
+Another challenge that affected our workflow was the lack of a clear linear structure. In hindsight, we should have focused on completing a fully working single-cycle processor before moving on to the pipeline implementation. Instead, parts of the pipeline were developed in parallel with the single-cycle CPU, which created confusion when core behaviours or signals changed later. This approach caused unnecessary rework and made debugging more difficult, as issues in the pipelined design sometimes traced back to incomplete or inconsistent logic in the single-cycle stage. A more structured, sequential approach - single cycle first, pipeline second, cache last - would have made the development process smoother and saved considerable time in the long run.
+
+A significant challenge we encountered late in the project was misunderstanding the requirements for the cache implementation. Initially, we assumed that the cache needed to be fully pipelined and integrated into the existing pipeline stages, which led us to overcomplicate the design and invest considerable time into solving problems that didn’t actually need to be addressed. This misunderstanding caused unnecessary stress and delays, as we tried to manage timing, forwarding, and state transitions that would only apply to a pipelined cache. Once we clarified that the assignment required a standard cache - not a pipelined one - we were able to simplify the design substantially. However, the time lost during this confusion highlighted the importance of carefully interpreting project specifications before committing to an implementation approach.
 
 ## Future Considerations 
 
