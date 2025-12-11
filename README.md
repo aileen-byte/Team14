@@ -207,7 +207,7 @@ Potential enhancements:
 
 - Improve pipeline efficiency: Redefining the forwarding paths, eliminating unnecessary stalls, and potentially adding speculative execution would allow the pipeline to operate more efficiently and increase overall instruction throughout.
 
-- Add an L2 cache: Extending our design to include an L2 cache would further reduce memory latency by providing a larger, slower secondary cache beneath our current L1 cache. This would decrease the number of costly accesses to main memory, improve performance on memory-intensive programs, and introduce opportunities to explore multi-level cache coherence and replacement policies.
+- Add an L2 cache: Extending our design to include an L2 cache would further reduce memory latency by providing a larger, slower secondary cache beneath our current L1 cache. This would decrease the number of costly accesses to main memory and improve performance on memory intensive programs. 
 
 ## Acknowledgements
 
