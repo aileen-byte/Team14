@@ -106,24 +106,49 @@ To ensure propper testing throughout the project testbenches were used to test e
 All of my assigned modules including the ALU, Register File, the original 2-input multiplexer, and the additional 4-input multiplexers were what I incorporated directly into the top-level top.sv file. Each module was instantiated exactly as designed, with its ports connected to the datapath signals required for the full RISC-V instruction flow. While I provided the modules themselves, the final wiring and signal integration within the top-level design were carried out collaboratively by the whole of the group. In particular, Aileen took primary responsibility for connecting the modules correctly because she led the development of the testbenches and therefore had the clearest understanding of the signal behaviours required for full processor functionality. Her knowledge of the verification framework ensured that the datapath connections matched the control logic expectations and that each of my modules interacted correctly with the wider system.
 
 # Pipeline CPU Contributions
-##Pipelined CPU Diagram 
+## Pipelined CPU Diagram 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/6f0836fb-eda3-430a-a995-8bc63b91eda5" />
 Jeshmeera and I shared the responsibility for implementing the pipeline functionality. Together, we developed the pipeline registers, hazard detection unit, and forwarding unit, then wired and integrated these components into the top.sv design. Following the implementation, we jointly carried out the testing and debugging process, with valuable support from Aileen, who ensured that the pipelined processor behaved correctly under the testbench framework.
 
 ## Pipeline Registers 
 In the pipelined processor, the pipeline registers separate the five execution stages and ensure that each instruction’s data and control signals are correctly forwarded each clock cycle. Our four registers: IF/ID, ID/EX, EX/ME, and ME/WB store instruction fields, operands, immediates, ALU results, and control signals, allowing multiple instructions to execute concurrently. By holding these intermediate values between stages, the pipeline registers form the core structure that enables correct instruction flow and higher throughput compared to the single-cycle design.
 
-### ex_me reg
+### Ex_Me_Reg
 
 The EX_ME_Reg module serves as the pipeline register between the Execute (EX) stage and the Memory (MEM) stage in the pipelined processor. Its role is to capture and store all control signals and datapath values produced in the EX stage - including the ALU result, write-back controls, memory access controls, and destination register - so they can be reliably used in the MEM stage on the following clock cycle. On reset, all outputs are cleared to prevent unintended writes. This register ensures that each stage operates on the correct set of values as instructions progress through the pipeline, maintaining proper timing, consistency, and separation between the EX and MEM stages.
 
-### me_wr reg
+####Testing the Ex_Me_Reg
+
+<img width="669" height="1416" alt="image" src="https://github.com/user-attachments/assets/0c17e768-450a-4ec5-a41a-9befbf7dd8c4" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my EX_ME_Reg testbench. 
+
+<img width="347" height="469" alt="image" src="https://github.com/user-attachments/assets/d9afdac1-e0b5-4026-9101-dad98a1c7aa1" />
+
+
+### Me_Wr Reg
 
 The ME_WR_Reg module acts as the pipeline register between the Memory (MEM) stage and the Write-Back (WB) stage. Its purpose is to hold the memory output, ALU result, write-back control signals, and destination register number produced in the MEM stage so that the WB stage receives stable, correctly timed values on the next clock cycle. On reset, all outputs are cleared to avoid accidental writes to the register file. This register ensures that the write-back stage always operates on the correct instruction results, maintaining smooth and reliable progression through the final stage of the pipeline.
+
+####Testing the Me_Wr_Reg
+
+<img width="644" height="1326" alt="image" src="https://github.com/user-attachments/assets/99ba45f7-1174-4536-9be1-ce15803fb2e3" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my ME_Wr_Reg testbench. 
+
+<img width="343" height="437" alt="image" src="https://github.com/user-attachments/assets/a60397c2-3681-4f75-8b55-38bf73f94a6f" />
+
 
 ## Further Multiplexers
 
 A further three select multiplexter was needed for the pipeline intergration - specifically for the correct implementation of the forwarding logic. 
+
+### Testing the Mux3
+<img width="460" height="1459" alt="image" src="https://github.com/user-attachments/assets/eda64e11-f372-4347-b0f1-6e11d9c37f56" />
+
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my Mux3 testbench.
+
+<img width="313" height="183" alt="image" src="https://github.com/user-attachments/assets/a2d24281-8c19-4285-b0b8-2fdc715ce83a" />
 
 ## Top Implementation For Pipeline
 
