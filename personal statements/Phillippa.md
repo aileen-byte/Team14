@@ -370,6 +370,9 @@ I wrote a comprehensive SystemVerilog testbench to verify the ALU made by Venice
 
 During testing, I discovered a bug in the ALU: the Zero flag was being assigned twice, causing incorrect results for non-SUB instructions. I identified and fixed the issue by computing the Zero flag once from the final ALU output. After the fix, all tests passed under Verilator, confirming that the ALU behaves correctly and is ready for integration. Venice also wrote a c++ testbench for final integration.  
 
+<img width="672" height="411" alt="Screenshot 2025-12-11 at 13 54 34" src="https://github.com/user-attachments/assets/c9458910-dcfe-4c07-90db-9d3bd46eaa4c" />
+
+
 ## Reg_file Testbench 
     
     `timescale 1ns/1ps
