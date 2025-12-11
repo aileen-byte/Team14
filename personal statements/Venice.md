@@ -98,15 +98,17 @@ Although I led the initial conversion from single-cycle to pipelined operation, 
 
 # Repo and Documentation Support
 
-Alongside my design responsibilities, I also contributed to keeping the repository and documentation clear, structured, and easy to navigate. Throughout the project I regularly reviewed our files to ensure that formatting remained consistent across modules, removing unnecessary comments and tidying older sections of code as the implementation evolved. This helped maintain a professional and readable codebase, reduced clutter, and made it easier for the group to work collaboratively without confusion. My attention to maintaining clean, well-organised files supported both the development workflow and the reliability of the final design.
+Alongside my design responsibilities, I also contributed to keeping the repository and documentation clear, structured, and easy to navigate. Throughout the project I regularly reviewed our files to ensure that formatting remained consistent across modules, removing unnecessary comments and tidying older sections of code as the implementation evolved. Particularly at the end of the project i made sure the formatting of each module was consistant and easy to read. This helped maintain a professional and readable codebase, reduced clutter, and made it easier for the group to work collaboratively without confusion. My attention to maintaining clean, well-organised files supported both the development workflow and the reliability of the final design.
 
 # Reflection 
 
 ## Challenges Faced 
 
+Throughout the project we encountered several challenges that significantly shaped our learning experience. One of the steepest learning curves was understanding how to use Git properly, especially when managing multiple branches and resolving merge conflicts for the first time. Working as a team also required us to improve our communication and coordination, particularly when integrating work completed in parallel. Early in the project our code was inconsistent and loosely structured, which made debugging and understanding each other’s modules much more difficult. Over time we developed clearer formatting, stronger naming conventions and a more disciplined approach to organisation, all of which greatly improved the readability and reliability of our design.
+
 ## What I would do differently 
 
-
+If we were to approach the project again, we would place much more emphasis on structure and planning from the very beginning. Our team would have benefited from clearer task allocation, more consistent coding practices and a shared understanding of module responsibilities before diving into implementation. We also realised too late that relying mainly on scheduled lab sessions was not sufficient for a project of this scale, especially one involving a fully pipelined CPU with caches. Another key lesson was the importance of completing and thoroughly verifying one stage before moving on to the next. We often became eager to start the pipeline while the single-cycle processor was still unfinished, which made debugging significantly harder and extended the development timeline. With better organisation, pacing and discipline in our workflow, much of this complexity could have been avoided.
 
 
 
