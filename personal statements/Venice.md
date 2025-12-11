@@ -166,7 +166,9 @@ Alongside my design responsibilities, I also contributed to keeping the reposito
 
 ## Challenges Faced 
 
-Throughout the project we encountered several challenges that significantly shaped our learning experience. One of the steepest learning curves was understanding how to use Git properly, especially when managing multiple branches and resolving merge conflicts for the first time. Working as a team also required us to improve our communication and coordination, particularly when integrating work completed in parallel. Early in the project our code was inconsistent and loosely structured, which made debugging and understanding each other’s modules much more difficult. Over time we developed clearer formatting, stronger naming conventions and a more disciplined approach to organisation, all of which greatly improved the readability and reliability of our design.
+Throughout the project we encountered several challenges that significantly shaped our learning experience. One of the steepest learning curves was understanding how to use Git properly, especially when managing multiple branches and resolving merge conflicts for the first time. Working as a team also required us to improve our communication and coordination, particularly when integrating work completed in parallel.
+
+Early in the project our code was inconsistent and loosely structured, which made debugging and understanding each other’s modules much more difficult. Over time we developed clearer formatting, stronger naming conventions and a more disciplined approach to organisation, all of which greatly improved the readability and reliability of our design.
 
 ## What I would do differently 
 
