@@ -110,7 +110,7 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 # Multi Cycled Cache 
 
-Ailleen implemented the cache that worked in a single-cycle and it was my job to implement it for the multi-cycled cpu. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. 
+Ailleen implemented the cache that worked in a single-cycle and it was my job to implement it for the multi-cycled cpu. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. I also implemented cache stall for when there was miss. 
 
 ```mermaid
 stateDiagram-v2
