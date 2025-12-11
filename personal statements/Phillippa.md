@@ -102,7 +102,7 @@ The main mistake I made while debugging was not reading the textbook carefully b
 
 # Multi Cycled Cache 
 
-Ailleen wrote a cache that worked in a single-cycle it was my job to pipeline it. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. 
+Ailleen wrote a cache that worked in a single-cycle it was my job to implement it in a multi-cycled cpu. I choose to use a finite state machine, because cache misses and refills happen as a sequence of timed steps and an FSM cleanly controls those actions across multiple cycles. I wrote 4 stages: COMPARE, WRITE_BACK, ALLOCATE and REFILL. 
 
 ```mermaid
 stateDiagram-v2
