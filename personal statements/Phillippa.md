@@ -8,7 +8,7 @@ CID: 02596628
     
 ### Analysis of my Work 
   
-- [CU, Instruction_Mem and Sign_extend](#cu-instruction_mem-and-sign_extend)
+- [Control Unit, Instruction_Mem and Sign_extend](#control-unit-instruction_mem-and-sign_extend)
 - [Testbenches](#testbenches)
 - [Debugging](#debugging)
 - [Multi cycled Cache](#multi-cycled-cache)
@@ -20,212 +20,27 @@ CID: 02596628
 
 # Overview 
 
-My main role was implementing cu, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. I am grateful for this role as it gave me a good understanding of all of the modules and taught me how to debug. 
+My main role was implementing Control Unit, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. I am grateful for this role as it gave me a good understanding of all of the modules and taught me how to debug. 
 
-# CU, Instruction_Mem and Sign_extend
+# Control Unit, Instruction_Mem and Sign_extend
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
 
-## CU 
+## Control Unit 
 I wrote part of the control unit that decodes ADDI and BNE. It sets safe default control signals, then for ADDI enables register write with an I-type immediate added in the ALU, and for BNE selects a B-type immediate, does rs1 - rs2 in the ALU, and sets PCSrc to take the branch when rs1 != rs2 (i.e. Zero == 0).
 
 ## Sign_extend 
 
-I also wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign-extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
+I wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign-extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
 
 # Testbenches
 ## CU Testbench 
 
-    `timescale 1ns/1ps 
-    
-    module control_unit_tb; 
-    
-        // inputs 
-        logic [6:0] op;
-        logic [2:0] funct3; 
-        logic funct7b5;
-        logic Zero; 
-    
-        // outputs 
-        logic [1:0] PCSrc;
-        logic [1:0] ResultSrc; 
-        logic MemWrite; 
-        logic [2:0] ALUctrl; 
-        logic ALUSrc;
-        logic [2:0] ImmSrc; 
-        logic RegWrite; 
-    
-        control_unit cu_dut(
-            .op(op),
-            .funct3(funct3), 
-            .funct7b5(funct7b5),
-            .Zero(Zero), 
-            .PCSrc(PCSrc),
-            .ResultSrc(ResultSrc),
-            .MemWrite(MemWrite),
-            .ALUctrl(ALUctrl),
-            .ALUSrc(ALUSrc),
-            .ImmSrc(ImmSrc),
-            .RegWrite(RegWrite)
-        ); 
-    
-        // Printing all control signals 
-    
-        task show(input string name);
-            $display("---- %s ----", name);
-            $display("PCSrc=%b ResultSrc=%b MemWrite=%b ALUSrc=%b ALUctrl=%b ImmSrc=%b RegWrite=%b",
-                PCSrc, ResultSrc, MemWrite, ALUSrc, ALUctrl, ImmSrc, RegWrite);
-        endtask
-    
-    
-        initial begin 
-            $display("CU testbench starting.... ");
-    
-            //ADDI Test 
-    
-            op = 7'b0010011;
-            funct3 = 3'b000;
-            funct7b5 = 0;
-            Zero = 0; 
-    
-            #1;
-    
-            show("ADDI"); 
-    
-            if(RegWrite !== 1) $error("ADDI Failed: RegWrite should be 1");
-            if(ALUSrc !== 1) $error("ADDI Failed: ALUSrc should be 1");
-            if(ALUctrl !== 3'b000) $error("ADDI Failed: ALUctrl should be ADD");
-            if(MemWrite !== 0) $error("ADDI Failed: MemWrite should be 0");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            //ADD Test 
-    
-            op = 7'b0110011;
-            funct3 = 3'b000;
-            funct7b5 = 0;
-            Zero = 0;
-    
-            #1; 
-            
-            show("ADD");
-    
-            if(RegWrite !== 1) $error("ADD Failed: RegWrite should be 1");
-            if(ALUSrc !== 0) $error("ADD Failed: ALUSrc should be 0");
-            if(ALUctrl !== 3'b000) $error("ADD Failed: ALUctrl should be ADD");
-            if(MemWrite !== 0) $error("ADD Failed: MemWrite should be 0");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            //SUB Test 
-    
-            op = 7'b0110011;
-            funct3 = 3'b000;
-            funct7b5 = 1; 
-            Zero = 0; 
-    
-            #1; 
-    
-            show("SUB");
-    
-            if(RegWrite !== 1) $error("SUB Failed: RegWrite should be 1");
-            if(ALUSrc !== 0) $error("SUB Failed: ALUSrc should be 0");
-            if(ALUctrl !== 3'b001) $error("SUB Failed: ALUctrl should be SUB");
-            if(MemWrite !== 0) $error("SUB Failed: MemWrite should be 0");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            //LOAD Test 
-    
-            op = 7'b0000011;
-            funct3 = 3'b000;
-            funct7b5 = 0;
-            Zero = 0;
-    
-            #1;
-    
-            show("LOAD");
-    
-            if(RegWrite !== 1) $error("LOAD Failed: RegWrite should be 1");
-            if(ALUSrc !== 1) $error("LOAD Failed: ALUSrc should be 1");
-            if(ALUctrl !== 3'b000) $error("LOAD Failed: ALUctrl should be ADD");
-            if(ResultSrc !== 2'b01)  $error("LOAD Failed: ResultSrc should be Memory");
-            if(ImmSrc !== 3'b000) $error("LOAD Failed: ImmSrc should be I_TYPE");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            //STORE Test 
-            op = 7'b0100011;
-            funct3 = 3'b000;
-    
-            #1;
-    
-            show("STORE"); 
-    
-            if(MemWrite !== 1) $error("STORE Failed: MemWrite wrong");
-            if(RegWrite !== 0) $error("STORE Failed: RegWrite must be 0");
-            if(ALUSrc !== 1) $error("STORE Failed: ALUSrc must be 1");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            // LUI Test 
-            op = 7'b0110111; 
-            funct3 = 3'b000;
-            funct7b5 = 1'b0;
-            Zero = 1'b0;
-    
-            #1; 
-    
-            show("LUI");
-    
-            if(ImmSrc !== 3'b100) $error("LUI Failed: ImmSrc wrong");
-            if(PCSrc !== 0) $error("PCSrc Failed");
-    
-            //BNE Test 
-            op = 7'b1100011;
-            funct3 = 3'b001; 
-            Zero = 0; 
-    
-            #1; 
-            
-            show("BNE taken");
-            if(PCSrc !== 2'b01) $error("BNE Failed: PCSrc should select a branch target");
-    
-            //BNE not taken 
-            Zero = 1;
-            #1; 
-            show("BNE not taken");
-            if(PCSrc !== 2'b00) $error("BNE Failed: PCSrc should be PC+4 when not taken");
-    
-            //JAL Test
-    
-            op = 7'b1101111;
-            funct3 = 3'b000;
-            funct7b5 = 0;
-            Zero = 0; 
-    
-            #1;
-            
-            show("JAL");
-            if(PCSrc !== 2'b10) $error("JAL Failed");
-            if(RegWrite !== 1) $error("JAL Failed"); 
-    
-            //JALR Test 
-    
-            op = 7'b1100111;
-            funct3 = 3'b000;
-            funct7b5 = 0;
-            Zero = 0; 
-    
-            #1; 
-    
-            if(PCSrc !== 2'b11) $error("JALR Failed");
-            if(RegWrite !== 1) $error("JAL Failed"); 
-    
-            $display("CU testbench finished");
-            $finish; 
-    
-        end 
-    
-    endmodule  
+<img width="543" height="1350" alt="image" src="https://github.com/user-attachments/assets/878d409b-84a5-4560-b996-f2f8276657df" />
 
-Initially, I wrote an incorrect branch_testbench discussed further in 'Mistakes I made'. I then wrote the CU testbench. 
-My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump.
+<img width="511" height="1139" alt="image" src="https://github.com/user-attachments/assets/e902903a-b150-4657-993d-b45b022fb247" />
+ 
+My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump. This is proof that the use of these testbenches throught the project was crutial for proper implementation of our CPU. 
 
 <img width="448" height="377" alt="Screenshot 2025-12-11 at 09 43 42" src="https://github.com/user-attachments/assets/358a4a40-25bd-4335-8e08-9afcaa9b1ea2" />
 
