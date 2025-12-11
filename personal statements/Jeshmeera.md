@@ -79,7 +79,10 @@ NOTE: ADD TESTBENCHES AND RESULTS HERE
 
 ### Testing Branch Adder
 
+<img width="624" height="1063" alt="image" src="https://github.com/user-attachments/assets/7e334aab-6a15-4b50-8def-f3869038542e" />
 
+
+<img width="212" height="113" alt="image" src="https://github.com/user-attachments/assets/75fabba3-8b29-489e-8e63-1fcd62d81017" />
 
 
 ## F1 Testbench
@@ -136,12 +139,34 @@ As with the single-cycle design, I created simple testbenches for the pipeline m
 
 NOTE: ADD TESTBENCHES AND RESULTS HERE 
 
+###Testing the IF/ID Reg
+
+<img width="577" height="1206" alt="image" src="https://github.com/user-attachments/assets/d1d6b152-b56c-4ab3-801f-e667b5c35317" />
 
 
+<img width="185" height="115" alt="image" src="https://github.com/user-attachments/assets/6b0c7d9e-a251-459e-bc37-9a03c6aadfa9" />
 
 
+###Testing the ID/EX Reg 
+
+<img width="241" height="1456" alt="image" src="https://github.com/user-attachments/assets/30cdf999-4ca3-41c6-bcaf-f50a7e438d18" />
 
 
+<img width="225" height="118" alt="image" src="https://github.com/user-attachments/assets/4201d960-30fe-4877-939d-9fcb01dab5ac" />
+
+### Testing the Hazard
+
+<img width="739" height="1445" alt="image" src="https://github.com/user-attachments/assets/0bf5167e-be03-45e2-ad58-e4aaa52c421a" />
+
+
+<img width="311" height="187" alt="image" src="https://github.com/user-attachments/assets/f27bc215-1a71-44fc-985c-f0023edf4e3d" />
+
+### Testing the Forwarding Unit 
+
+<img width="336" height="1330" alt="image" src="https://github.com/user-attachments/assets/fe0c946c-fa58-461b-b7ae-109df6c15cb9" />
+
+
+<img width="234" height="145" alt="image" src="https://github.com/user-attachments/assets/3a2775bf-26a1-49f2-8ee5-0ccb01caa4a7" />
 
 
 # Auxilary Tasks 
