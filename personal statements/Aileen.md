@@ -84,7 +84,7 @@ I also wrote the assembly program required to produce the F1 lights output on Vb
 
 ### Pipelined Diagram 
 
-<img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/9fc8532d-b5bd-46e0-80f8-09a11a37b343" />
+<img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/c540b6ec-13d0-4a70-9278-10b3806239e4" />
 
 
 As mentioned earlier, we had all agreed to follow the textbook’s datapath diagrams throughout the project, ensuring that our modules remained consistent with a shared architectural design and reducing ambiguity during implementation and debugging. Jeshmeera and Venice were Design Leads on this section of the project and I handled overall implementation and debugging. 
@@ -99,7 +99,7 @@ Throughout the debugging process, I applied the same systematic approach I devel
 
 ## Cache Implementation 
 
-<img width="1920" height="1315" alt="image" src="https://github.com/user-attachments/assets/c52eea47-1a95-4e12-8e75-649ffc8f4ae2" />
+<img width="1920" height="1315" alt="image" src="https://github.com/user-attachments/assets/add657cc-a438-4bd6-bc1f-43e307e00f96" />
 
 
 To implement the two-way set-associative cache, I began by studying the lecture material and the diagrams particularly the one shown above to fully understand how the tag, set index, valid bits, and hit logic interact in hardware. I first translated the conceptual table structure into SystemVerilog, decoding the memory address into its tag and set index fields. From there, I allocated the cache as a two-way structure, where each way stores a used bit, dirty bit, valid bit, tag, and data, mirroring the organisation in the textbook diagrams.
