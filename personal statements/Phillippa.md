@@ -20,7 +20,13 @@ CID: 02596628
 
 # Overview 
 
-My main role was implementing Control Unit, instruction_mem and sign_extend in the single cycle. Helping Aileen debug the pipelined CPU, writing testbenches and implemeting blocking cache for a multi-cycle CPU. I am grateful for this role as it gave me a good understanding of all of the modules and taught me how to debug. 
+Core RTL design (single-cycle CPU): wrote control_unit.sv for ADDI/BNE, contributed to JAL/JALR and branch control, and implemented sign_extend.sv and instr_mem.sv used in both the single-cycle and pipelined CPUs.
+
+Verification in SystemVerilog: authored directed and random CU, ALU and reg_file testbenches (*_tb.sv) and used them to drive fixes in the RTL.
+
+Pipeline integration & debugging: fixed structural and wiring bugs in top.sv (PC path, forwarding, hazard logic, reset behaviour) until the pipelined CPU passed the F1 and reference tests under Verilator.
+
+Multi-cycle data cache: extended the single-cycle cache into a multi-cycle blocking cache with a finite-state machine and stall signalling, integrated with the data memory interface.
 
 # Control Unit, Instruction_Mem and Sign_extend
 
@@ -70,7 +76,10 @@ During testing, I discovered a bug in the ALU: the Zero flag was being assigned 
 
 The Reg_file.sv was initially written by Venice but as a part of my debugging I decided to make a testbench in system verilog for our Reduced RISC-V CPU. I built the testbench to generates its own clock, applies deterministic and randomized test cases, and checks all register behaviours including x0 immutability, write-enable control, dual-port reads, and read-after-write timing. A large part of the work involved diagnosing why expected values weren’t being written or read, which led me to identify issues with initialisation, write-timing, and the testbench’s use of non-blocking assignments. By iterating through these problems and refining both the DUT and testbench, I achieved a fully passing suite of directed and fuzz tests. This process strengthened my understanding of synchronous vs asynchronous behaviour in the register file and improved my confidence in writing robust verification code. After the upgrade to the full CPU Venice made another testbench in C++ to ensure all our testbenches are consistant. 
 
+With the negedge-write change in the register file, all directed tests and random fuzz runs now pass. I also confirmed my results in GTKWave. 
+
 # Debugging 
+
 ### After Pipelining 
 
 During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they worked correctly together under Verilator. A large amount of time was spent resolving structural issues, such as inconsistent module naming, incorrect port widths, and implicit nets created by typos like `ALUoutW` vs. `ALUOutW`. I also identified wiring errors inside `top.sv` around PC control, instruction memory routing, and control-signal propagation between pipeline stages. 
@@ -137,13 +146,24 @@ The main mistake I made while debugging was not reading the Harris and Harris te
 
 # Reflection 
 
+This project also forced me to internalise several hardware concepts that rarely show up in small lab exercises:
+
+– how write timing (posedge vs negedge) affects register file semantics in a pipelined CPU
+
+– why hazard and forwarding logic must be designed around the exact pipeline stage ordering 
+
+– how little-endian byte addressing interacts with immediate generation and branch targets.
+Making (and then fixing) mistakes in each of these areas has given me a much deeper understanding than simply following the textbook design.
+
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
 
 - Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team.
     
 - Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
     
-- Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring             puzzle.
+- Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring puzzle.
+
+
 
 
 
