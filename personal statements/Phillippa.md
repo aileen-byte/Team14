@@ -87,12 +87,12 @@ The LUI test wasn’t passing, and I couldn’t work out why. When I opened GTKW
 Originally, my register file was writing on the same clock edge that the rest of the design (and my testbench) was sampling values. That meant reads and writes were effectively happening at the same time, so the read ports could see either the old value or the new one depending on how the simulator scheduled events. In practice, this showed up as off-by-one behaviour: I’d write to a register and then read it straight away, but the testbench would sometimes still see the previous value.
 
 To fix this, I moved the write logic to the negative edge of the clock:
-
-always_ff @(negedge clk) begin
-    if (rst) ...
-    else if (WE3 && AD3 != 0)
-        regs[AD3] <= WD3;
-end
+    
+    always_ff @(negedge clk) begin
+        if (rst) ...
+        else if (WE3 && AD3 != 0)
+            regs[AD3] <= WD3;
+    end
 
 After this change, the writes happened cleanly between sampling points, and the LUI test started passing with x1 updating as expected.
 
