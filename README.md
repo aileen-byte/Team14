@@ -208,6 +208,11 @@ The waveform above is produced when we tested this assembly code:
 
 Our cached processor stores t1 and t2 in the cache as expected. 
 
+We also created a unit test, to test the functionality of the cache: 
+
+<img width="451" height="927" alt="image" src="https://github.com/user-attachments/assets/64edf84d-d6d6-4d25-9e21-cf0fab835ebf" />
+
+
 ## Challenges we faced as a team 
 
 One of the major challenges we faced as a team was communication, especially when working collaboratively on GitHub. At the beginning of the project, we underestimated how essential clear communication would be for synchronising our work and avoiding conflicts in the repository. This occasionally led to situations where two people were working on the same module without realising it, or where changes made by one group member unintentionally overwrote another’s progress. As we gained experience, we improved significantly by discussing design decisions more openly, updating each other regularly, and coordinating branches more carefully, but the early issues highlighted just how crucial communication is. 
