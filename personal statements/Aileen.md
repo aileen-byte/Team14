@@ -86,6 +86,7 @@ I also wrote the assembly program required to produce the F1 lights output on Vb
 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/9fc8532d-b5bd-46e0-80f8-09a11a37b343" />
 
+
 As mentioned earlier, we had all agreed to follow the textbook’s datapath diagrams throughout the project, ensuring that our modules remained consistent with a shared architectural design and reducing ambiguity during implementation and debugging. Jeshmeera and Venice were Design Leads on this section of the project and I handled overall implementation and debugging. 
 
 ## Testing, Debugging and Cleaning
@@ -100,6 +101,7 @@ Throughout the debugging process, I applied the same systematic approach I devel
 
 <img width="1920" height="1315" alt="image" src="https://github.com/user-attachments/assets/c52eea47-1a95-4e12-8e75-649ffc8f4ae2" />
 
+
 To implement the two-way set-associative cache, I began by studying the lecture material and the diagrams particularly the one shown above to fully understand how the tag, set index, valid bits, and hit logic interact in hardware. I first translated the conceptual table structure into SystemVerilog, decoding the memory address into its tag and set index fields. From there, I allocated the cache as a two-way structure, where each way stores a used bit, dirty bit, valid bit, tag, and data, mirroring the organisation in the textbook diagrams.
 
 Once the structure was in place, I introduced the necessary registers to update cache lines on hits and misses. I then implemented the hit/miss detection logic in a combinational block, comparing the incoming tag against both ways and generating the appropriate hit signals. This same block also handled updating the used bit for the replacement policy and preparing the data output during hits. For misses, I added the logic required to generate the correct signals to the main memory - requesting a refill, writing back dirty lines, and updating the cache line with new data once the memory response arrives.
@@ -109,7 +111,6 @@ Once the structure was in place, I introduced the necessary registers to update 
 I also wrote a set of targeted tests to validate the full cache behaviour checking hit and miss detection, verifying correct line replacement, and ensuring that data was properly written back to and fetched from main memory allowing me to confirm that each part of the cache operated correctly before integrating it into the full processor.
 
 <img width="451" height="927" alt="image" src="https://github.com/user-attachments/assets/ad38fa89-2806-4f4d-b3a5-5ff0604d1ab7" />
-
 
 <img width="641" height="390" alt="image" src="https://github.com/user-attachments/assets/54422de9-da94-4582-a168-4ded8130c78d" />
 
@@ -137,18 +138,3 @@ I also struggled with the sheer number of signals involved in the pipelined proc
 If I were to approach the project again, one of my main priorities would be to take a step back and look at the bigger picture before diving into low-level debugging. On the days I was debugging the pipeline, I became too focused on the small details, which made it harder to identify the root cause of certain issues. I’ve realised that many of these problems could have been solved more quickly by first understanding the overall behaviour of the system, rather than immediately tracing individual signals.
 
 I would also make it a priority to take breaks when I start to feel tired. There were several moments where exhaustion led me to overthink simple problems or miss obvious mistakes. Giving myself short breaks would have helped me stay clear-headed, work more efficiently, and ultimately reduce the time spent debugging.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
