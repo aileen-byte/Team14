@@ -56,7 +56,7 @@ In the earlier Lab 4 design, an explicit equality (EQ) operation existed within 
 
 <img width="651" height="1540" alt="image" src="https://github.com/user-attachments/assets/608b7806-b7d8-4bdc-83bf-0c0340dcc12a" />
 
-To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my ALU testbench. 
+To ensure propper testing throughout the project testbenches were used to test each induvidual module. See below for results of my ALU testbench. (Note: pippa also created an ALU testbench but in systemVerilog) 
 
 <img width="180" height="171" alt="image" src="https://github.com/user-attachments/assets/ff31f5e9-b928-472a-98bf-fa64773c2670" />
 
