@@ -43,6 +43,7 @@ CMakeCache.txt
 *.tmp 
 *.bak 
 *.old 
+*.vcd
 
 # test result dumps 
 
