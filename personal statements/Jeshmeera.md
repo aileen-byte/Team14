@@ -66,7 +66,7 @@ NOTE: ADD TESTBENCHES AND RESULTS HERE
 
 ## F1 Testbench
 
-
+I helped Aileen implement the assembly code for the F1 lights program [(here)](..README.md/f1) and then wrote a testbench to run and verify the assembled code. This task was especially valuable, as it helped me understand how the SystemVerilog modules interacted with the testbench, the assembly program, and the generated hex data.
 
 ## Pipeline Registers 
 
