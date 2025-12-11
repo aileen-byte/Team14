@@ -49,7 +49,7 @@ Throughout the single cycle processor implementation we all made it a common goa
 
 ## Instruction Implementation 
 
-In Lab 4, Pippa was responsible for the control unit, which only needed to support the minimal instruction set required at that stage, specifically ADDI and BNE. I significantly expanded the control unit to handle the required RV32I instructions for the coursework [(here)](#../README.md#instructions-implemented), as well as several additional instructions that were not explicitly required but greatly improved the completeness and capability of our processor.
+In Lab 4, Pippa was responsible for the control unit, which only needed to support the minimal instruction set required at that stage, specifically ADDI and BNE. I significantly expanded the control unit to handle the required RV32I instructions for the coursework [(here)](../README.md#instructions-implemented), as well as several additional instructions that were not explicitly required but greatly improved the completeness and capability of our processor.
 
 The required upgrades included full support for R-type arithmetic instructions (e.g., ADD, SUB), essential I-type arithmetic operations (ADDI, XORI), correct handling of JAL and JALR for jump control flow, and decoding for load and store instructions necessary for the provided test programs. To support these memory operations, I introduced new control signals such as MemWriteSize and LoadSize, enabling correct handling of byte-sized and unsigned loads (LB, LBU) and corresponding stores (SB). These additions required coordinated changes to the data memory module initially implemented by Venice.
 
