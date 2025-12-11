@@ -21,7 +21,7 @@ A reflection on what you might do differently if you were to start again.
 ## Repo structure 
 As a team, we each worked on our own branches while keeping main for finalized, tested CPU versions. After completing a section, we merged our branch into main and removed any no-longer-needed branches to maintain a clear, tidy repository for examination.
 
-We have branches for each section of our project: iac_simple_cycle, iac_pipelined_cpu, iac_cache_cpu.
+We have branches for each section of our project: iac_simple_cycle, iac_pipelined_cpu, iac_cache_cpu: these are our final cpu implementations. 
 
 ## Details and personal statements 
 
