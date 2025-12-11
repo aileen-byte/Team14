@@ -14,6 +14,8 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#challenges-we-faced-as-a-team) Challenges we Faced as a Team
 
+[Go to](#design-decisions) Design Decisions
+
 [Go to](#future-considerations) Future considerations 
 
 [Go to](#acknowledgements) Acknowledgements
@@ -220,6 +222,11 @@ One of the major challenges we faced as a team was communication, especially whe
 Another challenge that affected our workflow was the lack of a clear linear structure. In hindsight, we should have focused on completing a fully working single-cycle processor before moving on to the pipeline implementation. Instead, parts of the pipeline were developed in parallel with the single-cycle CPU, which created confusion when core behaviours or signals changed later. This approach caused unnecessary rework and made debugging more difficult, as issues in the pipelined design sometimes traced back to incomplete or inconsistent logic in the single-cycle stage. A more structured, sequential approach - single cycle first, pipeline second, cache last - would have made the development process smoother and saved considerable time in the long run.
 
 A significant challenge we encountered late in the project was misunderstanding the requirements for the cache implementation. Initially, we assumed that the cache needed to be fully pipelined and integrated into the existing pipeline stages, which led us to overcomplicate the design and invest considerable time into solving problems that didn’t actually need to be addressed. This misunderstanding caused unnecessary stress and delays, as we tried to manage timing, forwarding, and state transitions that would only apply to a pipelined cache. Once we clarified that the assignment required a standard cache - not a pipelined one - we were able to simplify the design substantially. However, the time lost during this confusion highlighted the importance of carefully interpreting project specifications before committing to an implementation approach.
+
+
+## Design Decisions
+
+Our design decisions were largely guided by the foundational concepts in Harris & Harris, especially their approach to pipelining, control/datapath structure, and memory hierarchy. The textbook shaped how we organized our processor and cache, we go into more details about the specifics of the design decisions in our personal statements. 
 
 ## Future Considerations 
 
