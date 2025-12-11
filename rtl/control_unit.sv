@@ -4,6 +4,7 @@ module control_unit(
     input logic           funct7b5,
     output logic [1:0]    ResultSrc, // 0: ALUResult, 1: ReadData into register
     output logic          MemWrite, // Data Memory write enable, 0: no mem write, 1: mem write 
+    output logic          memory,
     output logic [1:0]    MemWriteSize, // Data Memory write size
     output logic [1:0]    LoadSize,
     output logic [2:0]    ALUctrl, 
@@ -46,6 +47,7 @@ always_comb begin
     ImmSrc = I_TYPE; 
     JumpType = NO_JUMP;
     BranchType = NO_BRANCH;
+    Memory = 0;
 
     case(op)
         // R-type instructions
@@ -86,6 +88,8 @@ always_comb begin
             ALUSrc = 1; 
             RegWrite = 1; //write back to rd
             ImmSrc = I_TYPE;
+            memory = 1;
+            LoadSize = 2'b00; 
         end
         // addi
         7'b0010011: begin 
@@ -108,7 +112,6 @@ always_comb begin
             RegWrite = 1; 
             ImmSrc = U_TYPE; 
             ALUSrc = 1;
-            LoadSize = 2'b00; 
         end
 
         // S-type instructions (
@@ -120,6 +123,7 @@ always_comb begin
             ALUSrc = 1;
             RegWrite = 0;
             ImmSrc = S_TYPE;
+            memory = 1;
         end
 
         // B-type instructions 

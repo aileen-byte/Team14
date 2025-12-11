@@ -4,6 +4,20 @@ module top #(
     input   logic clk,
     input   logic rst,
     input logic trigger,
+    output logic [110:0] cache_line_next,
+    output logic hit1,
+    output logic hit0,
+    output logic hit,
+    output logic [20:0] tag,
+    output logic [20:0] cache_tag1,
+    output logic [110:0] cache_line_current,
+    output logic [DATA_WIDTH-1:0] modified_fill_data,
+    output logic [20:0] cache_tag0,
+    output logic valid0,
+    output logic valid1,
+    output logic dirty0,
+    output logic dirty1,
+    output logic [8:0] set_index,
     output logic [DATA_WIDTH-1:0] x0,
     output logic [DATA_WIDTH-1:0] t0,
     output logic [DATA_WIDTH-1:0] t1,
@@ -16,6 +30,7 @@ module top #(
     output logic [DATA_WIDTH-1:0] a5,
     output logic [DATA_WIDTH-1:0] a6,
     output logic [DATA_WIDTH-1:0] s0,
+    output logic [DATA_WIDTH-1:0] s1,
     output logic [DATA_WIDTH-1:0] t2,
     output  logic [DATA_WIDTH-1:0] a0
 );
@@ -108,11 +123,21 @@ logic [1:0] ForwardAE, ForwardBE;
 
 logic [DATA_WIDTH-1:0] SrcAE, SrcBE, SrcBE_preALUSrc;
 
+//CACHE
+logic [DATA_WIDTH-1:0] ReadDataCache;
+logic [DATA_WIDTH-1:0] cache_to_memory_address;
+logic [DATA_WIDTH-1:0] cache_to_memory_data;
+logic cache_to_memory_write_enable;
+logic cache_stall;
+logic memoryD;
+logic memoryE;
+logic memoryM;
+
 // pc register
 pc_reg #(DATA_WIDTH) PCREG (
     .clk(clk), 
     .rst(rst),
-    .en(~StallF), 
+    .en(~StallF||~cache_stall), 
     .next_pc(next_pc),
     .pc(pc)
 ); 
@@ -162,6 +187,7 @@ control_unit CU(
     .funct7b5(InstrD[30]),
     .ResultSrc(ResultSrcD),
     .MemWrite(MemWriteD),
+    .memory(memoryD),
     .ALUctrl(ALUControlD),
     .ALUSrc(ALUSrcD),
     .ImmSrc(ImmSrcD),
@@ -203,25 +229,55 @@ reg_file #(DATA_WIDTH) RF (
     .a5(a5),
     .a6(a6),
     .s0(s0),
+    .s1(s1),
     .t2(t2),
     .a0(a0)
+);
+
+cache CACHE (
+    .clk(clk),
+    .rst(rst),
+    .memory(memoryM),
+    .cache_write(MemWriteM),
+    .memory_address(ALUOutM),
+    .cache_data_in(WriteDataM),
+    .memory_to_cache_data(ReadData),
+    .StoreSize(StoreSizeM),
+    .cache_data_out(ReadDataCache),
+    .cache_to_memory_address(cache_to_memory_address),
+    .cache_to_memory_data(cache_to_memory_data),
+    .cache_line_next(cache_line_next),
+    .hit1(hit1),
+    .hit0(hit0),
+    .hit(hit),
+    .tag(tag),
+    .cache_tag1(cache_tag1),
+    .cache_tag0(cache_tag0),
+    .set_index(set_index),
+    .dirty0(dirty0),
+    .dirty1(dirty1),
+    .valid0(valid0),
+    .valid1(valid1),
+    .modified_fill_data(modified_fill_data),
+    .cache_line_current(cache_line_current),
+    .cache_to_memory_write_enable(cache_to_memory_write_enable),
+    .cache_stall(cache_stall)
 );
 
 data_mem #(
     .DATA_WIDTH(DATA_WIDTH)
 ) DM (
     .clk(clk),
-    .ALUResult(ALUOutM),    
-    .WriteData(WriteDataM),       
-    .MemWrite(MemWriteM),       
-    .RD(ReadData),          
-    .StoreSize(StoreSizeM)
+    .ALUResult(cache_to_memory_address),    
+    .WriteData(cache_to_memory_data),       
+    .MemWrite(cache_to_memory_write_enable),       
+    .RD(ReadData)        
 );
 
 load_selec #(DATA_WIDTH) LS (
     .size(LoadSizeM),
     .byte_num(ALUOutM[1:0]),
-    .mem_data(ReadData),
+    .mem_data(ReadDataCache),
     .load_data(ReadDataM)
 );
 
@@ -243,7 +299,7 @@ IF_ID_Reg #(.DATA_WIDTH(DATA_WIDTH)) IF_ID (
     .clk(clk),
     .rst(rst),
 
-    .StallD(StallD),    
+    .StallD(StallD||cache_stall),    
     .FlushD(FlushD),    
 
     .PCF(pc),           
@@ -258,7 +314,7 @@ IF_ID_Reg #(.DATA_WIDTH(DATA_WIDTH)) IF_ID (
 ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .clk(clk),
     .rst(rst),
-
+    .cache_stall(cache_stall),
     .FlushE(FlushE),    
 
     // Control signals in D
@@ -270,6 +326,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .ALUControlD(ALUControlD),
     .ALUSrcD(ALUSrcD),
     .LoadSizeD(LoadSizeD),
+    .memoryD(memoryD),
 
     // Data signals
     .RD1D(RD1),
@@ -290,6 +347,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .ALUControlE(ALUControlE),
     .ALUSrcE(ALUSrcE),
     .LoadSizeE(LoadSizeE),
+    .memoryE(memoryE),
 
     .RD1E(RD1E),
     .RD2E(RD2E),
@@ -307,6 +365,7 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
 EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .clk(clk),
     .reset(rst),
+    .cache_stall(cache_stall),
 
     .RegWriteE(RegWriteE),
     .MemWriteE(MemWriteE),
@@ -316,6 +375,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .ResultSrcE(ResultSrcE),
     .PCPlus4E(PCPlus4E),
     .LoadSizeE(LoadSizeE),
+    .memoryE(memoryE),
 
     .RegWriteM(RegWriteM),
     .MemWriteM(MemWriteM),
@@ -325,6 +385,7 @@ EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .WriteDataM(WriteDataM),
     .WriteRegM(WriteRegM),
     .LoadSizeM(LoadSizeM),
+    .memoryM(memoryM),
 
     .StoreSizeE(StoreSizeE),
     .StoreSizeM(StoreSizeM)

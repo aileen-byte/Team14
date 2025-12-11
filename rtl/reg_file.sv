@@ -28,6 +28,7 @@ module reg_file #(
     output logic [DATA_WIDTH-1:0] a5,
     output logic [DATA_WIDTH-1:0] a6,
     output logic [DATA_WIDTH-1:0] s0,
+    output logic [DATA_WIDTH-1:0] s1,
     output logic [DATA_WIDTH-1:0] t2,
     output  logic [DATA_WIDTH-1:0]  a0
 );
@@ -60,6 +61,7 @@ module reg_file #(
     assign a5 = regs[15];
     assign a6 = regs[16];
     assign s0 = regs[8];
+    assign s1 = regs[9];
     assign t2 = regs[7];
 endmodule
 

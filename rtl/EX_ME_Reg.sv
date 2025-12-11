@@ -3,6 +3,7 @@ module EX_ME_Reg #(
 )(
     input  logic                clk,
     input  logic                reset,
+    input  logic                cache_stall,
 
     // Control + data from EX stage
     input  logic                    RegWriteE,
@@ -13,6 +14,7 @@ module EX_ME_Reg #(
     input  logic [4:0]              WriteRegE, //Rd
     input  logic [DATA_WIDTH-1:0]   PCPlus4E,
     input logic [1:0]               LoadSizeE,
+    input logic memoryE,
 
     // Store size for memory writes
     input  logic [1:0]           StoreSizeE,
@@ -26,7 +28,8 @@ module EX_ME_Reg #(
     output logic [DATA_WIDTH-1:0]   ALUOutM,
     output logic [DATA_WIDTH-1:0]   WriteDataM,
     output logic [4:0]              WriteRegM,
-    output logic [1:0]              LoadSizeM
+    output logic [1:0]              LoadSizeM,
+    output logic memoryM
 );
 
     always_ff @(posedge clk) begin
@@ -40,8 +43,9 @@ module EX_ME_Reg #(
             WriteRegM  <= 0;
             PCPlus4M   <= 0;
             LoadSizeM <= 0;
+            memoryM <= 0;
         end
-        else begin
+        else if (!cache_stall) begin
             RegWriteM  <= RegWriteE;
             MemWriteM  <= MemWriteE;
             ResultSrcM <= ResultSrcE;
@@ -51,6 +55,7 @@ module EX_ME_Reg #(
             WriteRegM  <= WriteRegE;
             PCPlus4M   <= PCPlus4E;
             LoadSizeM <= LoadSizeE;
+            memoryM <= memoryE;
         end
     end
 
