@@ -167,9 +167,7 @@ The waveform above is produced when we tested this assembly code:
 
 <img width="858" height="352" alt="image" src="https://github.com/user-attachments/assets/aaa1dc3c-1e2e-4404-9d1c-60427bf0c811" />
 
-Our waveform shows that the pipeline in our processor is operating exactly the way we intended. The program continuously increments a1 from 0 to 255, stores the value into a0, and branches back to the start of the loop. Because each instruction depends on the results of the previous ones, our pipeline must correctly handle forwarding, branch resolution, and register updates. The PC trace in the waveform confirms that the control flow repeatedly cycles through the iloop and mloop instructions, and the regular pulses on FlushE show that our branch flushing logic is functioning properly on every taken branch.
-
-We can also see that our forwarding unit is behaving exactly as designed. ForwardAE and ForwardBE activate at the correct times, ensuring that dependent instructions receive the most recent values directly from MEM or WB without needing to stall. Since we never observe StallD or StallF, the pipeline is successfully avoiding unnecessary stalls and is resolving all hazards through forwarding alone. The register values in the waveform, such as the expected incrementing of a0, also confirm correct dataflow. Altogether, the pipeline behavior—PC progression, forwarding, flushing, and register updates—shows that our team’s implementation is handling dependencies, branches, and loop execution correctly and consistently.
+This demonstrates that hazards are being handled correctly: during the lbu instruction the appropriate stall and flush signals are asserted, and the forwarding logic activates as expected. The correct values are also forwarded and loaded into t0, confirming proper pipeline behavior.
 
 ## Cache 
 
@@ -211,9 +209,7 @@ The waveform above is produced when we tested this assembly code:
 <img width="892" height="586" alt="image" src="https://github.com/user-attachments/assets/7e323309-0dbf-4100-b75e-d0a6cae70f1e" />
 
 
-The waveforms show that our cached CPU is correctly handling stores, loads, and cache-line updates as the program executes. When we first store the value 100 to address 0x00010000, we see a cache miss, which causes the processor to generate a cache_to_memory_address request and fetch the entire cache line containing that address. Once the line returns, the cache updates its internal cache_line_current entry and writes the byte into the appropriate offset. Immediately afterward, when we store 200 into address 0x00010001, the waveform shows that the instruction hits inside the same cache line, since the line was already brought in during the previous miss. Because of this, the hit signal goes high, and no additional memory request is issued. The updated cache line visible in the waveform now contains both stored bytes (100 and 200), matching the expected behavior of a write-through or write-update cache design depending on configuration.
 
-Later in the program, when we execute the loads (lbu t3, 0(s0) and lbu t4, 1(s0)), the waveform demonstrates that both accesses are cache hits. The cache already contains the line loaded during the earlier store miss, so the hit signal remains high, and no new memory fetch occurs. The values returned by the cache correspond exactly to the bytes we stored earlier, 100 at offset 0 and 200 at offset 1 confirming that our cache is correctly maintaining and returning modified data. The final updated cache_line_current field shows both values present and consistent, supporting the correct execution of the final addition instruction, which computes the expected result of 300. Overall, the waveform verifies that our CPU’s cache correctly detects misses, fetches lines, tracks hits, and updates data according to our design.
 
 ## Challenges we faced as a team 
 
