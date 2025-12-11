@@ -6,8 +6,6 @@ CID: 02561534
 Single-cycle processor 
 
   - [Program Counter](#program-counter)
-
-  - [F1 assembly code](#f1-assembly-code)
   
   - [F1 Testbench](#f1-testbench)
 
