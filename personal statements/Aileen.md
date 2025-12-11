@@ -39,13 +39,13 @@ Cache
 
 # Contributions 
 
-Although I was initially allocated the task of writing testbenches in Lab 4, my role evolved over the progress of the project into that of an implementation lead. I took on responsibility for ensuring that the wiring and integration across modules was correct, resolving structural issuess and maintaining consistency throughout the design. I also wrote several non-obvious but essential modules that were not clearly defined at the offset, stepping in wherever addittional functionality was required to support the overall processor implementation. 
+I was initially allocated the task of writing testbenches in Lab 4, my role evolved over the progress of the project into that of an implementation lead. I took on responsibility for ensuring that the wiring and integration across modules was correct, resolving structural issues and maintaining consistency throughout the design. I also wrote several non-obvious but essential modules that were not clearly defined at the offset, stepping in wherever addittional functionality was required to support the overall processor implementation. 
 
 ### Single Cycle CPU Diagram 
 
 <img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/62fbb526-c526-4252-8709-36710a8e8c9f" />
 
-Throughout the single cycle processor implementation we all made it a common goal to follow the design of the processor presneted in the textbook, as shown in the image above. This became essential when making sure we shared the same design expectations which then helped us achieve more consistent and coherent implementation accross all modules. 
+Throughout the single cycle processor implementation we all made it a common goal to follow the design of the processor preseneted in the textbook, as shown in the image above. This became essential when making sure we shared the same design expectations which then helped us achieve more consistent and coherent implementation accross all modules. 
 
 ## Instruction Implementation 
 
@@ -53,7 +53,7 @@ In Lab 4, Pippa was responsible for the control unit, which only needed to suppo
 
 The required upgrades included full support for R-type arithmetic instructions (e.g., ADD, SUB), essential I-type arithmetic operations (ADDI, XORI), correct handling of JAL and JALR for jump control flow, and decoding for load and store instructions necessary for the provided test programs. To support these memory operations, I introduced new control signals such as MemWriteSize and LoadSize, enabling correct handling of byte-sized and unsigned loads (LB, LBU) and corresponding stores (SB). These additions required coordinated changes to the data memory module initially implemented by Venice.
 
-Beyond the required functionality, I also implemented extra instruction support—such as LUI for U-type immediate construction and additional branching behaviour like BEQ—to more closely align our design with the full RV32I specification and to ensure smoother program execution across a wider range of test cases.
+Beyond the required functionality, I also implemented extra instruction support such as - LUI for U-type immediate construction and additional branching behaviour like BEQ - to more closely align our design with the full RV32I specification and to ensure smoother program execution across a wider range of test cases.
 
 ###  Jalr Mask
 
@@ -77,7 +77,8 @@ I reviewed the entire processor implementation, added the little-endian address 
 
 ## F1 assembly code 
 
-I also wrote the assembly program required to produce the F1 lights output on Vbuddy (co-authur Jeshmeera), using the state diagram to verify that the control flow and timing behaved exactly as intended.
+I also wrote the assembly program required to produce the F1 lights output on Vbuddy (co-authur Jeshmeera) [(here)](../README.md#f1-lights), using the state diagram to verify that the control flow and timing behaved exactly as intended. 
+
 
 # Pipleined Processor 
 
@@ -85,7 +86,7 @@ I also wrote the assembly program required to produce the F1 lights output on Vb
 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/9fc8532d-b5bd-46e0-80f8-09a11a37b343" />
 
-As mentioned earlier, we had all agreed to follow the textbook’s datapath diagrams throughout the project, ensuring that our modules remained consistent with a shared architectural design and reducing ambiguity during implementation and debugging.
+As mentioned earlier, we had all agreed to follow the textbook’s datapath diagrams throughout the project, ensuring that our modules remained consistent with a shared architectural design and reducing ambiguity during implementation and debugging. Jeshmeera and Venice were Design Leads on this section of the project and I handled overall implementation and debugging. 
 
 ## Testing, Debugging and Cleaning
 
@@ -101,9 +102,7 @@ Throughout the debugging process, I applied the same systematic approach I devel
 
 To implement the two-way set-associative cache, I began by studying the lecture material and the diagrams particularly the one shown above to fully understand how the tag, set index, valid bits, and hit logic interact in hardware. I first translated the conceptual table structure into SystemVerilog, decoding the memory address into its tag and set index fields. From there, I allocated the cache as a two-way structure, where each way stores a used bit, dirty bit, valid bit, tag, and data, mirroring the organisation in the textbook diagrams.
 
-Once the structure was in place, I introduced the necessary registers to update cache lines on hits and misses. I then implemented the hit/miss detection logic in a combinational block, comparing the incoming tag against both ways and generating the appropriate hit signals. This same block also handled updating the used bit for the replacement policy and preparing the data output during hits. For misses, I added the logic required to generate the correct signals to the main memory—requesting a refill, writing back dirty lines, and updating the cache line with new data once the memory response arrives.
-
-Throughout this process, I continuously referred back to the lecture diagrams to ensure the implementation followed the standard two-way set-associative design principles while adapting them to fit our RISC-V processor’s memory interface and control requirements.
+Once the structure was in place, I introduced the necessary registers to update cache lines on hits and misses. I then implemented the hit/miss detection logic in a combinational block, comparing the incoming tag against both ways and generating the appropriate hit signals. This same block also handled updating the used bit for the replacement policy and preparing the data output during hits. For misses, I added the logic required to generate the correct signals to the main memory - requesting a refill, writing back dirty lines, and updating the cache line with new data once the memory response arrives.
 
 ### Unit tests 
 
@@ -119,7 +118,7 @@ I also wrote a set of targeted tests to validate the full cache behaviour checki
 
 ## Repo and Documentation Support
 
-As repo master, I oversaw the overall structure and organisation of the repository, ensuring consistency, readability, and clarity across all modules, documentation, and branches.
+As repo master, I oversaw the overall structure and organisation of the repository, ensuring consistency, readability, and clarity across all modules, documentation, and branches. 
 
 I also created testbenches designed to monitor key outputs such as a0, and produced the PDF needed for the Vbuddy system display, ensuring that our processor’s behaviour could be validated both programmatically and visually.
 
@@ -127,15 +126,15 @@ I also created testbenches designed to monitor key outputs such as a0, and produ
 
 ## Challenges Faced 
 
-One challenge I faced as the implementation lead was not communicating early enough while everyone was writing their modules. I often waited until after components were completed to review or integrate them, which made it harder to fully understand each module’s behaviour and led to extra debugging later on. Earlier communication would have helped me track design decisions in real time and made integration far smoother.
+One challenge I faced as the implementation lead was not communicating early enough while everyone was writing their modules. I often waited until after components were completed to review or integrate them, which made it harder to fully understand each module’s behaviour and led to harder debugging later on. Earlier communication would have helped me track design decisions in real time and made integration far smoother.
 
 Another challenge came from our team’s overall organisation. At times we lacked a clear, linear development structure, which led to overlapping work, duplicated effort, or uncertainty about which version of a module was the most up to date. Establishing a more structured workflow early on would have helped us stay more synchronised and avoid unnecessary rewrites or conflicts.
 
-I also struggled with the sheer number of signals involved in the pipelined processor. The volume of control and datapath signals quickly became overwhelming, especially during debugging when it wasn’t immediately obvious where a fault originated. This experience highlighted the importance of breaking down complex issues into smaller parts and tracing signals step-by-step—an approach I intend to develop further to handle large hardware designs more confidently.
+I also struggled with the sheer number of signals involved in the pipelined processor and cached processor. The volume of control and datapath signals quickly became overwhelming, especially during debugging when it wasn’t immediately obvious where a fault originated. This experience highlighted the importance of breaking down complex issues into smaller parts and tracing signals step-by-step - an approach I intend to develop further to handle large hardware designs more confidently.
 
 ## What I would do differently 
 
-If I were to approach the project again, one of my main priorities would be to take a step back and look at the bigger picture before diving into low-level debugging. On the day I was debugging the pipeline, I became too focused on the small details, which made it harder to identify the root cause of certain issues. I’ve realised that many of these problems could have been solved more quickly by first understanding the overall behaviour of the system, rather than immediately tracing individual signals.
+If I were to approach the project again, one of my main priorities would be to take a step back and look at the bigger picture before diving into low-level debugging. On the days I was debugging the pipeline, I became too focused on the small details, which made it harder to identify the root cause of certain issues. I’ve realised that many of these problems could have been solved more quickly by first understanding the overall behaviour of the system, rather than immediately tracing individual signals.
 
 I would also make it a priority to take breaks when I start to feel tired. There were several moments where exhaustion led me to overthink simple problems or miss obvious mistakes. Giving myself short breaks would have helped me stay clear-headed, work more efficiently, and ultimately reduce the time spent debugging.
 
