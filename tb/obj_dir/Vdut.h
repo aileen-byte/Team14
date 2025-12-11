@@ -31,6 +31,7 @@ class Vdut VL_NOT_FINAL : public VerilatedModel {
     VL_OUT(&x0,31,0);
     VL_OUT(&t0,31,0);
     VL_OUT(&t1,31,0);
+    VL_OUT(&t2,31,0);
     VL_OUT(&t3,31,0);
     VL_OUT(&t4,31,0);
     VL_OUT(&a1,31,0);

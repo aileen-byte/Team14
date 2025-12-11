@@ -46,7 +46,7 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	/home/venicegh/Documents/Team14/tb5/tests \
+	/home/aileen/Documents/Team14/tb5/tests \
 
 
 ### Default rules...
@@ -58,7 +58,7 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-verify.o: /home/venicegh/Documents/Team14/tb5/tests/verify.cpp
+verify.o: /home/aileen/Documents/Team14/tb5/tests/verify.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)

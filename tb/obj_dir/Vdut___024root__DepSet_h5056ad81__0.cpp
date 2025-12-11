@@ -92,48 +92,24 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
                                                    ((1U 
                                                      & (IData)(vlSelf->top__DOT__ResultSrc))
                                                      ? 
-                                                    ((0x4000U 
-                                                      & vlSelf->top__DOT__instr)
-                                                      ? 
-                                                     ((0x2000U 
-                                                       & vlSelf->top__DOT__instr)
-                                                       ? 0U
-                                                       : 
-                                                      ((0x1000U 
-                                                        & vlSelf->top__DOT__instr)
-                                                        ? 
-                                                       (0xffffU 
-                                                        & vlSelf->top__DOT__ReadData)
-                                                        : 
-                                                       (0xffU 
-                                                        & vlSelf->top__DOT__ReadData)))
+                                                    ((0U 
+                                                      == (IData)(vlSelf->top__DOT__LoadSize))
+                                                      ? (IData)(vlSelf->top__DOT__LS__DOT__selected_byte)
                                                       : 
-                                                     ((0x2000U 
-                                                       & vlSelf->top__DOT__instr)
+                                                     ((1U 
+                                                       == (IData)(vlSelf->top__DOT__LoadSize))
                                                        ? 
-                                                      ((0x1000U 
-                                                        & vlSelf->top__DOT__instr)
-                                                        ? 0U
-                                                        : vlSelf->top__DOT__ReadData)
+                                                      (((- (IData)(
+                                                                   (1U 
+                                                                    & ((IData)(vlSelf->top__DOT__LS__DOT__selected_byte) 
+                                                                       >> 7U)))) 
+                                                        << 8U) 
+                                                       | (IData)(vlSelf->top__DOT__LS__DOT__selected_byte))
                                                        : 
-                                                      ((0x1000U 
-                                                        & vlSelf->top__DOT__instr)
-                                                        ? 
-                                                       (((- (IData)(
-                                                                    (1U 
-                                                                     & (vlSelf->top__DOT__ReadData 
-                                                                        >> 0xfU)))) 
-                                                         << 0x10U) 
-                                                        | (0xffffU 
-                                                           & vlSelf->top__DOT__ReadData))
-                                                        : 
-                                                       (((- (IData)(
-                                                                    (1U 
-                                                                     & (vlSelf->top__DOT__ReadData 
-                                                                        >> 7U)))) 
-                                                         << 8U) 
-                                                        | (0xffU 
-                                                           & vlSelf->top__DOT__ReadData)))))
+                                                      ((2U 
+                                                        == (IData)(vlSelf->top__DOT__LoadSize))
+                                                        ? vlSelf->top__DOT__ReadData
+                                                        : 0U)))
                                                      : vlSelf->top__DOT__ALUout));
         __Vdlyvset__top__DOT__RF__DOT__regs__v0 = 1U;
         __Vdlyvdim0__top__DOT__RF__DOT__regs__v0 = 
@@ -167,6 +143,7 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
     vlSelf->x0 = vlSelf->top__DOT__RF__DOT__regs[0U];
     vlSelf->t0 = vlSelf->top__DOT__RF__DOT__regs[5U];
     vlSelf->t1 = vlSelf->top__DOT__RF__DOT__regs[6U];
+    vlSelf->t2 = vlSelf->top__DOT__RF__DOT__regs[7U];
     vlSelf->t3 = vlSelf->top__DOT__RF__DOT__regs[0x1cU];
     vlSelf->t4 = vlSelf->top__DOT__RF__DOT__regs[0x1dU];
     vlSelf->a1 = vlSelf->top__DOT__RF__DOT__regs[0xbU];
@@ -317,6 +294,9 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
                                                          & vlSelf->top__DOT__instr))))))));
         if ((0x33U != (0x7fU & vlSelf->top__DOT__instr))) {
             if ((0x67U != (0x7fU & vlSelf->top__DOT__instr))) {
+                if ((3U == (0x7fU & vlSelf->top__DOT__instr))) {
+                    vlSelf->top__DOT__LoadSize = 0U;
+                }
                 if ((3U != (0x7fU & vlSelf->top__DOT__instr))) {
                     if ((0x13U != (0x7fU & vlSelf->top__DOT__instr))) {
                         if ((0x37U != (0x7fU & vlSelf->top__DOT__instr))) {
@@ -443,30 +423,6 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
                                                   (vlSelf->top__DOT__RD1 
                                                    + vlSelf->top__DOT__ALUop2))));
     vlSelf->top__DOT__Zero = (0U == vlSelf->top__DOT__ALUout);
-    vlSelf->top__DOT__ReadData = ((vlSelf->top__DOT__DM__DOT__mem_array
-                                   [(0x1ffffU & ((IData)(3U) 
-                                                 + 
-                                                 (0x1fffcU 
-                                                  & vlSelf->top__DOT__ALUout)))] 
-                                   << 0x18U) | ((vlSelf->top__DOT__DM__DOT__mem_array
-                                                 [(0x1ffffU 
-                                                   & ((IData)(2U) 
-                                                      + 
-                                                      (0x1fffcU 
-                                                       & vlSelf->top__DOT__ALUout)))] 
-                                                 << 0x10U) 
-                                                | ((vlSelf->top__DOT__DM__DOT__mem_array
-                                                    [
-                                                    (0x1ffffU 
-                                                     & ((IData)(1U) 
-                                                        + 
-                                                        (0x1fffcU 
-                                                         & vlSelf->top__DOT__ALUout)))] 
-                                                    << 8U) 
-                                                   | vlSelf->top__DOT__DM__DOT__mem_array
-                                                   [
-                                                   (0x1fffcU 
-                                                    & vlSelf->top__DOT__ALUout)])));
     vlSelf->top__DOT__PCSrc = 0U;
     if (((((((((0x33U == (0x7fU & vlSelf->top__DOT__instr)) 
                | (0x67U == (0x7fU & vlSelf->top__DOT__instr))) 
@@ -505,6 +461,30 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
             }
         }
     }
+    vlSelf->top__DOT__ReadData = ((vlSelf->top__DOT__DM__DOT__mem_array
+                                   [(0x1ffffU & ((IData)(3U) 
+                                                 + 
+                                                 (0x1fffcU 
+                                                  & vlSelf->top__DOT__ALUout)))] 
+                                   << 0x18U) | ((vlSelf->top__DOT__DM__DOT__mem_array
+                                                 [(0x1ffffU 
+                                                   & ((IData)(2U) 
+                                                      + 
+                                                      (0x1fffcU 
+                                                       & vlSelf->top__DOT__ALUout)))] 
+                                                 << 0x10U) 
+                                                | ((vlSelf->top__DOT__DM__DOT__mem_array
+                                                    [
+                                                    (0x1ffffU 
+                                                     & ((IData)(1U) 
+                                                        + 
+                                                        (0x1fffcU 
+                                                         & vlSelf->top__DOT__ALUout)))] 
+                                                    << 8U) 
+                                                   | vlSelf->top__DOT__DM__DOT__mem_array
+                                                   [
+                                                   (0x1fffcU 
+                                                    & vlSelf->top__DOT__ALUout)])));
     vlSelf->top__DOT__next_pc = ((2U & (IData)(vlSelf->top__DOT__PCSrc))
                                   ? ((1U & (IData)(vlSelf->top__DOT__PCSrc))
                                       ? 0U : (0xfffffffeU 
@@ -514,6 +494,25 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
                                          + vlSelf->top__DOT__ImmOp)
                                       : ((IData)(4U) 
                                          + vlSelf->top__DOT__pc)));
+    vlSelf->top__DOT__LS__DOT__selected_byte = (0xffU 
+                                                & ((2U 
+                                                    & vlSelf->top__DOT__ALUout)
+                                                    ? 
+                                                   ((1U 
+                                                     & vlSelf->top__DOT__ALUout)
+                                                     ? 
+                                                    (vlSelf->top__DOT__ReadData 
+                                                     >> 0x18U)
+                                                     : 
+                                                    (vlSelf->top__DOT__ReadData 
+                                                     >> 0x10U))
+                                                    : 
+                                                   ((1U 
+                                                     & vlSelf->top__DOT__ALUout)
+                                                     ? 
+                                                    (vlSelf->top__DOT__ReadData 
+                                                     >> 8U)
+                                                     : vlSelf->top__DOT__ReadData)));
 }
 
 void Vdut___024root___eval(Vdut___024root* vlSelf) {

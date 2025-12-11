@@ -42,6 +42,8 @@ rm -rf obj_dir
 
 cd $SCRIPT_DIR
 
+./compile.sh asm/f1.s
+
 # Iterate through files
 for file in "${files[@]}"; do
     # Determine module name: use explicit module_name if provided, otherwise extract from filename
