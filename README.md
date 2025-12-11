@@ -212,6 +212,9 @@ We also created a unit test, to test the functionality of the cache:
 
 <img width="451" height="927" alt="image" src="https://github.com/user-attachments/assets/64edf84d-d6d6-4d25-9e21-cf0fab835ebf" />
 
+<img width="641" height="390" alt="image" src="https://github.com/user-attachments/assets/954995d5-d198-4f29-a897-f7193434de75" />
+
+
 
 ## Challenges we faced as a team 
 
