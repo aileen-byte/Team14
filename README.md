@@ -159,7 +159,7 @@ Here is evidence of our pipelined processor working in gtkWave:
 
 <img width="1554" height="217" alt="image" src="https://github.com/user-attachments/assets/b9ac1bbf-ceb5-4c3a-a782-9b5cdaa1b5fb" />
 
-The waveform above is produced when we run this assembly code: 
+The waveform above is produced when we tested this assembly code: 
 
 <img width="858" height="352" alt="image" src="https://github.com/user-attachments/assets/aaa1dc3c-1e2e-4404-9d1c-60427bf0c811" />
 
@@ -200,10 +200,16 @@ Here is evidence our Cache works as expected:
 
 <img width="1583" height="198" alt="image" src="https://github.com/user-attachments/assets/3e01e307-bb81-4621-a820-8abcea46cd95" />
 
-The gtk wave above was produced from: 
+<img width="1509" height="235" alt="image" src="https://github.com/user-attachments/assets/22bcb7b1-f81b-49b9-b763-d2df6d704cb9" />
+
+The waveform above is produced when we tested this assembly code: 
+
+<img width="892" height="586" alt="image" src="https://github.com/user-attachments/assets/7e323309-0dbf-4100-b75e-d0a6cae70f1e" />
 
 
-The waveform above is produced when we run this assembly code: 
+The waveforms show that our cached CPU is correctly handling stores, loads, and cache-line updates as the program executes. When we first store the value 100 to address 0x00010000, we see a cache miss, which causes the processor to generate a cache_to_memory_address request and fetch the entire cache line containing that address. Once the line returns, the cache updates its internal cache_line_current entry and writes the byte into the appropriate offset. Immediately afterward, when we store 200 into address 0x00010001, the waveform shows that the instruction hits inside the same cache line, since the line was already brought in during the previous miss. Because of this, the hit signal goes high, and no additional memory request is issued. The updated cache line visible in the waveform now contains both stored bytes (100 and 200), matching the expected behavior of a write-through or write-update cache design depending on configuration.
+
+Later in the program, when we execute the loads (lbu t3, 0(s0) and lbu t4, 1(s0)), the waveform demonstrates that both accesses are cache hits. The cache already contains the line loaded during the earlier store miss, so the hit signal remains high, and no new memory fetch occurs. The values returned by the cache correspond exactly to the bytes we stored earlier, 100 at offset 0 and 200 at offset 1 confirming that our cache is correctly maintaining and returning modified data. The final updated cache_line_current field shows both values present and consistent, supporting the correct execution of the final addition instruction, which computes the expected result of 300. Overall, the waveform verifies that our CPU’s cache correctly detects misses, fetches lines, tracks hits, and updates data according to our design.
 
 ## Future Considerations 
 
