@@ -121,10 +121,17 @@ I also created testbenches designed to monitor key outputs such as a0, and produ
 
 ## Challenges Faced 
 
+One challenge I faced as the implementation lead was not communicating early enough while everyone was writing their modules. I often waited until after components were completed to review or integrate them, which made it harder to fully understand each module’s behaviour and led to extra debugging later on. Earlier communication would have helped me track design decisions in real time and made integration far smoother.
+
+Another challenge came from our team’s overall organisation. At times we lacked a clear, linear development structure, which led to overlapping work, duplicated effort, or uncertainty about which version of a module was the most up to date. Establishing a more structured workflow early on would have helped us stay more synchronised and avoid unnecessary rewrites or conflicts.
+
+I also struggled with the sheer number of signals involved in the pipelined processor. The volume of control and datapath signals quickly became overwhelming, especially during debugging when it wasn’t immediately obvious where a fault originated. This experience highlighted the importance of breaking down complex issues into smaller parts and tracing signals step-by-step—an approach I intend to develop further to handle large hardware designs more confidently.
+
 ## What I would do differently 
 
+If I were to approach the project again, one of my main priorities would be to take a step back and look at the bigger picture before diving into low-level debugging. On the day I was debugging the pipeline, I became too focused on the small details, which made it harder to identify the root cause of certain issues. I’ve realised that many of these problems could have been solved more quickly by first understanding the overall behaviour of the system, rather than immediately tracing individual signals.
 
-
+I would also make it a priority to take breaks when I start to feel tired. There were several moments where exhaustion led me to overthink simple problems or miss obvious mistakes. Giving myself short breaks would have helped me stay clear-headed, work more efficiently, and ultimately reduce the time spent debugging.
 
 
 
