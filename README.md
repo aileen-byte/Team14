@@ -12,8 +12,6 @@ A reflection on what you might do differently if you were to start again.
 
 [Go to](#cache) Cache Implementation
 
-[Go to](#further-enhancements-full-rv32i-design) Further Enhancements: Full RV32I Design
-
 [Go to](#future-considerations) Future considerations 
 
 [Go to](#acknowledgements) Acknowledgements
@@ -187,10 +185,6 @@ In our Cache implented RISC-V processor, the memory heirarchy places a small, fa
 ### Testing 
 - screenshot gtk wave 
 
-## Further Enhancements: Full RV32I Design
-
-
-
 ## Future Considerations 
 
 In future iterations of our RISC-V processor, several architectiral enhancements can be integrated to significantly improve preformance and efficiency. The main potential developements we, as a team, want to implement would focus on further reducing pipeline stalls, increasing instructions overall, and incoperating more advanced techniques that extend beyond our current implementation. 
@@ -199,7 +193,9 @@ Potential enhancements:
 
 - Introduce branch prediction: Implementing static or dynamic branch prediction would help reduce control hazards and minimise pipeline stalls, improving preformance on the branch-heavy workloads. 
 
-- Improve pipeline efficiency: Redefining the forwarding paths, eliminating unnecessary stalls, and potentially adding speculative execution would allow the pipeline to operate more efficiently and increase overall instruction throughout. 
+- Improve pipeline efficiency: Redefining the forwarding paths, eliminating unnecessary stalls, and potentially adding speculative execution would allow the pipeline to operate more efficiently and increase overall instruction throughout.
+
+- Add an L2 cache: Extending our design to include an L2 cache would further reduce memory latency by providing a larger, slower secondary cache beneath our current L1 cache. This would decrease the number of costly accesses to main memory, improve performance on memory-intensive programs, and introduce opportunities to explore multi-level cache coherence and replacement policies.
 
 ## Acknowledgements
 
