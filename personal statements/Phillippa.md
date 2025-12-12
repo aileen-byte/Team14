@@ -86,7 +86,7 @@ The testbench runs directed and randomised cases under Verilator with no failure
 
 <img width="482" height="1344" alt="image" src="https://github.com/user-attachments/assets/874ddfd1-e4c8-4b4d-8c08-f636e6f44cae" />
 
-As part of my debugging and verification work for the reg_file written by Venice, I developed a dedicated SystemVerilog testbench for the register file used in our Reduced RISC-V CPU. The testbench generates its own clock, applies both deterministic and randomised test cases, and checks all key register behaviours, including x0 immutability, write-enable control, dual-port reads, and read-after-write timing.
+As part of my debugging and verification work for the reg_file written by Venice, I developed a dedicated SystemVerilog testbench for the register file. The testbench generates its own clock, applies both deterministic and randomised test cases, and checks all key register behaviours, including x0 immutability, write-enable control, dual-port reads, and read-after-write timing.
 
 A significant part of this work involved diagnosing why expected values were not being written or read correctly. This led me to identify issues related to register initialisation, write timing, and the testbench’s use of non-blocking assignments. By iterating on both the DUT and the testbench, I achieved a fully passing suite of directed and fuzz tests. This process improved my understanding of synchronous versus asynchronous behaviour in a register file and strengthened my confidence in writing robust verification code.
 
