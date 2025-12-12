@@ -11,7 +11,7 @@ CID: 02596628
 - [Control Unit, Instruction_Mem and Sign_extend](#control-unit-instruction_mem-and-sign_extend)
 - [Testbenches](#testbenches)
 - [Debugging](#debugging)
-- [Multi cycled Cache](#multi-cycled-cache)
+- [Multi cycle Cache](#multi-cycled-cache)
     
 ### Reflection 
   
@@ -20,28 +20,28 @@ CID: 02596628
 
 # Overview 
 
-Core RTL (single-cycle CPU): implemented sign_extend.sv and instr_mem.sv, and wrote the ADDI and BNE decode/control in control_unit.sv. Contributed to jump/branch PC control logic alongside Aileen.
+Core RTL: implemented sign_extend.sv, instr_mem.sv, and ADDI/BNE decode in control_unit.sv.
 
-Verification (SystemVerilog): wrote directed + randomised unit testbenches for the Control Unit, ALU, and Register File (*_tb.sv) and used failures to drive RTL fixes.
+Verification: wrote SystemVerilog unit testbenches for the CU, ALU, and register file, using failures to drive RTL fixes.
 
-Pipeline integration & debugging: resolved structural/wiring issues in top.sv (PC path, forwarding mux selection, reset behaviour, naming/width mismatches).
+Integration: resolved wiring and control issues in the pipelined CPU (PC path, forwarding, resets).
 
-Multi-cycle data cache (stretch work): implemented a blocking, multi-cycle cache controlled by an FSM (COMPARE / WRITE_BACK / ALLOCATE / REFILL) with a cachestall handshake and address-latching for correct miss handling.
+Cache (stretch): prototyped a blocking multi-cycle cache with FSM control and cachestall signalling.
 
 # Control Unit, Instruction_Mem and Sign_extend
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
 
-Control Unit (ADDI / BNE + PC control integration)
+## Control Unit (ADDI / BNE + PC control integration)
 
 I implemented the part of the control unit that decodes ADDI and BNE. The CU assigns safe default values to all outputs each cycle to avoid stale control signals. For ADDI, it enables register write and selects an I-type immediate as the ALU operand. For BNE, it selects a B-type immediate, performs rs1 - rs2 in the ALU, and sets PCSrc so the PC takes the branch when rs1 != rs2 (i.e., Zero == 0).
 Aileen implemented the broader CU functionality beyond my instruction subset.
 
-sign_extend.sv
+## sign_extend.sv
 
 I wrote sign_extend.sv to generate correct 32-bit immediates from raw instruction fields. For I-type instructions, it extracts instr[31:20] and sign-extends. For B-type branches, it reconstructs the split immediate from scattered fields, appends the low zero bit, then sign-extends. This required careful mapping from the RISC-V encoding — a single misplaced bit can send branches to the wrong target.
 
-instr_mem.sv
+## instr_mem.sv
 
 I implemented instr_mem.sv as a minimal read-only instruction memory: load program.hex at simulation start and return RD = memory[PC[31:2]] for aligned 32-bit fetches. This made instruction fetch deterministic and helped debug PC control (branch/jump) in the pipelined CPU by removing memory timing as a variable.
 Limitation: this is word-addressed and does not expose byte addressing/endian behaviour or support unaligned fetch / compressed instructions.
@@ -53,7 +53,7 @@ Limitation: this is word-addressed and does not expose byte addressing/endian be
 
 <img width="511" height="1139" alt="image" src="https://github.com/user-attachments/assets/e902903a-b150-4657-993d-b45b022fb247" />
  
-My CU testbench caught a design error in the CU: PCSrc was set to Immediate, not Jump. This demonstrates that using these testbenches throughout the project was crucial to the correct implementation of our CPU.
+My CU testbench caught a design error in the CU: PCSrc was set to Immediate, not Jump. 
 
 <img width="448" height="377" alt="Screenshot 2025-12-11 at 09 43 42" src="https://github.com/user-attachments/assets/358a4a40-25bd-4335-8e08-9afcaa9b1ea2" />
 
@@ -79,7 +79,7 @@ During testing, I discovered a bug in the ALU: the Zero flag was being assigned 
 
 <img width="672" height="411" alt="Screenshot 2025-12-11 at 13 54 34" src="https://github.com/user-attachments/assets/c9458910-dcfe-4c07-90db-9d3bd46eaa4c" />
 
-The final ALU testbench runs ~N directed checks plus 100+ randomised ADD cases under Verilator with no failures, giving us strong confidence that the ALU is correct before integration.
+The testbench runs directed and randomised cases under Verilator with no failures, giving strong confidence in the ALU before integration.
 
 ## Reg_file Testbench 
 
@@ -95,7 +95,7 @@ Following a change to perform register writes on the negative clock edge, all di
 
 ### After Pipelining 
 
-During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they operated correctly together under Verilator. A significant amount of time was spent resolving structural issues, including inconsistent module naming, incorrect port widths, and implicit nets created by typographical errors such as ALUoutW versus ALUOutW. I also identified and fixed wiring errors in top.sv related to PC control, instruction memory routing, and control-signal propagation between pipeline stages.
+During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they operated correctly together under Verilator. A significant amount of time was spent resolving structural issues, including inconsistent module naming, incorrect port widths, and implicit nets created by typographical errors such as ALUoutW versus ALUOutW. 
 
 Numerous warnings from undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts helped uncover hidden design defects that were not caught by the unit testbenches. After addressing these issues, I updated the testbench by removing leftover VBuddy calls so that it compiled and ran cleanly in the Verilator environment. Once the CPU executed the full F1 program successfully, I verified correct behaviour using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages.
 
@@ -105,16 +105,14 @@ This debugging phase significantly improved my understanding of how small struct
 
 ## **1. JALR/JAL in CU** 
 
-The CU didn't specify the difference between a JAL jump and and JALR jump, this caused issues in the 4_jal_ret test. 
+The CU didn't specify the difference between a JAL jump and JALR jump, this caused issues in the 4_jal_ret test. 
 
 One issue I ran into while implementing the Control Unit was with the jump instructions, JAL and JALR. At first, both instructions behaved inconsistently in simulation, and it took a while to realise that the problem wasn’t in the immediate generation or the ALU, but in the CU itself. We had only set a generic jump signal, meaning JAL and JALR were effectively treated the same, even though they require different PC sources: JAL jumps to PC + immediate, while JALR must use the ALU-computed address. Once I introduced distinct encodings for each jump type and routed them properly, the CPU immediately started behaving as expected. 
 
 
 ## **2. Forwarding Not Correctly Integrated**
 
-Another issue found was in the Forwarding Unit wiring. The hazard detection logic existed, but the ALU inputs weren’t actually selected using ForwardAE and ForwardBE, so dependent instructions sometimes saw stale register values instead of the EX/MEM or MEM/WB results. I rewired the forwarding to follow the standard RISC-V convention: EX/MEM has priority (2'b10), then MEM/WB (2'b01), otherwise the register file (2'b00). This ensures the ALU always sees the latest operands for back-to-back ALU dependencies, while load-use hazards are still handled by the hazard unit with a one-cycle stall.
-
-Another major issue was the Forwarding Unit wiring. The original design tried to do decode stage forwarding in some modules and not in others, and the ALU inputs weren’t really using ForwardAE/ForwardBE. I rewired it to do standard EX-stage forwarding, EX/MEM first, then MEM/WB, otherwise the register file, so the ALU now always sees the latest operands, with any remaining load-use cases handled by a one-cycle stall in the hazard unit.
+Another issue was incorrect integration of the forwarding unit. Although hazard detection logic was present, the ALU inputs were not consistently selected using ForwardAE and ForwardBE, meaning dependent instructions could see stale register values instead of forwarded results from the EX/MEM or MEM/WB stages. I rewired the design to use standard EX-stage forwarding, prioritising EX/MEM (2'b10), then MEM/WB (2'b01), and otherwise the register file (2'b00). This ensured the ALU always received the most recent operands for back-to-back dependencies, with remaining load–use hazards handled by a single-cycle stall in the hazard unit.
 
 ## **3. Reg-File** 
 
@@ -132,9 +130,9 @@ To fix this, I moved the write logic to the negative edge of the clock:
 
 After this change, the writes happened cleanly between sampling points, and the LUI test started passing with x1 updating as expected.
 
-# Multi-cycle Cache 
+# Multi cycle Cache 
 
-Aileen implemented the single-cycle data cache. I implemented the multi-cycle cache through a finite state machine I used states COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
+Aileen implemented the single-cycle data cache. I implemented a multi-cycle blocking cache controlled by a finite state machine with the states COMPARE, WRITE_BACK, ALLOCATE, and REFILL, modelling realistic miss handling and asserting a cachestall signal to the CPU whenever a miss was in progress.
 
 ```mermaid
 stateDiagram-v2
@@ -148,13 +146,13 @@ stateDiagram-v2
     Refill --> Compare
 ```
 
-In COMPARE I checked valid/tag and selected the word/byte lane for loads/stores. On a miss I moved to WRITE_BACK if the victim line was dirty, otherwise straight to ALLOCATE. WRITE_BACK streamed the old cache line to memory over multiple cycles, then ALLOCATE issued the read request for the new line, and REFILL captured the returned burst and updated the cache line (tag, valid, and dirty) before returning to COMPARE.
+In COMPARE, the cache checks tag and valid bits. On a miss, it transitions to WRITE_BACK if the victim line is dirty, otherwise directly to ALLOCATE. WRITE_BACK streams the evicted cache line to memory over multiple cycles, ALLOCATE issues the read request for the new line, and REFILL captures the returned data and updates the cache metadata before returning to COMPARE.
 
-While in any miss-handling state I asserted cachestall so the pipeline would hold PC and prevent new memory operations. I also gated cache outputs so the CPU never observed partially updated data, and only deasserted cachestall once the refill completed and the requested word was guaranteed valid.
-
-You track valid and dirty bits for each way so you can tell whether an eviction needs a write-back. Because the cache is set-associative, on a miss I needed a replacement policy to choose which way to evict; I kept this policy simple to keep the FSM small, but it could be upgraded to LRU by adding a small amount of per-set metadata.
+While in any miss-handling state, cachestall is asserted so the pipeline holds the PC and does not issue new memory operations. Cache outputs are gated so the CPU never observes partially updated data, and the stall is only deasserted once the refill completes and the requested word is valid.
 
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
+
+One issue I encountered was that the original design assumed the memory address remained constant during miss handling. In a multi-cycle cache this is not guaranteed, so incorrect addresses were sometimes used in later states. I fixed this by latching key address and control signals in COMPARE and reusing these latched values throughout the miss-handling states. This significantly improved correctness and deepened my understanding of FSM design and memory-system timing.
 
 # Auxiliary
 
@@ -164,7 +162,7 @@ I created a whatapp groupchat for easy communication, ensured team memebers comm
 
 # Mistakes I Made
 
-One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead.
+One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead. I also wrote my testbenches in System Verilog instead of C++. 
 
 One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was just a simplified, word-granularity model that only ever sees aligned 32-bit instructions.
 
