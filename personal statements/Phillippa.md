@@ -98,9 +98,9 @@ Following a change to perform register writes on the negative clock edge, all di
 
 During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they operated correctly together under Verilator. A significant amount of time was spent resolving structural issues, including inconsistent module naming, incorrect port widths, and implicit nets created by typographical errors such as ALUoutW versus ALUOutW. 
 
-Numerous warnings from undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts helped uncover hidden design defects that were not caught by the unit testbenches. After addressing these issues, I updated the testbench by removing leftover VBuddy calls so that it compiled and ran cleanly in the Verilator environment. Once the CPU executed the full F1 program successfully, I verified correct behaviour using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages.
+I systematically resolved structural warnings reported by Verilator, including undriven signals, width mismatches, inconsistent reset usage, and naming errors (e.g. ALUoutW vs ALUOutW). Addressing these issues uncovered multiple latent pipeline bugs that were not visible at unit-test level and directly improved overall CPU correctness. I verified correct behaviour using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages.
 
-This debugging phase significantly improved my understanding of how small structural mistakes can cascade through a pipelined CPU, reinforcing the importance of consistent naming conventions, complete default assignments, and careful pipeline wiring.
+This experience changed how I approach hardware design: I now default to unit level verification before system integration and treat Verilator warnings as design signals rather than noise.
 
 # Main Issues I found 
 
@@ -154,7 +154,7 @@ While in any miss-handling state, cachestall is asserted so the pipeline holds t
 
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
-One issue I encountered was that the original design assumed the memory address remained constant during miss handling; in a multi-cycle cache this is not guaranteed, so I fixed the issue by latching key address and control signals in COMPARE and reusing them throughout the miss handling states.
+I initially assumed the memory address remained stable during a cache miss, which is not true in a multi-cycle cache; I fixed this by latching the request address and control signals in COMPARE and reusing them across all miss-handling states.
 
 In the final integrated design, we used a write through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write through approach therefore provided a more robust and easily verifiable final design.
 
