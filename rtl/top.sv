@@ -4,19 +4,17 @@ module top #(
     input   logic clk,
     input   logic rst,
     input logic trigger,
-    output logic [110:0] cache_line_next,
+    output logic [108:0] cache_line_next,
     output logic hit1,
     output logic hit0,
     output logic hit,
     output logic [20:0] tag,
     output logic [20:0] cache_tag1,
-    output logic [110:0] cache_line_current,
+    output logic [108:0] cache_line_current,
     output logic [DATA_WIDTH-1:0] modified_fill_data,
     output logic [20:0] cache_tag0,
     output logic valid0,
     output logic valid1,
-    output logic dirty0,
-    output logic dirty1,
     output logic [8:0] set_index,
     output logic [DATA_WIDTH-1:0] x0,
     output logic [DATA_WIDTH-1:0] t0,
@@ -130,6 +128,7 @@ logic [DATA_WIDTH-1:0] cache_to_memory_data;
 logic cache_to_memory_write_enable;
 logic [DATA_WIDTH-1:0] LoadSelecIn;
 logic MissRead;
+logic MissWrite;
 logic memoryD;
 logic memoryE;
 logic memoryM;
@@ -255,13 +254,12 @@ cache CACHE (
     .cache_tag1(cache_tag1),
     .cache_tag0(cache_tag0),
     .set_index(set_index),
-    .dirty0(dirty0),
-    .dirty1(dirty1),
     .valid0(valid0),
     .valid1(valid1),
     .modified_fill_data(modified_fill_data),
     .cache_line_current(cache_line_current),
     .MissRead(MissRead),
+    .MissWrite(MissWrite),
     .cache_to_memory_write_enable(cache_to_memory_write_enable)
 );
 
@@ -270,9 +268,12 @@ data_mem #(
 ) DM (
     .clk(clk),
     .ALUResult(ALUOutM),   
-    .WriteData(cache_to_memory_data),
-    .EvictAddress(cache_to_memory_address),     
-    .MemWrite(cache_to_memory_write_enable),       
+    .WriteDataCache(cache_to_memory_data),
+    .WriteThroughAddress(cache_to_memory_address), 
+    .WriteThroughWE(cache_to_memory_write_enable),  
+    .WriteData(WriteDataM),   
+    .MissWrite(MissWrite), 
+    .StoreSize(StoreSizeM),     
     .RD(ReadData)        
 );
 
