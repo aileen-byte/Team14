@@ -30,7 +30,7 @@ Cache (stretch): prototyped a blocking multi-cycle cache with FSM control and ca
 
 # Control Unit, Instruction_Mem and Sign_extend
 
-<img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
+<img width="702" height="392" alt="image" src="https://github.com/user-attachments/assets/62fbb526-c526-4252-8709-36710a8e8c9f" />
 
 ## Control Unit (ADDI / BNE + PC control integration)
 
