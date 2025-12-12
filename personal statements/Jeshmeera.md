@@ -191,6 +191,10 @@ Throughout the development process, Venice and I shared responsibility for maint
 
 # Reflection 
 
+One of the main things I learned from this project was how individual hardware components combine to form a complete and correct processor. Implementing the Program Counter, pipeline registers, hazard unit, and forwarding unit helped me understand not just what each module does in isolation, but how timing, control signals, and data dependencies interact across clock cycles. Seeing how small design mistakes such as missing control signals in a pipeline register or incorrectly prioritised forwarding paths could break overall correctness reinforced the importance of thinking about the processor as a coordinated system rather than a collection of independent modules.
+
+I also gained a much deeper appreciation for structured design and verification. Writing simple testbenches for individual modules before full integration proved invaluable, as it allowed me to isolate and debug issues early rather than chasing complex pipeline-level bugs. Additionally, working closely with textbook diagrams and revisiting theoretical concepts when I felt uncertain showed me that strong conceptual understanding is essential before implementation. Overall, this project significantly strengthened my SystemVerilog skills, my understanding of pipelined CPU design, and my confidence in debugging complex hardware systems in a collaborative environment.
+
 ## Challenges Faced 
 
 One of the first challenges I encountered was learning to use GitHub effectively, as this was my first time working with it in a collaborative project. Early on, I found it difficult to manage branches, track changes, and merge work cleanly, but as the project progressed I became much more confident. By the end, I had a far better understanding of how to maintain a tidy repository, resolve conflicts, and work synchronously with my team using proper commit practices.
