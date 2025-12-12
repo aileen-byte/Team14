@@ -19,9 +19,7 @@
 ## Repo structure 
 As a team, we each worked on our own branches while keeping main for finalized, tested CPU versions. After completing a section, we merged our branch into main and removed any no-longer-needed branches to maintain a clear, tidy repository for examination.
 
-We have branches for each section of our project: iac_simple_cycle, iac_pipelined_cpu, iac_pipline_with_cache, iac_piplelined_cache: these are our final cpu implementations. 
-
-NOTE: iac_pipeline_with_cache implements a normal L1 cache, the iac_pipelined_cache implements a finite state machine with a pipelined cache. 
+We have branches for each section of our project: iac_simple_cycle, iac_pipelined_cpu, iac_write_through_cache.
 
 ## Details and personal statements 
 
@@ -169,7 +167,7 @@ This demonstrates that hazards are being handled correctly: during the lbu instr
 
 ## Cache 
 
-As a team, we successfully integrated a set-associative L1 data cache to the pipelined RISC-V processor to keep frequenctly accessed memory closer to the processor for faster access. The cache uses temporal and spatial locality to decide which data should remain in the cache and which data should be evicted. 
+As a team, we successfully integrated a 2-way-set-associative L1 data cache to the pipelined RISC-V processor to keep frequenctly accessed memory closer to the processor for faster access. The cache uses temporal locality (least recently used eviction) to decide which data should remain in the cache and which data should be evicted. We decided to implement a write-through cache since no specific policy was specified; therefore, data is written to both the cache and main memory simultaneously.
 
 ### Task allocation 
 
@@ -192,57 +190,29 @@ graph TB
     B <--> C
 ```
 
-In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal and spatial locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
+In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
 ### Testing 
 
-Here is evidence our Cache working: 
+Here is evidence our Cache working:
 
-<img width="1358" height="163" alt="image" src="https://github.com/user-attachments/assets/907f3a8e-2d6b-4669-92da-4712e5f061d1" />
-
-The waveform above is produced when we tested this assembly code: 
+The waveforms below were produced when we tested this assembly code: 
 
 <img width="892" height="586" alt="image" src="https://github.com/user-attachments/assets/7e323309-0dbf-4100-b75e-d0a6cae70f1e" />
 
-Our cached processor stores t1 and t2 in the cache as expected. 
+<img width="1478" height="187" alt="image" src="https://github.com/user-attachments/assets/0f910173-2868-4078-abab-1885cdd299ec" />
 
-We also created a unit test, to test the functionality of the cache: 
+In the image above, MemWrite is high while Hit is low, which causes MissWrite to be high; as a result, the data is written directly to main memory.
 
-<img width="451" height="927" alt="image" src="https://github.com/user-attachments/assets/64edf84d-d6d6-4d25-9e21-cf0fab835ebf" />
+<img width="1048" height="238" alt="image" src="https://github.com/user-attachments/assets/fa84452d-b0f0-402a-9bc5-42fd84fd5bb1" />
 
-<img width="641" height="390" alt="image" src="https://github.com/user-attachments/assets/954995d5-d198-4f29-a897-f7193434de75" />
+In the image above, we see the memory address change from 10000 to 10001. Since the cache has a block size of 4 bytes, addresses from 10000 to 10004 map to the same block, resulting in a cache hit. Therefore, MissWrite is not asserted. The cacheLineCurrent retains the previously loaded data, while cacheLineNext updates, showing that the cache is written to in the following cycle.
 
-The images below shows the gtK waveform produced when we run the Unit test. All outputs behave as expected.
+<img width="1448" height="337" alt="image" src="https://github.com/user-attachments/assets/f3f8c6ed-18e2-4ef1-8d08-d637a276c3e1" />
 
-<img width="1205" height="225" alt="image" src="https://github.com/user-attachments/assets/ac7d45a1-1b47-4bf2-bd09-8afb1bf760ce" />
+These are load instructions. MemRead is high, indicating that memory is being accessed. We have a cache hit because the current cache line contains both values at addresses 10000 and 10001. In the subsequent clock cycles, we can see that the expected values are correctly loaded into the registers.
 
-The image above shows that when there is a miss the Cache goes to fetch the data from the memory and writes back into the Cache. 
-
-<img width="952" height="213" alt="image" src="https://github.com/user-attachments/assets/17063daa-253e-45ae-905d-781d82e3ae6d" />
-
-The image above shows that when there is a miss, since MemoryAdress 2000 has the same set index as 1000 the return data is written way0. 
-
-<img width="1513" height="249" alt="image" src="https://github.com/user-attachments/assets/78b47e6f-7b22-4c1f-af2e-c74f4c6d470e" />
-
-The image above shows eviction at the Cache entry corresponding to memory address 20000, its data is written back to memory and then 8 A's are written back into the Cache corresponding to the memory address 40000. 
-
-### Pipelined Cache 
-
-```mermaid
-stateDiagram-v2
-    direction LR
-
-    Compare --> Compare: Hit
-    Compare --> WriteBack: Miss
-
-    WriteBack --> Allocate
-    Allocate --> Refill
-    Refill --> Compare
-```
-
-In our pipelined implementation, this state machine models how the cache responds to memory accesses as they progress through the pipeline. Each access begins in the Compare state, where the cache checks the tag of the requested address against the stored tag in the indexed line. If they match, indicating a hit, the request is serviced immediately and the controller remains in the Compare state so it can handle subsequent pipeline accesses without interruption. If the tags do not match, the access is a miss, and the pipeline triggers the cache controller to begin a line replacement sequence.
-
-When a miss occurs, the controller checks whether the victim line is dirty and, if so, transitions to the WriteBack state. Here, the dirty line is written back to main memory to preserve program correctness during this time, the pipeline typically stalls while memory completes the write. Once the write-back finishes, the controller enters the Allocate state, initiating a request for the new line from memory. When the requested block begins to return, the machine transitions to Refill, where the line is populated with the incoming data, the valid bit is set, and the dirty bit cleared. After the line is fully refilled, the controller returns to the Compare state, allowing the pipeline to retry the original access, which will now complete as a hit.
+All the images show that we are using a least recently used (LRU) policy. At the start, the used bit is set to 0, indicating that way 1 is the least recently used, as shown in the cache line.
 
 ## Challenges we faced as a team 
 
