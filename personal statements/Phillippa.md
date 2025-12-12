@@ -54,7 +54,7 @@ Limitation: this is word-addressed and does not expose byte addressing/endian be
 
 <img width="511" height="1139" alt="image" src="https://github.com/user-attachments/assets/e902903a-b150-4657-993d-b45b022fb247" />
  
-My CU testbench caught a design error in the CU: PCSrc was set to Immediate, not Jump. 
+My CU testbench identified a control bug in the CU: PCSrc was set to Immediate instead of Jump.
 
 <img width="448" height="377" alt="Screenshot 2025-12-11 at 09 43 42" src="https://github.com/user-attachments/assets/358a4a40-25bd-4335-8e08-9afcaa9b1ea2" />
 
@@ -154,7 +154,7 @@ While in any miss-handling state, cachestall is asserted so the pipeline holds t
 
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
-One issue I encountered was that the original design assumed the memory address remained constant during miss handling. In a multi-cycle cache this is not guaranteed, so incorrect addresses were sometimes used in later states. I fixed this by latching key address and control signals in COMPARE and reusing these latched values throughout the miss-handling states. This significantly improved correctness and deepened my understanding of FSM design and memory-system timing.
+One issue I encountered was that the original design assumed the memory address remained constant during miss handling; in a multi-cycle cache this is not guaranteed, so I fixed the issue by latching key address and control signals in COMPARE and reusing them throughout the miss handling states.
 
 In the final integrated design, we used a write-through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write-through approach therefore provided a more robust and easily verifiable final design.
 
