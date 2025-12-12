@@ -62,7 +62,7 @@ I also implemented the relevant code in the top-level module. Most notably, in t
 
 ### Testing 
 
-I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something we conciously aimed to do with most modules to minimise future sources of error. 
+I also created simple testbenches for each module to verify their basic functionality and ensure that every component behaved correctly before integration into the full processor. This was something I conciously aimed to do with most modules to minimise future sources of error. 
 
 #### Testing PC Plus4 
 
@@ -102,7 +102,7 @@ In the pipelined processor, the pipeline registers separate the five execution s
 
 <img width="1087" height="739" alt="image" src="https://github.com/user-attachments/assets/db612f5d-4e9b-4287-a086-24f910e52c40" />
 
-The structure of our pipeline registers was directly influenced by the pipelined datapath diagrams presented in Digital Design and Computer Architecture (RISC-V Edition) by Harris and Harris. This diagram strongly shaped our organisation and wiring of each register, helping us maintain proper instruction flow and accurately replicate the behaviour of a standard RISC-V pipelined processor.
+The structure of the pipelined registers I implemented was directly influenced by the pipelined datapath diagrams presented in Digital Design and Computer Architecture (RISC-V Edition) by Harris and Harris. This diagram strongly shaped our organisation and wiring of each register, helping us maintain proper instruction flow and accurately replicate the behaviour of a standard RISC-V pipelined processor.
 
 Venice and I acted as the lead designers for this section. We followed this layout closely when designing our pipeline registers, ensuring that each register captured the correct data and control signals on every clock edge. The textbook diagrams made clear which signals needed to be carried between stages: such as instruction fields, immediates, ALU results, and writeback controls and how these values must remain stable for the subsequent stage while the next instruction progresses behind it.
 
@@ -120,7 +120,7 @@ In our design, the ID/EX register stores the decoded control signals, register o
 
 ## Hazard Unit 
 
-When Designing the Base implementation of the Hazard detection unit i followed the hazard handling approach outlined in the textbook, shown in the diagram [here](#pipelined-cpu-diagram). It detects when the pipeline must stall or flush to maintain correct execution, identifies load-use hazards by checking wether a load in the Execute stage writes a register needed by the Decode stage, and if so it stalls Fetch and Decode and flushes Execute. It also handles branch and jump hazards by flushing the Decode and Execute stages whenever PCSrcE indicates a control transfer. Together, these mechanisms ensure the pipelined processor never uses incorrect operands and preserves correct RISC-V program flow. 
+When Designing the Base implementation of the Hazard detection unit I followed the hazard handling approach outlined in the textbook, shown in the diagram [here](#pipelined-cpu-diagram). It detects when the pipeline must stall or flush to maintain correct execution, identifies load-use hazards by checking wether a load in the Execute stage writes a register needed by the Decode stage, and if so it stalls Fetch and Decode and flushes Execute. It also handles branch and jump hazards by flushing the Decode and Execute stages whenever PCSrcE indicates a control transfer. Together, these mechanisms ensure the pipelined processor never uses incorrect operands and preserves correct RISC-V program flow. 
 
 Through implementing the Hazard Unit, I developed a clearer understanding of how data and control hazards arise in a pipelined design, how load-use dependencies must be resolved with precise timing, and how stalls and flushes work together to preserve correct execution. 
 
@@ -187,11 +187,13 @@ As with the single-cycle design, I created simple testbenches for the pipeline m
 
 ## Repo and Documentation Support
 
-I took responsibility for maintaining a clear and consistent repository structure throughout the project. From the beginning, we ensured that we all wrote in our seperate branch which took some time getting used to. This organisation helped minimise confusion as our project grew and made it easier to track progress and verify individual contributions.
+I took main responsibility for maintaining a clear and consistent repository structure throughout the project. From the beginning, we ensured that we all wrote in our seperate branch which took some time getting used to. This organisation helped minimise confusion as our project grew and made it easier to track progress and verify individual contributions.
 
-In addition to structuring the repository, I wrote the README file, which serves as our team statement and main documentation for the project. Venice assisted with shaping the initial structure, but I wrote its content, ensuring that it accurately reflected our testing strategy, and individual responsibilities. I also produced the memory hierarchy diagram which helped illustrate key parts of our architecture in a clear and accessible way. I also made it a core responsibility to ensure that each section of the project was supported with sufficient evidence.
+In addition to structuring the repository, I was incharge of writing the README file, which serves as our team statement and main documentation for the project. I wrote its content and ensured it maintained a clear structure, ensuring that it accurately reflected our testing strategy, and individual responsibilities. I also produced the memory hierarchy diagram which helped illustrate key parts of our architecture in a clear and accessible way. I also made it a core responsibility to ensure that each section of the project was supported with sufficient evidence.
 
 Throughout the development process, Venice and I shared responsibility for maintaining consistency across our codebase. We ensured that modules were named coherently, followed similar formatting conventions, and were documented in a way that made the design easy to understand and extend. This collaborative effort contributed to a more professional and readable project, reducing errors and improving our overall workflow.
+
+Alongside these technical responsibilities, I took a lead role in coordinating the team’s workload and organisation. I helped break down tasks into manageable sections, monitored progress across branches, and checked in regularly to ensure no one was overwhelmed or blocked. By keeping work evenly distributed and expectations clear, I helped maintain a steady workflow and a positive team dynamic throughout the project.
 
 # Reflection 
 
