@@ -29,18 +29,6 @@ class Vdut___024root final : public VerilatedModule {
     CData/*7:0*/ top__DOT__LS__DOT__selected_byte;
     CData/*0:0*/ __Vclklast__TOP__clk;
     SData/*15:0*/ top__DOT__LS__DOT__selected_half;
-    VL_OUT(x0,31,0);
-    VL_OUT(t0,31,0);
-    VL_OUT(t1,31,0);
-    VL_OUT(t2,31,0);
-    VL_OUT(t3,31,0);
-    VL_OUT(t4,31,0);
-    VL_OUT(a1,31,0);
-    VL_OUT(a2,31,0);
-    VL_OUT(a3,31,0);
-    VL_OUT(a4,31,0);
-    VL_OUT(a5,31,0);
-    VL_OUT(a6,31,0);
     VL_OUT(a0,31,0);
     IData/*31:0*/ top__DOT__next_pc;
     IData/*31:0*/ top__DOT__pc;

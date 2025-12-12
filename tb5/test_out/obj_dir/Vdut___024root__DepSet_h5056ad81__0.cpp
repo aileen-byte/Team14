@@ -140,18 +140,6 @@ VL_INLINE_OPT void Vdut___024root___sequent__TOP__0(Vdut___024root* vlSelf) {
             = __Vdlyvval__top__DOT__RF__DOT__regs__v0;
     }
     vlSelf->a0 = vlSelf->top__DOT__RF__DOT__regs[0xaU];
-    vlSelf->x0 = vlSelf->top__DOT__RF__DOT__regs[0U];
-    vlSelf->t0 = vlSelf->top__DOT__RF__DOT__regs[5U];
-    vlSelf->t1 = vlSelf->top__DOT__RF__DOT__regs[6U];
-    vlSelf->t2 = vlSelf->top__DOT__RF__DOT__regs[7U];
-    vlSelf->t3 = vlSelf->top__DOT__RF__DOT__regs[0x1cU];
-    vlSelf->t4 = vlSelf->top__DOT__RF__DOT__regs[0x1dU];
-    vlSelf->a1 = vlSelf->top__DOT__RF__DOT__regs[0xbU];
-    vlSelf->a2 = vlSelf->top__DOT__RF__DOT__regs[0xcU];
-    vlSelf->a3 = vlSelf->top__DOT__RF__DOT__regs[0xdU];
-    vlSelf->a4 = vlSelf->top__DOT__RF__DOT__regs[0xeU];
-    vlSelf->a5 = vlSelf->top__DOT__RF__DOT__regs[0xfU];
-    vlSelf->a6 = vlSelf->top__DOT__RF__DOT__regs[0x10U];
     vlSelf->top__DOT__pc = ((IData)(vlSelf->rst) ? 0U
                              : vlSelf->top__DOT__next_pc);
     vlSelf->top__DOT__instr = ((((0x3e7U >= (0x3ffU 

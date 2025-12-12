@@ -138,19 +138,7 @@ void Vdut___024root__trace_chg_sub_0(Vdut___024root* vlSelf, VerilatedVcd::Buffe
     bufp->chgBit(oldp+66,(vlSelf->clk));
     bufp->chgBit(oldp+67,(vlSelf->rst));
     bufp->chgBit(oldp+68,(vlSelf->trigger));
-    bufp->chgIData(oldp+69,(vlSelf->x0),32);
-    bufp->chgIData(oldp+70,(vlSelf->t0),32);
-    bufp->chgIData(oldp+71,(vlSelf->t1),32);
-    bufp->chgIData(oldp+72,(vlSelf->t2),32);
-    bufp->chgIData(oldp+73,(vlSelf->t3),32);
-    bufp->chgIData(oldp+74,(vlSelf->t4),32);
-    bufp->chgIData(oldp+75,(vlSelf->a1),32);
-    bufp->chgIData(oldp+76,(vlSelf->a2),32);
-    bufp->chgIData(oldp+77,(vlSelf->a3),32);
-    bufp->chgIData(oldp+78,(vlSelf->a4),32);
-    bufp->chgIData(oldp+79,(vlSelf->a5),32);
-    bufp->chgIData(oldp+80,(vlSelf->a6),32);
-    bufp->chgIData(oldp+81,(vlSelf->a0),32);
+    bufp->chgIData(oldp+69,(vlSelf->a0),32);
 }
 
 void Vdut___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*unused*/) {

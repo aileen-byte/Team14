@@ -30,18 +30,6 @@ VL_ATTR_COLD void Vdut___024root___settle__TOP__0(Vdut___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vdut___024root___settle__TOP__0\n"); );
     // Body
     vlSelf->a0 = vlSelf->top__DOT__RF__DOT__regs[0xaU];
-    vlSelf->x0 = vlSelf->top__DOT__RF__DOT__regs[0U];
-    vlSelf->t0 = vlSelf->top__DOT__RF__DOT__regs[5U];
-    vlSelf->t1 = vlSelf->top__DOT__RF__DOT__regs[6U];
-    vlSelf->t2 = vlSelf->top__DOT__RF__DOT__regs[7U];
-    vlSelf->t3 = vlSelf->top__DOT__RF__DOT__regs[0x1cU];
-    vlSelf->t4 = vlSelf->top__DOT__RF__DOT__regs[0x1dU];
-    vlSelf->a1 = vlSelf->top__DOT__RF__DOT__regs[0xbU];
-    vlSelf->a2 = vlSelf->top__DOT__RF__DOT__regs[0xcU];
-    vlSelf->a3 = vlSelf->top__DOT__RF__DOT__regs[0xdU];
-    vlSelf->a4 = vlSelf->top__DOT__RF__DOT__regs[0xeU];
-    vlSelf->a5 = vlSelf->top__DOT__RF__DOT__regs[0xfU];
-    vlSelf->a6 = vlSelf->top__DOT__RF__DOT__regs[0x10U];
     vlSelf->top__DOT__instr = ((((0x3e7U >= (0x3ffU 
                                              & ((IData)(3U) 
                                                 + vlSelf->top__DOT__pc)))
@@ -436,18 +424,6 @@ VL_ATTR_COLD void Vdut___024root___ctor_var_reset(Vdut___024root* vlSelf) {
     vlSelf->clk = VL_RAND_RESET_I(1);
     vlSelf->rst = VL_RAND_RESET_I(1);
     vlSelf->trigger = VL_RAND_RESET_I(1);
-    vlSelf->x0 = VL_RAND_RESET_I(32);
-    vlSelf->t0 = VL_RAND_RESET_I(32);
-    vlSelf->t1 = VL_RAND_RESET_I(32);
-    vlSelf->t2 = VL_RAND_RESET_I(32);
-    vlSelf->t3 = VL_RAND_RESET_I(32);
-    vlSelf->t4 = VL_RAND_RESET_I(32);
-    vlSelf->a1 = VL_RAND_RESET_I(32);
-    vlSelf->a2 = VL_RAND_RESET_I(32);
-    vlSelf->a3 = VL_RAND_RESET_I(32);
-    vlSelf->a4 = VL_RAND_RESET_I(32);
-    vlSelf->a5 = VL_RAND_RESET_I(32);
-    vlSelf->a6 = VL_RAND_RESET_I(32);
     vlSelf->a0 = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__PCSrc = VL_RAND_RESET_I(2);
     vlSelf->top__DOT__next_pc = VL_RAND_RESET_I(32);
