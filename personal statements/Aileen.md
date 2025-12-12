@@ -130,6 +130,10 @@ I also created testbenches designed to monitor key outputs such as a0, and produ
 
 # Reflection 
 
+One of the main things I learned from this project was the importance of system-level thinking when designing and debugging hardware. As implementation lead, I had to focus not just on individual modules but on how control signals, datapaths, and timing interacted across the entire processor. This was especially important when integrating the pipeline and cache, where small wiring or control inconsistencies could cause subtle but significant errors.
+
+I also developed a more structured and effective debugging approach. Regularly using GTKWave to trace signals across cycles helped me understand processor behaviour in depth and diagnose issues methodically. This experience strengthened my confidence in working with complex SystemVerilog designs and improved my overall understanding of RISC-V processor architecture.
+
 ## Challenges Faced 
 
 One challenge I faced as the implementation lead was not communicating early enough while everyone was writing their modules. I often waited until after components were completed to review or integrate them, which made it harder to fully understand each module’s behaviour and led to harder debugging later on. Earlier communication would have helped me track design decisions in real time and made integration far smoother.
