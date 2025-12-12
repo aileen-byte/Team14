@@ -20,28 +20,31 @@ CID: 02596628
 
 # Overview 
 
-Core RTL design (single cycle CPU): wrote control_unit.sv for ADDI/BNE, contributed to JAL/JALR and branch control, and implemented sign_extend.sv and instr_mem.sv used in both the single-cycle and pipelined CPUs.
+Core RTL (single-cycle CPU): implemented sign_extend.sv and instr_mem.sv, and wrote the ADDI and BNE decode/control in control_unit.sv. Contributed to jump/branch PC control logic alongside Aileen.
 
-Verification in SystemVerilog: authored directed and random CU, ALU and reg_file testbenches (*_tb.sv) and used them to drive fixes in the RTL.
+Verification (SystemVerilog): wrote directed + randomised unit testbenches for the Control Unit, ALU, and Register File (*_tb.sv) and used failures to drive RTL fixes.
 
-Pipeline integration & debugging: fixed structural and wiring bugs in top.sv (PC path, forwarding, hazard logic, reset behaviour) until the pipelined CPU passed the F1 and reference tests under Verilator.
+Pipeline integration & debugging: resolved structural/wiring issues in top.sv (PC path, forwarding mux selection, reset behaviour, naming/width mismatches).
 
-Multi cycle data cache: extended the single cycle cache into a multi cycle blocking cache with a finite state machine and stall signalling, integrated with the data memory interface.
+Multi-cycle data cache (stretch work): implemented a blocking, multi-cycle cache controlled by an FSM (COMPARE / WRITE_BACK / ALLOCATE / REFILL) with a cachestall handshake and address-latching for correct miss handling.
 
 # Control Unit, Instruction_Mem and Sign_extend
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
 
-## Control Unit 
-I wrote part of the control unit that decodes ADDI and BNE. It sets safe default control signals, then for ADDI enables register write with an I-type immediate added in the ALU, and for BNE selects a B-type immediate, does rs1 - rs2 in the ALU, and sets PCSrc to take the branch when rs1 != rs2 (i.e. Zero == 0). The more comprehensive implementation of the control unit was designed and implemented by Aileen. 
+Control Unit (ADDI / BNE + PC control integration)
 
-## Sign_extend 
+I implemented the part of the control unit that decodes ADDI and BNE. The CU assigns safe default values to all outputs each cycle to avoid stale control signals. For ADDI, it enables register write and selects an I-type immediate as the ALU operand. For BNE, it selects a B-type immediate, performs rs1 - rs2 in the ALU, and sets PCSrc so the PC takes the branch when rs1 != rs2 (i.e., Zero == 0).
+Aileen implemented the broader CU functionality beyond my instruction subset.
 
-I wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
+sign_extend.sv
 
-## Instruction_Mem
+I wrote sign_extend.sv to generate correct 32-bit immediates from raw instruction fields. For I-type instructions, it extracts instr[31:20] and sign-extends. For B-type branches, it reconstructs the split immediate from scattered fields, appends the low zero bit, then sign-extends. This required careful mapping from the RISC-V encoding — a single misplaced bit can send branches to the wrong target.
 
-I implemented instr_mem as a simple read-only memory for instruction fetch, loading program.hex at simulation start and returning RD = memory[PC[31:2]] for aligned 32-bit instructions. Keeping it minimal made the instruction stream deterministic, which was really useful when debugging PC control (branches/jumps) in the pipelined CPU because it removed memory timing as a source of errors. The main limitation is that this word-addressed model hides byte addressing and endianness and wouldn’t support unaligned fetch or compressed instructions, but it was an effective abstraction for our RV32I tests and integration.
+instr_mem.sv
+
+I implemented instr_mem.sv as a minimal read-only instruction memory: load program.hex at simulation start and return RD = memory[PC[31:2]] for aligned 32-bit fetches. This made instruction fetch deterministic and helped debug PC control (branch/jump) in the pipelined CPU by removing memory timing as a variable.
+Limitation: this is word-addressed and does not expose byte addressing/endian behaviour or support unaligned fetch / compressed instructions.
 
 # Testbenches
 ## CU Testbench 
@@ -50,29 +53,29 @@ I implemented instr_mem as a simple read-only memory for instruction fetch, load
 
 <img width="511" height="1139" alt="image" src="https://github.com/user-attachments/assets/e902903a-b150-4657-993d-b45b022fb247" />
  
-My CU testbench caught a design error in the CU. PCSrc was set to Immediate, not Jump. This is proof that the use of these testbenches throught the project was crutial for proper implementation of our CPU. 
+My CU testbench caught a design error in the CU: PCSrc was set to Immediate, not Jump. This demonstrates that using these testbenches throughout the project was crucial to the correct implementation of our CPU.
 
 <img width="448" height="377" alt="Screenshot 2025-12-11 at 09 43 42" src="https://github.com/user-attachments/assets/358a4a40-25bd-4335-8e08-9afcaa9b1ea2" />
 
-JAL set to branch PC instead of initalising a new jump PC. 
+JAL was set to use the branch PC instead of initialising a new jump PC.
 
 <img width="446" height="143" alt="Screenshot 2025-12-11 at 09 44 10" src="https://github.com/user-attachments/assets/498ce554-eb33-42b1-8022-93b49daf70c1" />
 
-Another issue found was an error in which JALR was carrying stale control signals. 
+Another issue I found was that JALR was carrying stale control signals.
 
-Our Control Unit initially failed several instruction tests because some outputs lacked default values, so stale control signals persisted and broke JAL, JALR and branch behaviour. We also wrongly coded the PCSrc constants and omitted an Immediate constant, causing incorrect PC selection and a compile error. After adding full default assignments and fixing the PCSrc encodings, all control signals were correct and the CU passed the full testbench. Venice also wrote a c++ testbench for final integration.
+Our Control Unit initially failed several instruction tests because some outputs lacked default values, allowing stale control signals to persist and break JAL, JALR, and branch behaviour. We also incorrectly encoded the PCSrc constants and omitted an Immediate constant, which caused incorrect PC selection and a compile error. After adding complete default assignments and fixing the PCSrc encodings, all control signals behaved correctly and the CU passed the full testbench. Venice also wrote a C++ testbench for final integration.
 
-After these fixes, my CU testbench now passes all directed cases for ADDI, BNE, JAL and JALR, and its waveforms match the expected PC and control-signal behaviour from the lecture slides.
+After these fixes, the CU passed all directed cases (ADDI, BNE, JAL, JALR), and the waveforms matched the expected behaviour from the lecture slides.
 
 ## ALU Testbench 
 
-Though the ALU was written by Venice during the debugging stage I decided to make a fully comprehensive system verilog test to ensure full functionality within the ALU. 
+The ALU was written by Venice. During the debugging stage, I decided to create a fully comprehensive SystemVerilog testbench to ensure full functionality of the ALU.
 
 <img width="421" height="1402" alt="image" src="https://github.com/user-attachments/assets/311b971a-bfb1-4dbf-accb-c3c40d725c5e" />
 
-This included directed tests for all operations (ADD, SUB, AND, OR, XOR), corner-case checks (overflow and masking), and a set of randomised ADD tests. I created a reusable `check()` task to automatically compare ALU outputs with expected values.
+This included directed tests for all operations (ADD, SUB, AND, OR, XOR), corner-case checks (overflow and masking), and a set of randomised ADD tests. I created a reusable check() task to automatically compare ALU outputs with expected values.
 
-During testing, I discovered a bug in the ALU: the Zero flag was being assigned twice, causing incorrect results for non-SUB instructions. I identified and fixed the issue by computing the Zero flag once from the final ALU output. After the fix, all tests passed under Verilator, confirming that the ALU behaves correctly and is ready for integration. Venice also wrote a c++ testbench for final integration.  
+During testing, I discovered a bug in the ALU: the Zero flag was being assigned twice, causing incorrect results for non-SUB instructions. I identified and fixed this issue by computing the Zero flag once from the final ALU output. After the fix, all tests passed under Verilator, confirming that the ALU behaves correctly and is ready for integration. Venice also wrote a C++ testbench for final integration.
 
 <img width="672" height="411" alt="Screenshot 2025-12-11 at 13 54 34" src="https://github.com/user-attachments/assets/c9458910-dcfe-4c07-90db-9d3bd46eaa4c" />
 
@@ -82,17 +85,21 @@ The final ALU testbench runs ~N directed checks plus 100+ randomised ADD cases u
 
 <img width="482" height="1344" alt="image" src="https://github.com/user-attachments/assets/874ddfd1-e4c8-4b4d-8c08-f636e6f44cae" />
 
-The Reg_file.sv was initially written by Venice but as a part of my debugging I decided to make a testbench in system verilog for our Reduced RISC-V CPU. I built the testbench to generates its own clock, applies deterministic and randomized test cases, and checks all register behaviours including x0 immutability, write-enable control, dual-port reads, and read-after-write timing. A large part of the work involved diagnosing why expected values weren’t being written or read, which led me to identify issues with initialisation, write-timing, and the testbench’s use of non-blocking assignments. By iterating through these problems and refining both the DUT and testbench, I achieved a fully passing suite of directed and fuzz tests. This process strengthened my understanding of synchronous vs asynchronous behaviour in the register file and improved my confidence in writing robust verification code. After the upgrade to the full CPU Venice made another testbench in C++ to ensure all our testbenches are consistant. 
+The reg_file.sv module was initially written by Venice. As part of my debugging and verification work, I developed a dedicated SystemVerilog testbench for the register file used in our Reduced RISC-V CPU. The testbench generates its own clock, applies both deterministic and randomised test cases, and checks all key register behaviours, including x0 immutability, write-enable control, dual-port reads, and read-after-write timing.
 
-With the negedge-write change in the register file, all directed tests and random fuzz runs now pass. I also confirmed my results in GTKWave. 
+A significant part of this work involved diagnosing why expected values were not being written or read correctly. This led me to identify issues related to register initialisation, write timing, and the testbench’s use of non-blocking assignments. By iterating on both the DUT and the testbench, I achieved a fully passing suite of directed and fuzz tests. This process improved my understanding of synchronous versus asynchronous behaviour in a register file and strengthened my confidence in writing robust verification code.
+
+Following a change to perform register writes on the negative clock edge, all directed tests and random fuzz runs now pass reliably. I also confirmed the corrected behaviour using GTKWave.
 
 # Debugging 
 
 ### After Pipelining 
 
-During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they worked correctly together under Verilator. A large amount of time was spent resolving structural issues, such as inconsistent module naming, incorrect port widths, and implicit nets created by typos like `ALUoutW` vs. `ALUOutW`. I also identified wiring errors inside `top.sv` around PC control, instruction memory routing, and control-signal propagation between pipeline stages. 
+During the debugging stage of the project, I focused on integrating all modules into the pipelined CPU and ensuring they operated correctly together under Verilator. A significant amount of time was spent resolving structural issues, including inconsistent module naming, incorrect port widths, and implicit nets created by typographical errors such as ALUoutW versus ALUOutW. I also identified and fixed wiring errors in top.sv related to PC control, instruction memory routing, and control-signal propagation between pipeline stages.
 
-Many warnings from undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts helped uncover hidden design defects that weren’t caught by the unit testbenches. After cleaning these up, I corrected the testbench by removing leftover VBuddy calls so that it compiled and ran fully within the Verilator environment. Once the CPU executed the full F1 program successfully, I confirmed the behaviour visually using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages. This debugging phase improved my understanding of how small structural mistakes cascade through a pipelined CPU, reinforcing the importance of consistent naming, complete default assignments, and careful pipeline wiring.
+Numerous warnings from undriven signals, unused nets, width mismatches, and asynchronous/synchronous reset conflicts helped uncover hidden design defects that were not caught by the unit testbenches. After addressing these issues, I updated the testbench by removing leftover VBuddy calls so that it compiled and ran cleanly in the Verilator environment. Once the CPU executed the full F1 program successfully, I verified correct behaviour using GTKWave, inspecting PC progression, instruction flow, and stable control signals across the pipeline stages.
+
+This debugging phase significantly improved my understanding of how small structural mistakes can cascade through a pipelined CPU, reinforcing the importance of consistent naming conventions, complete default assignments, and careful pipeline wiring.
 
 # Main Issues I found 
 
@@ -125,7 +132,7 @@ To fix this, I moved the write logic to the negative edge of the clock:
 
 After this change, the writes happened cleanly between sampling points, and the LUI test started passing with x1 updating as expected.
 
-# Multi Cycled Cache 
+# Multi-cycle Cache 
 
 Aileen implemented the single-cycle data cache. I implemented the multi-cycle cache through a finite state machine I used states COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
 
@@ -149,13 +156,13 @@ You track valid and dirty bits for each way so you can tell whether an eviction 
 
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
-# Auxilary 
+# Auxiliary
 
 I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.  
 - Enforced consistent naming conventions across modules (signals, ports, and instance names) to avoid wiring mistakes and reduce Verilator warnings.
 - Reviewed changes for consistency (port widths, reset naming, signal casing like `ALUOutW` vs `ALUoutW`) to prevent hard-to-trace integration bugs.
 
-# Mistakes I made 
+# Mistakes I Made
 
 One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead.
 
