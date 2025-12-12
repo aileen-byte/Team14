@@ -6,6 +6,7 @@ module data_mem #(
     input  logic [DATA_WIDTH-1:0]    ALUResult,   // full 32-bit byte address from CPU
     input  logic [DATA_WIDTH-1:0]    WriteData,
     input  logic                     MemWrite,
+    input  logic [DATA_WIDTH-1:0]    EvictAddress,
     output logic [DATA_WIDTH-1:0]    RD
 );
     logic [7:0] mem_array [MEMORY_BYTES-1:0];
@@ -19,10 +20,10 @@ module data_mem #(
 
     always_ff @(posedge clk) begin
         if (MemWrite) begin
-            mem_array[word_base] <= WriteData[7:0];
-            mem_array[word_base+1] <= WriteData[15:8];
-            mem_array[word_base+2] <= WriteData[23:16];
-            mem_array[word_base+3] <= WriteData[31:24];
+            mem_array[EvictAddress] <= WriteData[7:0];
+            mem_array[EvictAddress+1] <= WriteData[15:8];
+            mem_array[EvictAddress+2] <= WriteData[23:16];
+            mem_array[EvictAddress+3] <= WriteData[31:24];
         end
     end
 

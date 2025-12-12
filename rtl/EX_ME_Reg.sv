@@ -3,7 +3,6 @@ module EX_ME_Reg #(
 )(
     input  logic                clk,
     input  logic                reset,
-    input  logic                cache_stall,
 
     // Control + data from EX stage
     input  logic                    RegWriteE,
@@ -45,7 +44,7 @@ module EX_ME_Reg #(
             LoadSizeM <= 0;
             memoryM <= 0;
         end
-        else if (!cache_stall) begin
+        else begin
             RegWriteM  <= RegWriteE;
             MemWriteM  <= MemWriteE;
             ResultSrcM <= ResultSrcE;

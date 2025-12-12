@@ -27,8 +27,8 @@ module cache #(
     output logic dirty0,
     output logic dirty1,
     output logic [8:0] set_index,
-    output logic cache_to_memory_write_enable,
-    output logic cache_stall
+    output logic MissRead,
+    output logic cache_to_memory_write_enable
 );
 logic [110:0] cache_memory [SIZE-1:0];
 
@@ -72,6 +72,8 @@ logic [WIDTH-1:0] new_write_data;
 logic [WIDTH-1:0] current_fill_data;
 //logic [WIDTH-1:0] modified_fill_data;
 
+logic cache;
+
 always_ff @(posedge clk or posedge rst) begin
     if (rst) begin
         for (int i = 0; i < SIZE; i = i + 1) begin
@@ -87,13 +89,13 @@ always_comb begin
     cache_line_next = cache_line_current;
     cache_to_memory_write_enable = 1'b0;
     cache_data_out = 32'b0;
-    cache_stall = 0;
     if (!rst && memory) begin
         hit1 = (tag == cache_tag1) && valid1;
         hit0 = (tag == cache_tag0) && valid0;
         hit = hit1 || hit0;
+
         if (hit) begin
-            cache_stall = 0;
+            MissRead = 0;
             current_cache_data = hit1 ? cache_data1 : cache_data0;
             new_write_data = current_cache_data;
             if (cache_write) begin
@@ -140,8 +142,8 @@ always_comb begin
             end
         end 
         else begin
-            cache_stall = 1;
             if (used) begin
+                MissRead = 1;
                 if (dirty0 && valid0) begin 
                     cache_to_memory_address = {cache_tag0, set_index, 2'b00};
                     cache_to_memory_data = cache_data0;
@@ -149,7 +151,6 @@ always_comb begin
                     cache_line_next[53] = 1'b0;
                 end
                 else begin
-                    cache_to_memory_address = memory_address;
                     cache_line_next[31:0] = memory_to_cache_data;
                     cache_line_next[52:32] = tag;
                     cache_line_next[54] = 1'b1;
@@ -188,7 +189,6 @@ always_comb begin
                     cache_line_next[108] = 1'b0;
                 end
                 else begin
-                    cache_to_memory_address = memory_address;
                     cache_line_next[86:55] = memory_to_cache_data;
                     cache_line_next[107:87] = tag;
                     cache_line_next[109] = 1'b1;

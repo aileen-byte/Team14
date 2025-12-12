@@ -3,7 +3,6 @@ module ID_EX_Reg #(
 )(
     input   logic                   clk, 
     input   logic                   rst, 
-    input   logic                   cache_stall,
     input   logic                   FlushE, 
 
     input   logic                   RegWriteD,
@@ -69,7 +68,7 @@ always_ff @(posedge clk) begin
         LoadSizeE <= '0;
         memoryE <= '0;
     end 
-    else if (!cache_stall) begin 
+    else begin 
         RegWriteE   <= RegWriteD;
         ResultSrcE  <= ResultSrcD; 
         MemWriteE   <= MemWriteD; 

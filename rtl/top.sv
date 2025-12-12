@@ -128,7 +128,8 @@ logic [DATA_WIDTH-1:0] ReadDataCache;
 logic [DATA_WIDTH-1:0] cache_to_memory_address;
 logic [DATA_WIDTH-1:0] cache_to_memory_data;
 logic cache_to_memory_write_enable;
-logic cache_stall;
+logic [DATA_WIDTH-1:0] LoadSelecIn;
+logic MissRead;
 logic memoryD;
 logic memoryE;
 logic memoryM;
@@ -137,7 +138,7 @@ logic memoryM;
 pc_reg #(DATA_WIDTH) PCREG (
     .clk(clk), 
     .rst(rst),
-    .en(~StallF||~cache_stall), 
+    .en(~StallF), 
     .next_pc(next_pc),
     .pc(pc)
 ); 
@@ -260,24 +261,32 @@ cache CACHE (
     .valid1(valid1),
     .modified_fill_data(modified_fill_data),
     .cache_line_current(cache_line_current),
-    .cache_to_memory_write_enable(cache_to_memory_write_enable),
-    .cache_stall(cache_stall)
+    .MissRead(MissRead),
+    .cache_to_memory_write_enable(cache_to_memory_write_enable)
 );
 
 data_mem #(
     .DATA_WIDTH(DATA_WIDTH)
 ) DM (
     .clk(clk),
-    .ALUResult(cache_to_memory_address),    
-    .WriteData(cache_to_memory_data),       
+    .ALUResult(ALUOutM),   
+    .WriteData(cache_to_memory_data),
+    .EvictAddress(cache_to_memory_address),     
     .MemWrite(cache_to_memory_write_enable),       
     .RD(ReadData)        
+);
+
+mux memory_mux (
+    .in0(ReadDataCache),
+    .in1(ReadData),
+    .sel(MissRead),
+    .out(LoadSelecIn)
 );
 
 load_selec #(DATA_WIDTH) LS (
     .size(LoadSizeM),
     .byte_num(ALUOutM[1:0]),
-    .mem_data(ReadDataCache),
+    .mem_data(LoadSelecIn),
     .load_data(ReadDataM)
 );
 
@@ -299,7 +308,7 @@ IF_ID_Reg #(.DATA_WIDTH(DATA_WIDTH)) IF_ID (
     .clk(clk),
     .rst(rst),
 
-    .StallD(StallD||cache_stall),    
+    .StallD(StallD),    
     .FlushD(FlushD),    
 
     .PCF(pc),           
@@ -314,7 +323,6 @@ IF_ID_Reg #(.DATA_WIDTH(DATA_WIDTH)) IF_ID (
 ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
     .clk(clk),
     .rst(rst),
-    .cache_stall(cache_stall),
     .FlushE(FlushE),    
 
     // Control signals in D
@@ -365,7 +373,6 @@ ID_EX_Reg #(.DATA_WIDTH(DATA_WIDTH)) ID_EX (
 EX_ME_Reg #(.DATA_WIDTH(DATA_WIDTH)) EX_MEM (
     .clk(clk),
     .reset(rst),
-    .cache_stall(cache_stall),
 
     .RegWriteE(RegWriteE),
     .MemWriteE(MemWriteE),
