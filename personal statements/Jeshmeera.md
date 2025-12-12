@@ -33,6 +33,8 @@ Pipelined processor
 
 In the single cycle processor, the Program counter (PC) determines the address of the next instruction to fetch each clock cycle. In our single cycle implementation the PC uses three main modules: PC_Reg, PC+4.  and branch adder, with a multiplexer selecting between sequential and branch execution. These modules work together to determine both sequential and branch instruction addresses based on the RISC-V ISA. 
 
+This module was critical to ensuring correct control flow in both the single-cycle and pipelined designs, as all instruction sequencing and branch behaviour depended on its correctness.
+
 ### Simple single cycle diagram 
 
 <img width="2012" height="950" alt="image" src="https://github.com/user-attachments/assets/96877c81-becf-4c43-bc1e-00090ed8318a" />
@@ -106,7 +108,7 @@ Venice and I acted as the lead designers for this section. We followed this layo
 
 I took on the task of designing the IF/ID and ID/EX registers while Venice completed the remaining two, a deliberate decision that allowed us to implement the pipeline quickly and efficiently and minimise errors before moving on to the Hazard Unit. 
 
-Aileen played a crucial role in debugging and testing the pipelined design, making small but essential corrections where Venice and I had overlooked details to ensure proper functionality.
+Correctly designing these registers was essential for maintaining data integrity across stages and preventing subtle timing errors that could otherwise corrupt instruction execution.
 
 ### IF/ID Register 
 
@@ -128,7 +130,9 @@ Although this section stood out as one of the more challenging concepts I had to
 
 When designing the base implementation of the Forwarding Unit, I followed the data-forwarding strategy outlined in the textbook, represented by the diagram [here](#pipelined-cpu-diagram). I deliberately implemented the hazard detection and forwarding logic as separate modules to keep the design modular, easier to debug, and consistent with the structure recommended in the textbook.
 
-The goal of this module was to resolve data hazards without stalling by forwarding results from later pipeline stages back into the Execute stage. It compares the Execute-stage source registers with the destination registers in the Memory and Writeback stages and determines whether those stages will produce a result. Using this information, it generates the ForwardAE and ForwardBE signals to select the correct ALU operands, ensuring the pipeline continues flowing even when instructions depend on recently computed values.
+The goal of this module was to resolve data hazards without stalling by forwarding results from later pipeline stages back into the Execute stage. It compares the Execute-stage source registers with the destination registers in the Memory and Writeback stages and determines whether those stages will produce a result. Using this information, it generates the ForwardAE and ForwardBE signals to select the correct ALU operands, ensuring the pipeline continues flowing even when instructions depend on recently computed values. This logic significantly reduced unnecessary stalls, allowing the pipeline to maintain higher throughput while preserving correctness.
+
+During testing, We observed incorrect values being forwarded during dependent instruction sequences. By tracing signals in GTKWave across the EX, MEM, and WB stages, We identified missing forwarding conditions and refined the control logic to ensure the most recent results were always prioritised.
 
 Through implementing this module, I developed a deeper understanding of data dependencies in pipelines and how forwarding paths help maintain high performance without sacrificing correctness.
 
@@ -195,11 +199,13 @@ One of the main things I learned from this project was how individual hardware c
 
 I also gained a much deeper appreciation for structured design and verification. Writing simple testbenches for individual modules before full integration proved invaluable, as it allowed me to isolate and debug issues early rather than chasing complex pipeline-level bugs. Additionally, working closely with textbook diagrams and revisiting theoretical concepts when I felt uncertain showed me that strong conceptual understanding is essential before implementation. Overall, this project significantly strengthened my SystemVerilog skills, my understanding of pipelined CPU design, and my confidence in debugging complex hardware systems in a collaborative environment.
 
+Beyond technical skills, this project strengthened my ability to reason systematically about complex systems, communicate design decisions clearly, and collaborate effectively within a shared hardware codebase.
+
 ## Challenges Faced 
 
 One of the first challenges I encountered was learning to use GitHub effectively, as this was my first time working with it in a collaborative project. Early on, I found it difficult to manage branches, track changes, and merge work cleanly, but as the project progressed I became much more confident. By the end, I had a far better understanding of how to maintain a tidy repository, resolve conflicts, and work synchronously with my team using proper commit practices.
 
-Communication within the team was also a learning curve. At the beginning, we didn’t fully appreciate how critical clear communication is especially when working on GitHub because failing to coordinate properly can lead to duplicated work or accidentally overwriting code that someone else has already fixed. As the project progressed, we improved significantly in this area by discussing implementations before coding, updating each other on changes, and reviewing each other’s work. This helped us avoid unnecessary conflicts and ensured that our modules were aligned both functionally and structurally.
+Communication within the team was also a learning curve. At the beginning, we didn’t fully appreciate how critical clear communication is especially when working on GitHub because failing to coordinate properly can lead to duplicated work or accidentally overwriting code that someone else has already fixed. As the project progressed, we improved significantly in this area by discussing implementations before coding, updating each other on changes, and reviewing each other’s work. This helped us avoid unnecessary conflicts and ensured that our modules were aligned both functionally and structurally. This experience taught me the importance of proactive communication, especially when working on tightly coupled hardware modules.
 
 Another major challenge arose when I attempted to build modules before I fully understood how the underlying hardware concepts worked. For example, during the pipelining stage, I initially struggled to decide which signals needed to be carried through the pipeline registers and how the control logic interacted between stages. I realised that my partial understanding wasn’t enough, so I went back to the lecture PowerPoints and revisited the relevant sections of the textbook. Taking the time to study the diagrams and descriptions in detail gave me a much clearer mental model, and once I did that, the implementation became far more manageable.
 
@@ -211,8 +217,9 @@ If I were to revisit the design, one change I would make is in the PC unit. Inst
 
 I would also make sure to develop a solid understanding of all key modules especially the pipeline registers, hazard unit, and forwarding unit before beginning the designing stage, as having this clarity from the start would have saved a significant amount of time and prevented many of the issues I encountered early on, like deciding which signals were significant and how to wire everything correctly. 
 
+In future projects, I would prioritise building a complete conceptual model of the system before implementation and use that model to guide both design and debugging decisions.
 
-
+Overall, this project transformed my understanding of processor design from a theoretical topic into a practical, end-to-end engineering discipline.
 
 
 
