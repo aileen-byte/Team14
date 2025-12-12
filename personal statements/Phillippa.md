@@ -20,13 +20,13 @@ CID: 02596628
 
 # Overview 
 
-Core RTL design (single-cycle CPU): wrote control_unit.sv for ADDI/BNE, contributed to JAL/JALR and branch control, and implemented sign_extend.sv and instr_mem.sv used in both the single-cycle and pipelined CPUs.
+Core RTL design (single cycle CPU): wrote control_unit.sv for ADDI/BNE, contributed to JAL/JALR and branch control, and implemented sign_extend.sv and instr_mem.sv used in both the single-cycle and pipelined CPUs.
 
 Verification in SystemVerilog: authored directed and random CU, ALU and reg_file testbenches (*_tb.sv) and used them to drive fixes in the RTL.
 
 Pipeline integration & debugging: fixed structural and wiring bugs in top.sv (PC path, forwarding, hazard logic, reset behaviour) until the pipelined CPU passed the F1 and reference tests under Verilator.
 
-Multi-cycle data cache: extended the single-cycle cache into a multi-cycle blocking cache with a finite-state machine and stall signalling, integrated with the data memory interface.
+Multi cycle data cache: extended the single cycle cache into a multi cycle blocking cache with a finite state machine and stall signalling, integrated with the data memory interface.
 
 # Control Unit, Instruction_Mem and Sign_extend
 
@@ -37,11 +37,11 @@ I wrote part of the control unit that decodes ADDI and BNE. It sets safe default
 
 ## Sign_extend 
 
-I wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign-extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
+I wrote the sign_extend module to generate 32-bit immediates from the raw instruction bits. For I-type instructions it extracts bits [31:20] and sign extends them, and for B-type branches it reconstructs the split immediate from the scattered fields and appends the low zero bit before sign-extending. This was a good exercise in carefully mapping the RISC-V encoding to hardware, as a single misplaced bit would send branches to entirely the wrong address.
 
 ## Instruction_Mem
 
-
+I implemented instr_mem as a simple read-only memory for instruction fetch, loading program.hex at simulation start and returning RD = memory[PC[31:2]] for aligned 32-bit instructions. Keeping it minimal made the instruction stream deterministic, which was really useful when debugging PC control (branches/jumps) in the pipelined CPU because it removed memory timing as a source of errors. The main limitation is that this word-addressed model hides byte addressing and endianness and wouldn’t support unaligned fetch or compressed instructions, but it was an effective abstraction for our RV32I tests and integration.
 
 # Testbenches
 ## CU Testbench 
@@ -66,7 +66,7 @@ After these fixes, my CU testbench now passes all directed cases for ADDI, BNE, 
 
 ## ALU Testbench 
 
-Though the ALU was written by Venice during the debugging stage i decided to make a fully comprehensive system verilog test to ensure full functionality within the ALU. 
+Though the ALU was written by Venice during the debugging stage I decided to make a fully comprehensive system verilog test to ensure full functionality within the ALU. 
 
 <img width="421" height="1402" alt="image" src="https://github.com/user-attachments/assets/311b971a-bfb1-4dbf-accb-c3c40d725c5e" />
 
@@ -129,7 +129,6 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 Aileen implemented the single-cycle data cache. I implemented the multi-cycle cache through a finite state machine I used states COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
 
-
 ```mermaid
 stateDiagram-v2
     direction LR
@@ -142,11 +141,19 @@ stateDiagram-v2
     Refill --> Compare
 ```
 
+In COMPARE I checked valid/tag and selected the word/byte lane for loads/stores. On a miss I moved to WRITE_BACK if the victim line was dirty, otherwise straight to ALLOCATE. WRITE_BACK streamed the old cache line to memory over multiple cycles, then ALLOCATE issued the read request for the new line, and REFILL captured the returned burst and updated the cache line (tag, valid, and dirty) before returning to COMPARE.
+
+While in any miss-handling state I asserted cachestall so the pipeline would hold PC and prevent new memory operations. I also gated cache outputs so the CPU never observed partially updated data, and only deasserted cachestall once the refill completed and the requested word was guaranteed valid.
+
+You track valid and dirty bits for each way so you can tell whether an eviction needs a write-back. Because the cache is set-associative, on a miss I needed a replacement policy to choose which way to evict; I kept this policy simple to keep the FSM small, but it could be upgraded to LRU by adding a small amount of per-set metadata.
+
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
 # Auxilary 
 
-I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.   
+I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.  
+- Enforced consistent naming conventions across modules (signals, ports, and instance names) to avoid wiring mistakes and reduce Verilator warnings.
+- Reviewed changes for consistency (port widths, reset naming, signal casing like `ALUOutW` vs `ALUoutW`) to prevent hard-to-trace integration bugs.
 
 # Mistakes I made 
 
