@@ -156,7 +156,7 @@ One problem I had was that the original design assumed the memory address stayed
 
 One issue I encountered was that the original design assumed the memory address remained constant during miss handling; in a multi-cycle cache this is not guaranteed, so I fixed the issue by latching key address and control signals in COMPARE and reusing them throughout the miss handling states.
 
-In the final integrated design, we used a write-through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write-through approach therefore provided a more robust and easily verifiable final design.
+In the final integrated design, we used a write through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write through approach therefore provided a more robust and easily verifiable final design.
 
 # Auxiliary
 
