@@ -99,12 +99,17 @@ Throughout the debugging process, I applied the same systematic approach I devel
 
 ## Cache Implementation 
 
+We implemented a write-through cache, ensuring that all write operations update both the cache and main memory simultaneously.
+
 <img width="1920" height="1315" alt="image" src="https://github.com/user-attachments/assets/add657cc-a438-4bd6-bc1f-43e307e00f96" />
 
+To implement the two-way set-associative cache, I began by studying the lecture material and the diagrams particularly the one shown above to fully understand how the tag, set index, valid bits, and hit logic interact in hardware. I first translated the conceptual table structure into SystemVerilog, decoding the memory address into its tag and set index fields. From there, I allocated the cache as a two-way structure, where each way stores a used bit, valid bit, tag, and data, mirroring the organisation in the textbook diagrams.
 
-To implement the two-way set-associative cache, I began by studying the lecture material and the diagrams particularly the one shown above to fully understand how the tag, set index, valid bits, and hit logic interact in hardware. I first translated the conceptual table structure into SystemVerilog, decoding the memory address into its tag and set index fields. From there, I allocated the cache as a two-way structure, where each way stores a used bit, dirty bit, valid bit, tag, and data, mirroring the organisation in the textbook diagrams.
+Once the structure was in place, I introduced the necessary registers to update cache lines on hits and misses. I then implemented the hit/miss detection logic in a combinational block, comparing the incoming tag against both ways and generating the appropriate hit signals. This same block also handled updating the used bit for the replacement policy and preparing the data output during hits. For misses, I added the logic required to generate the correct signals to the main memory when the Cache isn't being written and when data is fetched from main memory on a miss.
 
-Once the structure was in place, I introduced the necessary registers to update cache lines on hits and misses. I then implemented the hit/miss detection logic in a combinational block, comparing the incoming tag against both ways and generating the appropriate hit signals. This same block also handled updating the used bit for the replacement policy and preparing the data output during hits. For misses, I added the logic required to generate the correct signals to the main memory - requesting a refill, writing back dirty lines, and updating the cache line with new data once the memory response arrives.
+Most notably, I integrated the cache with the main memory and modified its wiring so that writes update both the cache and main memory simultaneously, implementing a write-through policy. I also added a MissWrite signal to ensure that when a cache miss occurs, data is written directly to main memory.
+
+Additionally, I introduced a memory multiplexer to select between the cache output and the main memory output, allowing the processor to correctly handle read misses by fetching data from main memory while still using cached data on a hit.
 
 ### Unit tests 
 
@@ -132,6 +137,8 @@ One challenge I faced as the implementation lead was not communicating early eno
 Another challenge came from our team’s overall organisation. At times we lacked a clear, linear development structure, which led to overlapping work, duplicated effort, or uncertainty about which version of a module was the most up to date. Establishing a more structured workflow early on would have helped us stay more synchronised and avoid unnecessary rewrites or conflicts.
 
 I also struggled with the sheer number of signals involved in the pipelined processor and cached processor. The volume of control and datapath signals quickly became overwhelming, especially during debugging when it wasn’t immediately obvious where a fault originated. This experience highlighted the importance of breaking down complex issues into smaller parts and tracing signals step-by-step - an approach I intend to develop further to handle large hardware designs more confidently.
+
+One of the main challenges I faced during the cache implementation was uncertainty about which cache write policy to use. I initially focused on designing a write-back cache, which introduced additional complexity and required careful handling of dirty bits and write-back logic. In hindsight, starting with a write-through cache would have been a better approach, as it is simpler and would have allowed me to familiarise myself with the cache structure and control flow first. Implementing the simpler design before attempting a more complex one would have made the development process smoother and more manageable.
 
 ## What I would do differently 
 
