@@ -3,20 +3,7 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
-    input logic trigger,
-    output logic [DATA_WIDTH-1:0] x0,
-    output logic [DATA_WIDTH-1:0] t0,
-    output logic [DATA_WIDTH-1:0] t1,
-    output logic [DATA_WIDTH-1:0] t3,
-    output logic [DATA_WIDTH-1:0] t4,
-    output logic [DATA_WIDTH-1:0] a1,
-    output logic [DATA_WIDTH-1:0] a2,
-    output logic [DATA_WIDTH-1:0] a3,
-    output logic [DATA_WIDTH-1:0] a4, 
-    output logic [DATA_WIDTH-1:0] a5,
-    output logic [DATA_WIDTH-1:0] a6,
-    output logic [DATA_WIDTH-1:0] s0,
-    output logic [DATA_WIDTH-1:0] t2,
+    input   logic trigger,
     output  logic [DATA_WIDTH-1:0] a0
 );
 
@@ -191,19 +178,6 @@ reg_file #(DATA_WIDTH) RF (
     .WD3(WD3),
     .RD1(RD1),
     .RD2(RD2),
-    .x0(x0),
-    .t0(t0),
-    .t1(t1),
-    .t3(t3),
-    .t4(t4),
-    .a1(a1),
-    .a2(a2),
-    .a3(a3),
-    .a4(a4),
-    .a5(a5),
-    .a6(a6),
-    .s0(s0),
-    .t2(t2),
     .a0(a0)
 );
 
