@@ -186,9 +186,7 @@ Making (and then fixing) mistakes in each of these areas has given me a much dee
 
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
 
-- Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team
-
-- Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
+- Spend more time up front reading the textbook, to ensure I fully understood what task I had. 
 
 - Be stricter about keeping the top level and cache wiring simple and well documented, so that later changes don’t turn into a wiring puzzle.
 
