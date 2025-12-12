@@ -8,7 +8,6 @@ module load_selec #(
 );
 
 logic [7:0] selected_byte;
-logic [15:0] selected_half;
 
 always_comb begin
     case (byte_num)
@@ -31,7 +30,7 @@ always_comb begin
             load_data = mem_data;
         end
         default: begin
-            load_data = 32'b0; // Default case (should not occur)
+            load_data = 32'b0;
         end
     endcase
 end

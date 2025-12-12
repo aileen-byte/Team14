@@ -27,7 +27,6 @@ module data_mem #(
     always_comb begin
         if (MissWrite) begin
             case (StoreSize)
-                // Store Byte (sb)
                 2'b00: begin
                     case (byte_offset)
                         2'b00: RD = {mem_array[word_base+3], mem_array[word_base+2], mem_array[word_base+1], WriteData[7:0]};
@@ -36,7 +35,7 @@ module data_mem #(
                         2'b11: RD = {WriteData[7:0], mem_array[word_base+2], mem_array[word_base+1], mem_array[word_base]};
                     endcase
                 end
-                default: ; // Do nothing for 2'b11 (or handle as an error)
+                default: ;
             endcase
         end
         else begin
