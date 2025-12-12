@@ -39,13 +39,13 @@ Aileen implemented the broader CU functionality beyond my instruction subset.
 
 ## sign_extend.sv
 
-I wrote sign_extend.sv to generate correct 32-bit immediates from raw instruction fields. For I-type instructions, it extracts instr[31:20] and sign-extends. For B-type branches, it reconstructs the split immediate from scattered fields, appends the low zero bit, then sign-extends. This required careful mapping from the RISC-V encoding — a single misplaced bit can send branches to the wrong target.
+I wrote sign_extend.sv to generate correct 32-bit immediates from raw instruction fields. For I-type instructions, it extracts instr[31:20] and sign-extends. For B-type branches, it reconstructs the split immediate from scattered fields, appends the low zero bit, then sign extends. This required careful mapping from the RISCV encoding, a single misplaced bit can send branches to the wrong target.
 
 ## instr_mem.sv
 
-I implemented instr_mem.sv as a minimal read-only instruction memory: load program.hex at simulation start and return RD = memory[PC[31:2]] for aligned 32-bit fetches. This made instruction fetch deterministic and helped debug PC control (branch/jump) in the pipelined CPU by removing memory timing as a variable.
+I implemented instr_mem.sv as a minimal read only instruction memory: load program.hex at simulation start and return RD = memory[PC[31:2]] for aligned 32-bit fetches. This made instruction fetch deterministic and helped debug PC control (branch/jump) in the pipelined CPU by removing memory timing as a variable.
 
-Limitation: this is word-addressed and does not expose byte addressing/endian behaviour or support unaligned fetch / compressed instructions.
+Limitation: this is word addressed and does not expose byte addressing/endian behaviour or support unaligned fetch / compressed instructions.
 
 # Testbenches
 ## CU Testbench 
@@ -150,13 +150,13 @@ stateDiagram-v2
 
 In COMPARE, the cache checks tag and valid bits. On a miss, it transitions to WRITE_BACK if the victim line is dirty, otherwise directly to ALLOCATE. WRITE_BACK streams the evicted cache line to memory over multiple cycles, ALLOCATE issues the read request for the new line, and REFILL captures the returned data and updates the cache metadata before returning to COMPARE.
 
-While in any miss-handling state, cachestall is asserted so the pipeline holds the PC and does not issue new memory operations. Cache outputs are gated so the CPU never observes partially updated data, and the stall is only deasserted once the refill completes and the requested word is valid.
+While in any miss handling state, cachestall is asserted so the pipeline holds the PC and does not issue new memory operations. Cache outputs are gated so the CPU never observes partially updated data, and the stall is only deasserted once the refill completes and the requested word is valid.
 
 One problem I had was that the original design assumed the memory address stayed constant, but in my multi-cycle version the address could change while handling a miss, so the wrong value was sometimes used in the miss states. I fixed this by latching the key signals at COMPARE and reusing those latched values throughout the miss-handling states. This exercise made me much more comfortable designing FSMs around memory systems and reasoning about timing and handshakes between modules.
 
-I initially assumed the memory address remained stable during a cache miss, which is not true in a multi-cycle cache; I fixed this by latching the request address and control signals in COMPARE and reusing them across all miss-handling states.
+I initially assumed the memory address remained stable during a cache miss, which is not true in a multi-cycle cache; I fixed this by latching the request address and control signals in COMPARE and reusing them across all miss handling states.
 
-In the final integrated design, we used a write through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write through approach therefore provided a more robust and easily verifiable final design.
+In the final integrated design, we used a write through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty bit tracking and write back handling on eviction. Since the backing data memory is single cycle and fast, the performance benefit of a write back policy would have been small, while the added control complexity would have increased integration risk. The write through approach therefore provided a more robust and easily verifiable final design.
 
 # Auxiliary
 
@@ -168,7 +168,7 @@ I created a whatapp groupchat for easy communication, ensured team memebers comm
 
 One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead. I also wrote my testbenches in System Verilog instead of C++. 
 
-One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was just a simplified, word-addressed module. 
+One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was a word addressed module. 
 
 The main mistake I made while debugging was not reading the Harris and Harris textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
