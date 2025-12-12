@@ -146,7 +146,7 @@ One problem I had was that the original design assumed the memory address stayed
 
 # Auxilary 
 
-I helped the team stay organised when it came to testing, I used Makefile to standardise how we built and ran the tests (tb/doit.sh), which helped the team reproduce failures quickly. I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.   
+I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.   
 
 # Mistakes I made 
 
@@ -167,7 +167,6 @@ This project also forced me to internalise several hardware concepts that rarely
 - How little-endian byte addressing interacts with immediate generation and branch targets
 
 Making (and then fixing) mistakes in each of these areas has given me a much deeper understanding than simply following the textbook design.
-
 
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
 
