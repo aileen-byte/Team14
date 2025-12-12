@@ -23,8 +23,6 @@ We have branches for each section of our project: iac_simple_cycle, iac_pipeline
 
 NOTE: iac_pipeline_with_cache implements a normal L1 cache, the iac_pipelined_cache implements a finite state machine with a pipelined cache. 
 
-NOTE: ignore all other files in the main 
-
 ## Details and personal statements 
 
 | Name                  | CID      | Email                                   | Link to personal statement                         |
