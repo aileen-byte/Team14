@@ -43,7 +43,7 @@ We further enhanced the design by refining the pipeline’s hazard management an
 
 ## Single Cycle RISC-V Processor 
 
-Our single-cycle Processor successfully executes RISC-V instructions, with each instruction completing in one clock cycle by preforming instruction fetch, decode, execute, memory access, and write back within a single unified datapath. 
+Our single-cycle Processor successfully executes RISC-V instructions, with each instruction completing in one clock cycle by performing instruction fetch, decode, execute, memory access, and write back within a single unified datapath. 
 
 ### Task allocation 
 
@@ -124,7 +124,7 @@ https://github.com/user-attachments/assets/e6092f2c-c3c5-410d-b5ad-00c11a1076be
 
 ## Pipelined RISC-V Processor
 
-Our team successfully implemented a pipelined RISC-V processor that executes multiple instructions concurrently accross the IF, ID, EX, MEM, and WB stages. We also implemented fully working Hazard detection, stalling, and forwarding logic to ensure that the pipeline operates correctly for all instruction types. 
+Our team successfully implemented a pipelined RISC-V processor that executes multiple instructions concurrently across the IF, ID, EX, MEM, and WB stages. We also implemented fully working Hazard detection, stalling, and forwarding logic to ensure that the pipeline operates correctly for all instruction types. 
 
 ### Task allocation 
 
@@ -179,7 +179,7 @@ w - main module writer
 
 c - contributor 
 
-### Memory heirarchy 
+### Memory hierarchy 
 ```mermaid
 graph TB
     A[CPU]
@@ -190,7 +190,7 @@ graph TB
     B <--> C
 ```
 
-In our Cache implented RISC-V processor, the memory heirarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
+In our Cache implented RISC-V processor, the memory hierarchy places a small, fast 1 KiB L1 cache between the CPU and the main memory to reduce access latency. The CPU interacts with the cache first, which stores recently used data in 4-byte blocks, exploiting temporal locality to improve preformance. When the required data is not present in the cache, the processor retrieves it from the main memory, ensuring both correctness and efficiency in our design.
 
 ### Testing 
 
