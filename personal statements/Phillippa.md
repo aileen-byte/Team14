@@ -127,9 +127,8 @@ After this change, the writes happened cleanly between sampling points, and the 
 
 # Multi Cycled Cache 
 
-Aileen implemented the majority of the single cycle data cache that appears in our final submission. In parallel, I experimented with extending this into a multi cycle blocking cache controlled by a small finite state machine in a separate branch of the repo. The prototype used states like COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
+Aileen implemented the single-cycle data cache. I implemented the multi-cycle cache through a finite state machine I used states COMPARE, WRITE_BACK, ALLOCATE and REFILL to model realistic miss handling and asserted a cachestall signal back to the CPU whenever a miss was in progress.
 
-It didn't fully verify and integrate it into the pipelined CPU without risking regressions in the working design. As a team we therefore chose to keep the simpler single cycle cache for the final hand in. 
 
 ```mermaid
 stateDiagram-v2
@@ -161,19 +160,21 @@ The main mistake I made while debugging was not reading the Harris and Harris te
 
 This project also forced me to internalise several hardware concepts that rarely show up in small lab exercises:
 
-– How write timing (posedge vs negedge) affects register file semantics in a pipelined CPU
+- How write timing (posedge vs negedge) affects register file semantics in a pipelined CPU
+  
+- Why hazard and forwarding logic must be designed around the exact pipeline stage ordering
+  
+- How little-endian byte addressing interacts with immediate generation and branch targets
 
-– Why hazard and forwarding logic must be designed around the exact pipeline stage ordering 
-
-– How little-endian byte addressing interacts with immediate generation and branch targets.
 Making (and then fixing) mistakes in each of these areas has given me a much deeper understanding than simply following the textbook design.
+
 
 Looking back, this project taught me as much about workflow as it did about hardware. I’d now:
 
-- Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team.
-    
+- Spend more time up front reading the textbook and agreeing a clear architecture and naming scheme as a team
+
 - Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
-    
+
 - Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring puzzle.
 
 
