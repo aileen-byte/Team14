@@ -11,7 +11,7 @@ CID: 02596628
 - [Control Unit, Instruction_Mem and Sign_extend](#control-unit-instruction_mem-and-sign_extend)
 - [Testbenches](#testbenches)
 - [Debugging](#debugging)
-- [Multi cycle Cache](#multi-cycled-cache)
+- [Multi Cycle Cache](#multi-cycle-cache) - Prototype
     
 ### Reflection 
   
@@ -44,6 +44,7 @@ I wrote sign_extend.sv to generate correct 32-bit immediates from raw instructio
 ## instr_mem.sv
 
 I implemented instr_mem.sv as a minimal read-only instruction memory: load program.hex at simulation start and return RD = memory[PC[31:2]] for aligned 32-bit fetches. This made instruction fetch deterministic and helped debug PC control (branch/jump) in the pipelined CPU by removing memory timing as a variable.
+
 Limitation: this is word-addressed and does not expose byte addressing/endian behaviour or support unaligned fetch / compressed instructions.
 
 # Testbenches
@@ -85,7 +86,7 @@ The testbench runs directed and randomised cases under Verilator with no failure
 
 <img width="482" height="1344" alt="image" src="https://github.com/user-attachments/assets/874ddfd1-e4c8-4b4d-8c08-f636e6f44cae" />
 
-The reg_file.sv module was initially written by Venice. As part of my debugging and verification work, I developed a dedicated SystemVerilog testbench for the register file used in our Reduced RISC-V CPU. The testbench generates its own clock, applies both deterministic and randomised test cases, and checks all key register behaviours, including x0 immutability, write-enable control, dual-port reads, and read-after-write timing.
+As part of my debugging and verification work for the reg_file written by Venice, I developed a dedicated SystemVerilog testbench for the register file used in our Reduced RISC-V CPU. The testbench generates its own clock, applies both deterministic and randomised test cases, and checks all key register behaviours, including x0 immutability, write-enable control, dual-port reads, and read-after-write timing.
 
 A significant part of this work involved diagnosing why expected values were not being written or read correctly. This led me to identify issues related to register initialisation, write timing, and the testbench’s use of non-blocking assignments. By iterating on both the DUT and the testbench, I achieved a fully passing suite of directed and fuzz tests. This process improved my understanding of synchronous versus asynchronous behaviour in a register file and strengthened my confidence in writing robust verification code.
 
@@ -130,7 +131,8 @@ To fix this, I moved the write logic to the negative edge of the clock:
 
 After this change, the writes happened cleanly between sampling points, and the LUI test started passing with x1 updating as expected.
 
-# Multi cycle Cache 
+# Multi Cycle Cache
+## Prototype
 
 Aileen implemented the single-cycle data cache. I implemented a multi-cycle blocking cache controlled by a finite state machine with the states COMPARE, WRITE_BACK, ALLOCATE, and REFILL, modelling realistic miss handling and asserting a cachestall signal to the CPU whenever a miss was in progress.
 
@@ -154,17 +156,19 @@ One problem I had was that the original design assumed the memory address stayed
 
 One issue I encountered was that the original design assumed the memory address remained constant during miss handling. In a multi-cycle cache this is not guaranteed, so incorrect addresses were sometimes used in later states. I fixed this by latching key address and control signals in COMPARE and reusing these latched values throughout the miss-handling states. This significantly improved correctness and deepened my understanding of FSM design and memory-system timing.
 
+In the final integrated design, we used a write-through data cache instead of a write-back cache. Stores update both the cache and main memory immediately, which simplified integration with the pipelined CPU by removing the need for dirty-bit tracking and write-back handling on eviction. Since the backing data memory is single-cycle and fast, the performance benefit of a write-back policy would have been small, while the added control complexity would have increased integration risk. The write-through approach therefore provided a more robust and easily verifiable final design.
+
 # Auxiliary
 
 I created a whatapp groupchat for easy communication, ensured team memebers communicated with one another by making sure we gave one another regular updates about progress with various modules.  
 - Enforced consistent naming conventions across modules (signals, ports, and instance names) to avoid wiring mistakes and reduce Verilator warnings.
-- Reviewed changes for consistency (port widths, reset naming, signal casing like `ALUOutW` vs `ALUoutW`) to prevent hard-to-trace integration bugs.
+- Reviewed changes for consistency (port widths, reset naming, signal casing like `ALUOutW` vs `ALUoutW`) to prevent hard to trace integration bugs.
 
 # Mistakes I Made
 
 One mistake I made early on was writing the branch testbench before the rest of the pipeline was ready. Key modules hadn’t been implemented yet, so the testbench produced misleading errors and quickly became outdated as the design evolved. When I revisited it, most of the signals no longer matched the CPU, so I scrapped it and focused on writing dedicated CU and ALU testbenches instead. I also wrote my testbenches in System Verilog instead of C++. 
 
-One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was just a simplified, word-granularity model that only ever sees aligned 32-bit instructions.
+One conceptual mistake I made was how I thought about instruction memory. I implemented it as logic [31:0] memory[0:255] indexed by PC[31:2]. In reality, RISC-V is byte-addressed and little-endian – my module was just a simplified, word-addressed module. 
 
 The main mistake I made while debugging was not reading the Harris and Harris textbook carefully before I started. That meant I overcomplicated the design and added unnecessary logic that later had to be removed. If I’d spent a bit of time up front really understanding what the textbook expected, I would have saved a lot of time. Instead, I ended up misdiagnosing issues that actually had simple fixes.
 
@@ -186,7 +190,7 @@ Looking back, this project taught me as much about workflow as it did about hard
 
 - Only write full system-level testbenches once the main modules are stable, and rely on smaller unit testbenches earlier on.
 
-- Be stricter about keeping the top-level and cache wiring simple and well-documented, so that later changes don’t turn into a wiring puzzle.
+- Be stricter about keeping the top level and cache wiring simple and well documented, so that later changes don’t turn into a wiring puzzle.
 
 
 
